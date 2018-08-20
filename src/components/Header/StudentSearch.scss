@@ -1,0 +1,134 @@
+.root {
+  position: relative;
+  z-index: 2;
+}
+
+.studentSearch {
+  background: white;
+  width: 100%;
+  padding-left: 32px !important;
+  font-size: 12px !important;
+  font-weight: 400;
+  letter-spacing: 0.4px;
+  text-align: left;
+  color: rgb(62, 62, 95);
+  margin-top: 2px !important;
+  display: inline-block !important;
+}
+
+.searchIcon {
+  position: absolute;
+  top: 12px;
+  left: 8px;
+  width: 16px;
+  height: 16px;
+}
+
+.studentSearch:focus {
+  outline: none !important;
+}
+
+.studentSearch::placeholder {
+  font-size: 12px;
+  font-weight: normal;
+  letter-spacing: 0.5px;
+  color: rgb(155, 155, 155);
+}
+
+.searchSuggestion {
+  max-height: 330px;
+  overflow: auto;
+  width: 100%;
+  border-radius: 3px;
+  background: rgb(255, 255, 255);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.13);
+  display: block;
+  position: absolute;
+  z-index: 2;
+
+  a:first-child {
+    background-color: rgba(216, 216, 216, 0.6);
+    font-weight: 600;
+  }
+
+  a:first-child:hover {
+    background-color: rgba(216, 216, 216, 0.6);
+  }
+
+  a:hover {
+    background-color: rgba(216, 216, 216, 0.4);
+  }
+}
+
+.suggestionItem {
+  width: 100%;
+  height: 32px;
+  line-height: 32px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-align: left;
+  color: rgb(62, 62, 95);
+  padding: 0 8px !important;
+  display: block;
+
+  span {
+    float: left;
+  }
+
+  .studentID {
+    max-width: 70px;
+    width: 70px;
+  }
+
+  .studentNameAndCampus {
+    width: calc(100% - 70px);
+    display: inline;
+  }
+
+  .studentName {
+    width: auto;
+    max-width: 60%;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin-right: 2px;
+  }
+
+  /* .campus {
+    display: inline;
+    overflow: hidden;
+  } */
+}
+
+.suggestionItem:hover {
+  color: rgb(62, 62, 95);
+}
+
+@media only screen and (max-width: 1360px) {
+  .suggestionItem .studentName {
+    max-width: 60%;
+  }
+}
+
+/*
+
+@media only screen and (max-width: 1360px) {
+.suggestionItem {
+.studentName {
+max-width: 75%;
+}
+}
+}
+
+@media only screen and (min-width: 1361px) {
+.suggestionItem {
+.studentName {
+max-width: 75%;
+}
+}
+}
+@media only screen and (min-width: 1600px) {
+
+}
+*/

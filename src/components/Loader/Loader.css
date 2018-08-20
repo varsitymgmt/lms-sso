@@ -1,0 +1,19 @@
+.loader {
+  background: rgba(255, 255, 255, 0.7);
+  bottom: 0;
+  display: none;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 22;
+  user-select: none;
+}
+
+.loader img {
+  left: 48%;
+  position: fixed;
+  top: 44%;
+  z-index: 22;
+  user-select: none;
+}

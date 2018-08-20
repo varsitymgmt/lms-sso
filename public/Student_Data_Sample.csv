@@ -1,0 +1,9 @@
+Student_Id,Name,Campus,Class,Batch,Section,Group,DoB,Gender
+1010001,Noah,Hyderabad,JEE 2 Year Prog,1st Year,Elite,Green,"1st Jan, 2001",M
+1010002,Liam,Hyderabad,JEE 2 Year Prog,1st Year,Elite,Green,"3rd Jan, 2002",M
+1010003,Milli,Hyderabad,JEE 2 Year Prog,1st Year,Elite,Red,"1st Feb, 2001",F
+1010004,Jacob,Hyderabad,JEE 2 Year Prog,1st Year,Advanced,Red,"21st Dec, 2000",M
+1010005,William,Hyderabad,JEE 2 Year Prog,1st Year,Advanced,Yellow,"9th Aug, 2001",M
+1010006,Ethan,Hyderabad,JEE 2 Year Prog,1st Year,Advanced,Yellow,"4th May, 2001",M
+1010007,James,Hyderabad,JEE 2 Year Prog,1st Year,Regular,Green,"17th Jun, 2001",M
+1010008,Alex,Hyderabad,JEE 2 Year Prog,1st Year,Regular,Yellow,"22nd Jul, 2001",F

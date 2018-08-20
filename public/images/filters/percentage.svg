@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="33px" height="24px" viewBox="0 0 33 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Rectangle</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icons" transform="translate(-45.000000, -363.000000)">
+            <path d="M47,363 L78,363 L78,387 L47,387 L47,387 C45.8954305,387 45,386.104569 45,385 L45,365 L45,365 C45,363.895431 45.8954305,363 47,363 Z" id="Rectangle" fill="#EC4C6F"></path>
+            <text id="%" font-family="Avenir-Medium, Avenir" font-size="14" font-weight="400" fill="#FFFFFF">
+                <tspan x="56" y="380">%</tspan>
+            </text>
+        </g>
+    </g>
+</svg>

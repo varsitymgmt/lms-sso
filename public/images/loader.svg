@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="100px" height="100px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+<g>
+
+		<circle fill="none" stroke="#cf6387" stroke-miterlimit="10" stroke-dasharray="11.5968,11.5968" cx="50.334" cy="50.334" r="48.001">
+			<animateTransform attributeName="transform"
+				attributeType="XML"
+				type="rotate"
+				from="0 50 50"
+				to="360 50 50"
+				dur="10s"
+				repeatCount="indefinite" />
+		</circle>
+</g>
+<circle fill="#cf6387" cx="50.5" cy="50.501" r="38.833"/>
+<path fill="#FFFFFF" stroke="#FFFFFF" stroke-miterlimit="10" d="M40.5,56c0,0.828-0.671,1.5-1.5,1.5l0,0
+	c-0.829,0-1.5-0.672-1.5-1.5V44c0-0.829,0.671-1.5,1.5-1.5l0,0c0.829,0,1.5,0.671,1.5,1.5V56z">
+	<animateTransform id="animation"
+		attributeName="transform"
+		attributeType="XML"
+		type="translate"
+		dur="1s"
+		values="0,6;0,-6;0,6"
+		repeatCount="indefinite" />
+
+</path>
+<path fill="#FFFFFF" stroke="#FFFFFF" stroke-miterlimit="10" d="M46.5,56c0,0.828-0.671,1.5-1.5,1.5l0,0
+	c-0.829,0-1.5-0.672-1.5-1.5V44c0-0.829,0.671-1.5,1.5-1.5l0,0c0.829,0,1.5,0.671,1.5,1.5V56z">
+	<animateTransform id="animation"
+		attributeName="transform"
+		attributeType="XML"
+		type="translate"
+		begin=".1"
+		dur="1s"
+		values="0,6;0,-6;0,6"
+		repeatCount="indefinite" />
+
+</path>
+<path fill="#FFFFFF" stroke="#FFFFFF" stroke-miterlimit="10" d="M52.5,56c0,0.828-0.672,1.5-1.5,1.5l0,0
+	c-0.828,0-1.5-0.672-1.5-1.5V44c0-0.829,0.672-1.5,1.5-1.5l0,0c0.828,0,1.5,0.671,1.5,1.5V56z">
+	<animateTransform id="animation"
+		attributeName="transform"
+		attributeType="XML"
+		type="translate"
+		begin=".2"
+		dur="1s"
+		values="0,6;0,-6;0,6"
+		repeatCount="indefinite" />
+
+</path>
+<path fill="#FFFFFF" stroke="#FFFFFF" stroke-miterlimit="10" d="M58.5,56c0,0.828-0.672,1.5-1.5,1.5l0,0
+	c-0.828,0-1.5-0.672-1.5-1.5V44c0-0.829,0.672-1.5,1.5-1.5l0,0c0.828,0,1.5,0.671,1.5,1.5V56z">
+	<animateTransform id="animation"
+		attributeName="transform"
+		attributeType="XML"
+		type="translate"
+		begin=".3"
+		dur="1s"
+		values="0,6;0,-6;0,6"
+		repeatCount="indefinite" />
+
+</path>
+<path fill="#FFFFFF" stroke="#FFFFFF" stroke-miterlimit="10" d="M64.5,56c0,0.828-0.672,1.5-1.5,1.5l0,0
+	c-0.828,0-1.5-0.672-1.5-1.5V44c0-0.829,0.672-1.5,1.5-1.5l0,0c0.828,0,1.5,0.671,1.5,1.5V56z">
+	<animateTransform id="animation"
+		attributeName="transform"
+		attributeType="XML"
+		type="translate"
+		begin=".4"
+		dur="1s"
+		values="0,6;0,-6;0,6"
+		repeatCount="indefinite" />
+
+</path>
+</svg>
