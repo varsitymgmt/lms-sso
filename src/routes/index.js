@@ -7,7 +7,7 @@ const routes = {
   children: [
     {
       path: '/',
-      load: () => import(/* webpackChunkName: 'login' */ './login'),
+      load: () => import(/* webpackChunkName: 'SignIn' */ './sign-in'),
     },
     // Wildcard routes, e.g. { path: '*', ... } (must go last)
     {

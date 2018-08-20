@@ -3,7 +3,7 @@ import SignIn from './SignIn';
 
 function action() {
   return {
-    chunks: ['login'],
+    chunks: ['SignIn'],
     component: (
       <div className={`row cover-full-container`}>
         <SignIn />
