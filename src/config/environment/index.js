@@ -114,6 +114,7 @@ const all = {
 // ==============================================
 export const config = _.merge(
   all,
+  require('./shared'),
   require(`./${process.env.NODE_ENV}.js`) || {},
 );
 
