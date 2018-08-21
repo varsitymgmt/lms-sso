@@ -3,7 +3,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 // import Link from 'components/Link/Link';
-import { getURLParams, toggleLoader } from 'utils/HelperMethods';
+import { getURLParams, toggleLoader, setCookie } from 'utils/HelperMethods';
 import Loader from 'components/Loader';
 import welcomeImg from './welcome.svg';
 import s from './SignIn.scss';
@@ -44,15 +44,18 @@ class SignIn extends React.Component {
   }
 
   setIntialFields() {
+    let host = getURLParams('host');
+    if (host) {
+      host = new URL(host);
+    }
     this.setState({
       formData: {
         email: document.getElementById('email').value,
         password: document.getElementById('password').value,
         rememberMe: false,
-        hostname: __DEV__
-          ? this.context.hostNameForDev
-          : window.location.hostname,
+        hostname: __DEV__ ? 'luke.dev.sso.egnify.io' : host.hostname,
       },
+      host,
     });
   }
 
@@ -223,15 +226,33 @@ class SignIn extends React.Component {
     }
     toggleLoader(true);
     axios
-      .post(`${this.context.API_URL}/auth/local`, this.state.formData)
+      .post(
+        `https://accounts.dev.hydra.egnify.io/auth/local`,
+        this.state.formData,
+      )
       .then(response => {
         toggleLoader(false);
         if (response.data) {
           const token = response.data.token;
           if (token) {
+            const accessControlToken = response.data.accessControlToken;
             localStorage.setItem('token', token);
+            localStorage.setItem('accessControlToken', accessControlToken);
             localStorage.setItem('email', this.state.formData.email);
-            window.location = getURLParams('redirectTo') || '/';
+            if (this.state.host) {
+              const expires = 90 * 1000;
+              const hostname = this.state.host.hostname;
+              localStorage.setItem('hostname', hostname);
+              setCookie('token', token, expires, hostname);
+              setCookie(
+                'accessControlToken',
+                accessControlToken,
+                expires,
+                hostname,
+              );
+              setCookie('email', this.state.formData.email, expires, hostname);
+              window.location = this.state.host.href;
+            }
           }
         }
       })
@@ -333,7 +354,6 @@ class SignIn extends React.Component {
             })
             .then(response => {
               this.setState({ isForgotPasswordLoading: false });
-
               if (response.data) {
                 const usersFound = response.data.usersFound;
                 if (usersFound) {
@@ -351,20 +371,6 @@ class SignIn extends React.Component {
                 isForgotPasswordLoading: false,
                 forgotPasswordError: 'Something went wrong',
               });
-              // if (err.response && err.response.data) {
-              //   const data = err.response.data;
-              //   if (data && data.code) {
-              //     const formFieldsError = this.state.formFieldsError;
-              //     if (data.code === 'AU01') {
-              //       formFieldsError.email = data.message;
-              //     } else if (data.code === 'AU02') {
-              //       formFieldsError.password = data.message;
-              //     }
-              //     this.setState({ formFieldsError });
-              //   }
-              // } else {
-              //   console.error(err);
-              // }
             });
         },
       );
