@@ -8,11 +8,19 @@
 /* eslint consistent-return: 0 */
 import path from 'path';
 import express from 'express';
-// import bodyParser from 'body-parser';
+import bodyParser from 'body-parser';
+
+import cookieParser from 'cookie-parser';
+import mongoose from 'mongoose';
+
+import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import fetch from 'node-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import PrettyError from 'pretty-error';
+import compression from 'compression';
+import helmet from 'helmet';
+
 import App from './components/App';
 import Html from './components/Html';
 import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
@@ -21,11 +29,8 @@ import createFetch from './createFetch';
 import router from './router';
 import assets from './assets.json'; // eslint-disable-line import/no-unresolved
 import { config } from './config/environment';
-// import seedDatabaseIfNeeded from './seed';
-
-const compression = require('compression');
-
-const helmet = require('helmet');
+import schema from './api/graphql/schema';
+import { isAuthenticated, isAdmin } from './api/auth/auth.service';
 
 const app = express();
 
@@ -34,6 +39,25 @@ app.use(compression());
 
 // enable helmet
 app.use(helmet());
+
+mongoose.Promise = require('bluebird');
+
+// Connect to MongoDB
+mongoose.connect(
+  config.mongo.uri,
+  config.mongo.options,
+);
+mongoose.connection.on('connected', () => {
+  console.info('Mongoose connected to', config.mongo.uri);
+  // User.find().then(docs => {
+  //   console.info(docs);
+  // });
+});
+
+mongoose.connection.on('error', err => {
+  console.info(`MongoDB connection error: ${err}`);
+  process.exit(-1); // eslint-disable-line no-process-exit
+});
 
 app.get('/status', (req, res) => res.send('Oh!! Yeah.'));
 
@@ -48,14 +72,56 @@ global.navigator.userAgent = global.navigator.userAgent || 'all';
 // Register Node.js middleware
 // -----------------------------------------------------------------------------
 app.use(express.static(path.resolve(__dirname, 'public')));
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(
+  bodyParser.urlencoded({
+    // limit: '1mb',
+    extended: true,
+  }),
+);
+app.use(bodyParser.json());
 
-// Initiate the Orientations
+require('./api/api/v1').default(app);
 
-if (__DEV__) {
-  app.enable('trust proxy');
-}
+app.use(
+  '/graphiql',
+  graphiqlExpress({
+    endpointURL: '/graphql',
+    passHeader:
+      "'Authorization': localStorage.getItem('jwt_token'),'AccessControlToken': localStorage.getItem('token')",
+  }),
+);
+app.use(
+  '/graphql',
+  isAuthenticated(),
+  isAdmin(),
+  bodyParser.json(),
+  graphqlExpress(req => {
+    // Some sort of auth function
+    // const userForThisRequest = getUserFromRequest(req);
+    console.info('Yay!! GraphQL Initilized');
+    return {
+      schema,
+      context: { user: req.user },
+      tracing: true,
+      cacheControl: true,
+    };
+  }),
+);
+
+// app.use(
+//   '/graphql',
+//   expressGraphQL(req => ({
+//     schema,
+//     graphiql: __DEV__,
+//     rootValue: { request: req },
+//     pretty: __DEV__,
+//   })),
+// );
+
+// if (__DEV__) {
+//   app.enable('trust proxy');
+// }
 
 app.get('*', async (req, res, next) => {
   try {
@@ -88,9 +154,7 @@ app.get('*', async (req, res, next) => {
 
     const data = { ...route };
     data.children = ReactDOM.renderToString(
-      <App context={context}>
-        {route.component}
-      </App>,
+      <App context={context}>{route.component}</App>,
     );
     data.styles = [{ id: 'css', cssText: [...css].join('') }];
     data.scripts = [assets.vendor.js];
