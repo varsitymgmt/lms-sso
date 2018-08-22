@@ -419,10 +419,22 @@ class SignIn extends React.Component {
 
   redirectBackToHost = (host, token, accessControlToken, email) => {
     if (host) {
-      setCookie('token', token);
-      setCookie('accessControlToken', accessControlToken);
-      setCookie('email', email);
-      setCookie('hostID', host.hostname.split('.')[0]);
+      const expires = 24 * 60 * 60 * 1000;
+      const domain = __DEV__ ? 'localhost' : '.egnify.io';
+      setCookie({ key: 'token', value: token, expires, domain });
+      setCookie({
+        key: 'accessControlToken',
+        value: accessControlToken,
+        expires,
+        domain,
+      });
+      setCookie({ key: 'email', value: email, expires, domain });
+      setCookie({
+        key: 'hostID',
+        value: host.hostname.split('.')[0],
+        expires,
+        domain,
+      });
       window.location = host.href;
     }
   };

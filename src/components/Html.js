@@ -44,9 +44,11 @@ class Html extends React.Component {
           />
           <link href="/css/fonts/SF-Pro-Text.css" rel="stylesheet" />
           <link rel="stylesheet" href="/css/style.css" />
-          {scripts.map(script => (
-            <link key={script} rel="preload" href={script} as="script" />
-          ))}
+          {scripts
+            ? scripts.map(script => (
+                <link key={script} rel="preload" href={script} as="script" />
+              ))
+            : null}
         </head>
         <body>
           {/* Page pre loader */}
@@ -84,9 +86,9 @@ class Html extends React.Component {
           <script
             dangerouslySetInnerHTML={{ __html: `window.App=${serialize(app)}` }}
           />
-          {scripts.map(script => (
-            <script key={script} src={script} />
-          ))}
+          {scripts
+            ? scripts.map(script => <script key={script} src={script} />)
+            : null}
         </body>
       </html>
     );

@@ -13,6 +13,10 @@ const routes = {
       path: '/signin',
       load: () => import(/* webpackChunkName: 'SignIn' */ './sign-in'),
     },
+    {
+      path: '/signout',
+      load: () => import(/* webpackChunkName: 'SignOut' */ './sign-out'),
+    },
     // Wildcard routes, e.g. { path: '*', ... } (must go last)
     {
       path: '*',

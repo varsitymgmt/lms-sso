@@ -33,6 +33,10 @@ function convertNumberTo2D(value) {
   return value < 10 ? `0${value}` : value;
 }
 
+function deleteCookie(params) {
+  document.cookie = `${params.key}='';domain=${params.domain}`;
+}
+
 /**
   @description
     Fuction to delete url param from existing url
@@ -123,15 +127,18 @@ function setDefaultIfInvalid(value) {
   return '-';
 }
 
-function setCookie(key, value, expTime, domain) {
+function setCookie(params) {
   let expires = '';
-  if (expTime) {
+  if (params.expires) {
     const date = new Date();
-    date.setTime(date.getTime() + expTime);
+    date.setTime(date.getTime() + params.expires);
     expires = `expires=${date.toUTCString()};`;
   }
-  document.cookie = `${key}=${value};${expires}domain=${domain ||
-    '.egnify.io'}`;
+  let domain = '';
+  if (params.domain) {
+    domain = `domain=${params.domain};`;
+  }
+  document.cookie = `${params.key}=${params.value};${expires}${domain}`;
 }
 
 function convertToFixedDecimal(number, decimal) {
@@ -227,6 +234,7 @@ export {
   cloneObjectDeeply,
   convertNumberTo2D,
   convertToFixedDecimal,
+  deleteCookie,
   deleteURLParams,
   getCookie,
   getURLParams,
