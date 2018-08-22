@@ -34,7 +34,7 @@ function convertNumberTo2D(value) {
 }
 
 function deleteCookie(params) {
-  document.cookie = `${params.key}='';domain=${params.domain}`;
+  document.cookie = `${params.key}=;domain=${params.domain}`;
 }
 
 /**

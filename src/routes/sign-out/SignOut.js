@@ -21,9 +21,9 @@ class SignOut extends React.Component {
     toggleLoader(true);
     let host = getURLParams('host');
     const domain = __DEV__ ? 'localhost' : '.egnify.io';
-    deleteCookie({ key: `token`, domain });
-    deleteCookie({ key: `accessControlToken`, domain });
-    deleteCookie({ key: `email`, domain });
+    deleteCookie({ key: 'token', domain });
+    deleteCookie({ key: 'accessControlToken', domain });
+    deleteCookie({ key: 'email', domain });
     deleteCookie({ key: 'hostID', domain });
     if (host) {
       host = new URL(host);
