@@ -3,7 +3,12 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 // import Link from 'components/Link/Link';
-import { getURLParams, toggleLoader, setCookie } from 'utils/HelperMethods';
+import {
+  getURLParams,
+  toggleLoader,
+  setCookie,
+  getCookie,
+} from 'utils/HelperMethods';
 import Loader from 'components/Loader';
 import welcomeImg from './welcome.svg';
 import s from './SignIn.scss';
@@ -47,11 +52,13 @@ class SignIn extends React.Component {
     let host = getURLParams('host');
     if (host) {
       host = new URL(host);
-      const token = localStorage.getItem(`token`);
-      const accessControlToken = localStorage.getItem(`accessControlToken`);
-      const email = localStorage.getItem(`email`);
-      if (token && accessControlToken && email) {
-        this.redirectBackToHost(host, token, accessControlToken, email);
+      if (
+        getCookie(`token`) &&
+        getCookie(`accessControlToken`) &&
+        getCookie(`email`) &&
+        getCookie('hostID') === host.hostname.split('.')[0]
+      ) {
+        window.location = host.href;
       }
     }
     this.setState({
@@ -351,11 +358,8 @@ class SignIn extends React.Component {
         toggleLoader(false);
         if (response.data) {
           const token = response.data.token;
-          if (token) {
-            const accessControlToken = response.data.accessControlToken;
-            localStorage.setItem(`token`, token);
-            localStorage.setItem(`accessControlToken`, accessControlToken);
-            localStorage.setItem(`email`, this.state.formData.email);
+          const accessControlToken = response.data.accessControlToken;
+          if (token && accessControlToken) {
             this.redirectBackToHost(
               this.state.host,
               token,
@@ -415,11 +419,10 @@ class SignIn extends React.Component {
 
   redirectBackToHost = (host, token, accessControlToken, email) => {
     if (host) {
-      const expires = 90 * 1000;
-      // const hostname = host.hostname;
-      setCookie(`token`, token, expires);
-      setCookie(`accessControlToken`, accessControlToken, expires);
-      setCookie(`email`, email, expires);
+      setCookie('token', token);
+      setCookie('accessControlToken', accessControlToken);
+      setCookie('email', email);
+      setCookie('hostID', host.hostname.split('.')[0]);
       window.location = host.href;
     }
   };

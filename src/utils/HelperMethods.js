@@ -124,10 +124,13 @@ function setDefaultIfInvalid(value) {
 }
 
 function setCookie(key, value, expTime, domain) {
-  const date = new Date();
-  date.setTime(date.getTime() + expTime);
-  const expires = `expires=${date.toUTCString()}`;
-  document.cookie = `${key}=${value};${expires};domain=${domain ||
+  let expires = '';
+  if (expTime) {
+    const date = new Date();
+    date.setTime(date.getTime() + expTime);
+    expires = `expires=${date.toUTCString()};`;
+  }
+  document.cookie = `${key}=${value};${expires}domain=${domain ||
     '.egnify.io'}`;
 }
 
