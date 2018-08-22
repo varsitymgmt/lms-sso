@@ -97,15 +97,15 @@ deploy-dev:
     - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
   script:
     - export NAMESPACE=dev;
-    - export RELEASE_NAME=ui-${NAMESPACE}-hydra
+    - export RELEASE_NAME=sso-${NAMESPACE}-hydra
     - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
     - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
   environment:
-    name: DEV
+    name: dev
   only:
     - development
 
-deploy-QA:
+deploy-qa:
   stage: deploy
   image: arbaz7/gcloud-kubectl-helm:latest
   services:
@@ -123,11 +123,11 @@ deploy-QA:
     - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
   script:
     - export NAMESPACE=qa;
-    - export RELEASE_NAME=ui-${NAMESPACE}-hydra
+    - export RELEASE_NAME=sso-${NAMESPACE}-hydra
     - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
     - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
   environment:
-    name: QA
+    name: qa
     # url: https://qa.hydra.egnify.io
   only:
     - qa
@@ -150,7 +150,7 @@ deploy-uat:
     - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
   script:
     - export NAMESPACE=uat;
-    - export RELEASE_NAME=ui-${NAMESPACE}-hydra
+    - export RELEASE_NAME=sso-${NAMESPACE}-hydra
     - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
     - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
   environment:
@@ -158,6 +158,7 @@ deploy-uat:
     # url: https://qa.hydra.egnify.io
   only:
     - uat
+
 # pre-production:
 #   stage: deploy
 #   image: arbaz7/gcloud-kubectl-helm:latest
