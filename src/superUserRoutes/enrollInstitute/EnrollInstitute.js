@@ -86,7 +86,7 @@ class EnrollInstitute extends React.Component {
             <input type="submit" value="Submit" />
           </form>
         </div>
-        {this.state.institutes.map(institute =>
+        {this.state.institutes.map(institute => (
           <div>
             <div>
               Is Name: {institute.instituteName}
@@ -99,8 +99,8 @@ class EnrollInstitute extends React.Component {
                 </button>
               </span>
             </div>
-          </div>,
-        )}
+          </div>
+        ))}
       </div>
     );
   }

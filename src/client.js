@@ -170,9 +170,7 @@ async function onLocationChange(location, action) {
       return;
     }
     appInstance = ReactDOM.render(
-      <App context={context}>
-        {route.component}
-      </App>,
+      <App context={context}>{route.component}</App>,
       container,
       () => {
         toggleLoader(false, 'client');

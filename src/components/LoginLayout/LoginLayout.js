@@ -16,9 +16,7 @@ class LoginLayout extends React.Component {
     return (
       <div style={{ position: 'relative', height: '100%' }}>
         <LoginHeader />
-        <div>
-          {this.props.children}
-        </div>
+        <div>{this.props.children}</div>
         <Loader />
       </div>
     );

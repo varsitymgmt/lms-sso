@@ -14,35 +14,39 @@ class ConfirmationModal extends React.Component {
     return (
       <div id="modal" className={`${s.modal}`}>
         <div className={`${s.modalContent}`}>
-          {this.props.confirmationModal.close
-            ? <img
-                id="close"
-                className={s.closeButton}
-                role="presentation"
-                alt="close"
-                title="title"
-                onClick={() => {
-                  this.props.handleCancelButton();
-                }}
-                src="/images/icons/close.svg"
-              />
-            : ''}
+          {this.props.confirmationModal.close ? (
+            <img
+              id="close"
+              className={s.closeButton}
+              role="presentation"
+              alt="close"
+              title="title"
+              onClick={() => {
+                this.props.handleCancelButton();
+              }}
+              src="/images/icons/close.svg"
+            />
+          ) : (
+            ''
+          )}
           <div id="content" className={s.modalText}>
             {this.props.confirmationModal.text}
           </div>
 
           <div className={s.modalButtons}>
-            {!this.props.confirmationModal.close
-              ? <button
-                  id="cancel"
-                  onClick={() => {
-                    this.props.handleCancelButton();
-                  }}
-                  className={`${s.cancelBtn}`}
-                >
-                  {this.props.confirmationModal.cancelButtonText}
-                </button>
-              : ''}
+            {!this.props.confirmationModal.close ? (
+              <button
+                id="cancel"
+                onClick={() => {
+                  this.props.handleCancelButton();
+                }}
+                className={`${s.cancelBtn}`}
+              >
+                {this.props.confirmationModal.cancelButtonText}
+              </button>
+            ) : (
+              ''
+            )}
             <button
               id="delete"
               onClick={() => {

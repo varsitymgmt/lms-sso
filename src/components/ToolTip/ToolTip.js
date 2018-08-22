@@ -25,9 +25,7 @@ class ToolTip extends React.Component {
         {/*  <strong>
           {this.props.messageDetails.heading}
         </strong> */}
-        <div>
-          {this.props.messageDetails.body}
-        </div>
+        <div>{this.props.messageDetails.body}</div>
       </div>
     );
     return view;

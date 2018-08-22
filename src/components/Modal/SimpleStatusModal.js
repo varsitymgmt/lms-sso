@@ -42,9 +42,7 @@ class SimpleStatusModal extends React.Component {
                     alt={this.props.statusInfo.status ? 'Success' : 'Error'}
                   />
                 </span>
-                <span>
-                  {this.props.statusInfo.message}
-                </span>
+                <span>{this.props.statusInfo.message}</span>
               </div>
               <div className="row">
                 <button

@@ -46,19 +46,21 @@ class Header extends React.Component {
   displayLogo = () => {
     const div = (
       <div className={s.logoContainer}>
-        {this.props.enableLogoOnClick
-          ? <Link to="/">
-              <img
-                src="/images/egnify.png"
-                alt="Egnify"
-                style={{ width: '110px' }}
-              />
-            </Link>
-          : <img
+        {this.props.enableLogoOnClick ? (
+          <Link to="/">
+            <img
               src="/images/egnify.png"
               alt="Egnify"
               style={{ width: '110px' }}
-            />}
+            />
+          </Link>
+        ) : (
+          <img
+            src="/images/egnify.png"
+            alt="Egnify"
+            style={{ width: '110px' }}
+          />
+        )}
       </div>
     );
     return div;
@@ -113,30 +115,30 @@ class Header extends React.Component {
   displayTestsAndSettingsIcon = () => {
     const div = (
       <span className={s.testAndSettingsIcon}>
-        {this.props.showSettingIcon
-          ? <Link to="/settings">
-              <img
-                src="/images/icons/settings.svg"
-                style={{
-                  height: '18px',
-                  width: '18px',
-                }}
-                alt="settings"
-              />
-            </Link>
-          : null}
-        {this.props.showTestsIcon
-          ? <img
-              src="/images/icons/apps.svg"
-              alt="apps"
-              title="Tests"
+        {this.props.showSettingIcon ? (
+          <Link to="/settings">
+            <img
+              src="/images/icons/settings.svg"
               style={{
                 height: '18px',
                 width: '18px',
               }}
-              className={s.settingsIcon}
+              alt="settings"
             />
-          : null}
+          </Link>
+        ) : null}
+        {this.props.showTestsIcon ? (
+          <img
+            src="/images/icons/apps.svg"
+            alt="apps"
+            title="Tests"
+            style={{
+              height: '18px',
+              width: '18px',
+            }}
+            className={s.settingsIcon}
+          />
+        ) : null}
       </span>
     );
     return div;

@@ -26,9 +26,7 @@ class Html extends React.Component {
         <head>
           <meta charSet="utf-8" />
           <meta httpEquiv="x-ua-compatible" content="ie=edge" />
-          <title>
-            {title || 'Egnify'}
-          </title>
+          <title>{title || 'Egnify'}</title>
           <meta name="description" content={description} />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link
@@ -46,9 +44,9 @@ class Html extends React.Component {
           />
           <link href="/css/fonts/SF-Pro-Text.css" rel="stylesheet" />
           <link rel="stylesheet" href="/css/style.css" />
-          {scripts.map(script =>
-            <link key={script} rel="preload" href={script} as="script" />,
-          )}
+          {scripts.map(script => (
+            <link key={script} rel="preload" href={script} as="script" />
+          ))}
         </head>
         <body>
           {/* Page pre loader */}
@@ -86,7 +84,9 @@ class Html extends React.Component {
           <script
             dangerouslySetInnerHTML={{ __html: `window.App=${serialize(app)}` }}
           />
-          {scripts.map(script => <script key={script} src={script} />)}
+          {scripts.map(script => (
+            <script key={script} src={script} />
+          ))}
         </body>
       </html>
     );

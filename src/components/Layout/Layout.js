@@ -32,9 +32,7 @@ class Layout extends React.Component {
           showSettingIcon={this.props.showSettingIcon}
           enableLogoOnClick={this.props.enableLogoOnClick}
         />
-        <div className={s.childContainer}>
-          {this.props.children}
-        </div>
+        <div className={s.childContainer}>{this.props.children}</div>
         <Loader />
       </div>
     );

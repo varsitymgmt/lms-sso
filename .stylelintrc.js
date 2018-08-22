@@ -29,7 +29,7 @@ module.exports = {
         ignorePseudoClasses: [
           // CSS Modules :global scope
           // https://github.com/css-modules/css-modules#exceptions
-          'global',
+          '/',
         ],
       },
     ],

@@ -136,72 +136,74 @@ class resetPassword extends React.Component {
       <div className={`row`}>
         <div className={`col m12`}>
           <div className={`card ${s.container} row`} id="signInCard">
-            {this.state.ischangedSuccessfully
-              ? <div className={` ${s.bodyContainer}`}>
-                  <img
-                    className={s.doneIcon}
-                    src="/images/institute-setup/done.svg"
-                    alt="Done"
-                    title="Done"
-                  />
-                  <div className={s.doneText}>
-                    The password changed successfully
+            {this.state.ischangedSuccessfully ? (
+              <div className={` ${s.bodyContainer}`}>
+                <img
+                  className={s.doneIcon}
+                  src="/images/institute-setup/done.svg"
+                  alt="Done"
+                  title="Done"
+                />
+                <div className={s.doneText}>
+                  The password changed successfully
+                </div>
+              </div>
+            ) : (
+              <div className={` ${s.bodyContainer}`}>
+                <div className={`${s.wishMessage}`}>Reset Your Password</div>
+                <div className={`${s.signInMessage}`}>
+                  Almost done, just enter your new password below.
+                </div>
+                <div className={s.passwordContainer}>
+                  <div className={`${s.passwordEntrySection}`}>
+                    <div>New Password</div>
+                    <div className={`${s.passowrd}`}>
+                      <img
+                        src={this.state.passwordImgSrc}
+                        width="19"
+                        height="19"
+                        alt="email"
+                        className={`${s.passowrdImg}`}
+                      />
+                      <input
+                        placeholder="Enter new password"
+                        id="nameIdSearch"
+                        type="password"
+                        value={this.state.password}
+                        onChange={e => this.handlePassword(e, 1)}
+                        className={this.state.passwordClass}
+                      />
+                    </div>
+                  </div>
+
+                  <div className={`${s.passwordEntrySection}`}>
+                    <div>Confirm Password</div>
+                    <div className={`${s.passowrd}`}>
+                      <img
+                        src={this.state.passwordImgSrc}
+                        width="19"
+                        height="19"
+                        alt="email"
+                        className={`${s.passowrdImg}`}
+                      />
+                      <input
+                        placeholder="Retype new password"
+                        id="nameIdSearch"
+                        value={this.state.confirmPassword}
+                        onChange={e => this.handlePassword(e, 2)}
+                        type="password"
+                        className={this.state.passwordClass}
+                      />
+                      {this.state.passwordError ? (
+                        <div className={s.invalidPasswordText}>
+                          {this.state.passwordError}
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
-              : <div className={` ${s.bodyContainer}`}>
-                  <div className={`${s.wishMessage}`}>Reset Your Password</div>
-                  <div className={`${s.signInMessage}`}>
-                    Almost done, just enter your new password below.
-                  </div>
-                  <div className={s.passwordContainer}>
-                    <div className={`${s.passwordEntrySection}`}>
-                      <div>New Password</div>
-                      <div className={`${s.passowrd}`}>
-                        <img
-                          src={this.state.passwordImgSrc}
-                          width="19"
-                          height="19"
-                          alt="email"
-                          className={`${s.passowrdImg}`}
-                        />
-                        <input
-                          placeholder="Enter new password"
-                          id="nameIdSearch"
-                          type="password"
-                          value={this.state.password}
-                          onChange={e => this.handlePassword(e, 1)}
-                          className={this.state.passwordClass}
-                        />
-                      </div>
-                    </div>
-
-                    <div className={`${s.passwordEntrySection}`}>
-                      <div>Confirm Password</div>
-                      <div className={`${s.passowrd}`}>
-                        <img
-                          src={this.state.passwordImgSrc}
-                          width="19"
-                          height="19"
-                          alt="email"
-                          className={`${s.passowrdImg}`}
-                        />
-                        <input
-                          placeholder="Retype new password"
-                          id="nameIdSearch"
-                          value={this.state.confirmPassword}
-                          onChange={e => this.handlePassword(e, 2)}
-                          type="password"
-                          className={this.state.passwordClass}
-                        />
-                        {this.state.passwordError
-                          ? <div className={s.invalidPasswordText}>
-                              {this.state.passwordError}
-                            </div>
-                          : null}
-                      </div>
-                    </div>
-                  </div>
-                </div>}
+              </div>
+            )}
             <div className={s.buttonContainer}>
               <button
                 className={`btn ${s.loginBtn}`}

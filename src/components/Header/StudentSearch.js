@@ -23,12 +23,12 @@ class StudentSearch extends React.Component {
   displaySearchSuggestions = () => {
     let div = null;
     if (this.state.searchText && this.state.searchResults.length > 0) {
-      div = this.state.searchResults.map(student =>
+      div = this.state.searchResults.map(student => (
         <a
           className={`${s.suggestionItem} row`}
           href={`/student-profile/Marks/${student.studentId}`}
           title={`${student.studentId} - ${student.studentName}`}
-          target="_blank"
+          target="_blank" //eslint-disable-line
           key={student.studentId}
         >
           <span className={` ${s.studentID}`}>
@@ -42,8 +42,8 @@ class StudentSearch extends React.Component {
               - {student.campusId}
             </div> */}
           </span>
-        </a>,
-      );
+        </a>
+      ));
     } else if (this.state.searchText && this.state.searchText.length > 2) {
       div = <div className={s.suggestionItem}>No Results Found</div>;
     }
@@ -83,10 +83,10 @@ class StudentSearch extends React.Component {
         (regex: "${e.target.value}",
         limit: 10,
         studentIdAndNameOnly:true
-      ){ 
+      ){
           page{
             studentName,
-             studentId 
+             studentId
       }}}`;
 
       const { data } = await axios.post(this.context.GRAPHQL_API_URL, {

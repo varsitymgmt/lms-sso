@@ -312,7 +312,8 @@ class SetNewPassword extends React.Component {
                     className={this.state.emailClass}
                   />
                   <div className={this.state.inValidEmailClass}>
-                    {' '}Email has not been Registered
+                    {' '}
+                    Email has not been Registered
                   </div>
                 </div>
               </div>

@@ -39,9 +39,7 @@ class Modal extends React.Component {
           this.modalOverlay = ref;
         }}
       >
-        <div className={s.marksModal}>
-          {this.props.children}
-        </div>
+        <div className={s.marksModal}>{this.props.children}</div>
       </div>
     );
   }

@@ -138,12 +138,11 @@ class manageUsers extends React.Component {
             Institute:
             <select id="institutedropDown">
               <option value=""> ---- select Institute ---- </option>
-              {this.state.institutes.map((institute, index) =>
-                <option value={index}>
-                  {institute.instituteName}
-                </option>,
-              )}
-              onChange={this.updateInstitute}
+              {this.state.institutes.map((institute, index) => (
+                <option value={index}>{institute.instituteName}</option>
+              ))}
+              onChange=
+              {this.updateInstitute}
             </select>
           </div>
           <div>
@@ -154,7 +153,7 @@ class manageUsers extends React.Component {
         </div>
         <div className={`row `}>
           <div className={`col m10 offset-m1`}>
-            {this.state.users.map(user =>
+            {this.state.users.map(user => (
               <div
                 className={`row`}
                 style={{
@@ -191,8 +190,8 @@ class manageUsers extends React.Component {
                     Update Password
                   </button>
                 </div>
-              </div>,
-            )}
+              </div>
+            ))}
           </div>
         </div>
       </div>

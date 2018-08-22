@@ -78,9 +78,7 @@ class SignIn extends React.Component {
           <img src="/images/egnify-logo.svg" alt="logo" />
         </div>
         <div style={{ minHeight: '53px' }}>
-          <div className={`col m12 ${s.wishMessage}`}>
-            {this.state.wlcmMsg}
-          </div>
+          <div className={`col m12 ${s.wishMessage}`}>{this.state.wlcmMsg}</div>
           <div className={`col m12 ${s.signInMessage}`}>
             Sign into your account
           </div>
@@ -116,9 +114,9 @@ class SignIn extends React.Component {
                 placeholder="Password"
                 id="password"
                 type={this.state.showPassword ? `text` : `password`}
-                className={`${s.textbox} ${this.state.formFieldsError.password
-                  ? s.invalidTextBox
-                  : ''}`}
+                className={`${s.textbox} ${
+                  this.state.formFieldsError.password ? s.invalidTextBox : ''
+                }`}
                 value={this.state.formData.password || ''}
                 onChange={e => this.handleFormFieldChanges(e, 'password')}
               />
@@ -202,9 +200,7 @@ class SignIn extends React.Component {
 
   displayFormFieldError = field => {
     const div = (
-      <div className={s.errorMessage}>
-        {this.state.formFieldsError[field]}
-      </div>
+      <div className={s.errorMessage}>{this.state.formFieldsError[field]}</div>
     );
     return div;
   };
@@ -391,19 +387,21 @@ class SignIn extends React.Component {
         }}
       >
         <div className={s.marksModal}>
-          {!this.state.emailValidationCompleted
-            ? <div className={s.closeContianer}>
-                <img
-                  className={s.closeIcon}
-                  src="/images/icons/testNametestName.svg"
-                  alt="password-lock"
-                  role="presentation"
-                  onClick={() => {
-                    this.resetForgotPasswordChanges();
-                  }}
-                />
-              </div>
-            : <div className={s.closeContianer} />}
+          {!this.state.emailValidationCompleted ? (
+            <div className={s.closeContianer}>
+              <img
+                className={s.closeIcon}
+                src="/images/icons/testNametestName.svg"
+                alt="password-lock"
+                role="presentation"
+                onClick={() => {
+                  this.resetForgotPasswordChanges();
+                }}
+              />
+            </div>
+          ) : (
+            <div className={s.closeContianer} />
+          )}
           <div className={`${s.modalContent}`}>
             <div>
               <img
@@ -417,31 +415,33 @@ class SignIn extends React.Component {
                 title="password-lock"
                 role="presentation"
               />
-              {this.state.emailValidationCompleted
-                ? <div className={s.doneText}>
-                    The password change link has been sent to your emailId.
-                  </div>
-                : <div>
-                    <div className={s.emailText}>Enter Registered Email Id</div>
-                    <div
-                      style={{
-                        display: 'inline-block',
-                      }}
-                    >
-                      <input
-                        id="email"
-                        type="text"
+              {this.state.emailValidationCompleted ? (
+                <div className={s.doneText}>
+                  The password change link has been sent to your emailId.
+                </div>
+              ) : (
+                <div>
+                  <div className={s.emailText}>Enter Registered Email Id</div>
+                  <div
+                    style={{
+                      display: 'inline-block',
+                    }}
+                  >
+                    <input
+                      id="email"
+                      type="text"
                 autoFocus //eslint-disable-line
-                        onKeyDown={this.keyUp}
-                        onChange={this.handleFortgotPasswordEmailID}
-                        onFocus={this.handleFocus}
-                        value={this.state.forgotPasswordEmaiID}
-                      />
-                      {this.state.forgotPasswordError
-                        ? this.displayForgotPassowrdError()
-                        : null}
-                    </div>
-                  </div>}
+                      onKeyDown={this.keyUp}
+                      onChange={this.handleFortgotPasswordEmailID}
+                      onFocus={this.handleFocus}
+                      value={this.state.forgotPasswordEmaiID}
+                    />
+                    {this.state.forgotPasswordError
+                      ? this.displayForgotPassowrdError()
+                      : null}
+                  </div>
+                </div>
+              )}
             </div>
             <div
               style={{
@@ -453,14 +453,16 @@ class SignIn extends React.Component {
                 onClick={this.validateForgotPasswordEmail}
                 className={`btn ${s.emailBtn}`}
               >
-                {this.state.emailValidationCompleted
-                  ? <span>Done</span>
-                  : <span>
-                      Submit
-                      {this.state.isForgotPasswordLoading
-                        ? <i className="fa fa-circle-o-notch fa-spin" />
-                        : null}
-                    </span>}
+                {this.state.emailValidationCompleted ? (
+                  <span>Done</span>
+                ) : (
+                  <span>
+                    Submit
+                    {this.state.isForgotPasswordLoading ? (
+                      <i className="fa fa-circle-o-notch fa-spin" />
+                    ) : null}
+                  </span>
+                )}
               </button>
             </div>
           </div>
