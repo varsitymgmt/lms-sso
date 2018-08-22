@@ -416,10 +416,10 @@ class SignIn extends React.Component {
   redirectBackToHost = (host, token, accessControlToken, email) => {
     if (host) {
       const expires = 90 * 1000;
-      const hostname = host.hostname;
-      setCookie(`token`, token, expires, hostname);
-      setCookie(`accessControlToken`, accessControlToken, expires, hostname);
-      setCookie(`email`, email, expires, hostname);
+      // const hostname = host.hostname;
+      setCookie(`token`, token, expires);
+      setCookie(`accessControlToken`, accessControlToken, expires);
+      setCookie(`email`, email, expires);
       window.location = host.href;
     }
   };

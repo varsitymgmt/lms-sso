@@ -39,7 +39,7 @@ const all = {
     apiEgnifyIoUrl: process.env.API_EGNIFY_IO_URL || 'https://accounts.dev.hydra.egnify.io',
 
     // hostNameForDev to be used login details where hostname is attached
-    hostNameForDev: 'luke.dev.hydra.egnify.io',
+    hostNameForDev: 'luke.dev.sso.egnify.io',
 
     // curxParserUrl to be used in the client-side code
     curxParserUrl: process.env.CRUX_PARSER_URL || 'https://crux-parser-v1.egnify.com',

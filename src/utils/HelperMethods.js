@@ -127,7 +127,11 @@ function setCookie(key, value, expTime, domain) {
   const date = new Date();
   date.setTime(date.getTime() + expTime);
   const expires = `expires=${date.toUTCString()}`;
-  document.cookie = `${key}=${value};${expires};domain=${domain}`;
+  let cookie = `${key}=${value};${expires}`;
+  if (domain) {
+    cookie = `;domain=${domain}`;
+  }
+  document.cookie = cookie;
 }
 
 function convertToFixedDecimal(number, decimal) {
