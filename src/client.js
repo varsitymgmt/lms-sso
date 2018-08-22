@@ -141,16 +141,16 @@ async function onLocationChange(location, action) {
     toggleLoader(true, 'client');
     if (
       !localStorage.getItem('token') &&
-      location.pathname !== '/login' &&
+      location.pathname !== '/signin' &&
       location.pathname !== '/resetPassword'
     ) {
-      const path = `/login?redirectTo=${encodeURIComponent(
+      const path = `/signin?redirectTo=${encodeURIComponent(
         location.pathname + location.search,
       )}`;
       location.pathname = path;
       history.replace(path);
     } else if (
-      location.pathname !== '/login' &&
+      location.pathname !== '/signin' &&
       location.pathname !== '/resetPassword'
     ) {
       await validateInstituteRegistration(location);

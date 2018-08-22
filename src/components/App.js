@@ -92,13 +92,13 @@ class App extends React.PureComponent {
             if (url && url.pathname !== '/auth/local') {
               if (!redirectTo) {
                 const currentURL = new URL(window.location);
-                if (currentURL.pathname !== '/login') {
+                if (currentURL.pathname !== '/signin') {
                   redirectTo = currentURL.pathname + currentURL.search;
                 }
               }
               localStorage.removeItem('token');
               history.push(
-                `/login?redirectTo=${encodeURIComponent(redirectTo || '/')}`,
+                `/signin?redirectTo=${encodeURIComponent(redirectTo || '/')}`,
               );
               setTimeout(() => {
                 redirectTo = null;
