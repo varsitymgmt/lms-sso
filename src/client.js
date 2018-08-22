@@ -106,19 +106,19 @@ let onRenderComplete = function initialRenderComplete() {
   };
 };
 
-async function validateInstituteRegistration(location) {
-  // institute registration check
-  const registrationStatus = await auth.isInstituteRegistered();
-  // console.log(localStorage.getItem('instituteName'));
-  // document.title = localStorage.getItem('instituteName') || 'Project Hydra';
-  if (!registrationStatus && location.pathname !== '/institute-setup') {
-    location.pathname = '/institute-setup'; //eslint-disable-line
-    history.replace(location.pathname);
-  } else if (registrationStatus && location.pathname === '/institute-setup') {
-    location.pathname = '/'; //eslint-disable-line
-    history.replace(location.pathname);
-  }
-}
+// async function validateInstituteRegistration(location) {
+//   // institute registration check
+//   const registrationStatus = await auth.isInstituteRegistered();
+//   // console.log(localStorage.getItem('instituteName'));
+//   // document.title = localStorage.getItem('instituteName') || 'Project Hydra';
+//   if (!registrationStatus && location.pathname !== '/institute-setup') {
+//     location.pathname = '/institute-setup'; //eslint-disable-line
+//     history.replace(location.pathname);
+//   } else if (registrationStatus && location.pathname === '/institute-setup') {
+//     location.pathname = '/'; //eslint-disable-line
+//     history.replace(location.pathname);
+//   }
+// }
 
 const container = document.getElementById('app');
 let appInstance;
@@ -149,12 +149,6 @@ async function onLocationChange(location, action) {
       )}`;
       location.pathname = path;
       history.replace(path);
-    } else if (
-      location.pathname !== '/signin' &&
-      location.pathname !== '/resetPassword'
-    ) {
-      await validateInstituteRegistration(location);
-      context.instituteDetails = await auth.fetchInstituteHierarchy;
     }
     const route = await router.resolve({
       ...context,

@@ -43,7 +43,7 @@ class SignIn extends React.Component {
     this.setIntialFields();
   }
 
-  setIntialFields = async () => {
+  setIntialFields = () => {
     let host = getURLParams('host');
     if (host) {
       host = new URL(host);
@@ -420,7 +420,7 @@ class SignIn extends React.Component {
       setCookie(`token`, token, expires, hostname);
       setCookie(`accessControlToken`, accessControlToken, expires, hostname);
       setCookie(`email`, email, expires, hostname);
-      window.location = this.state.host.href;
+      window.location = host.href;
     }
   };
 
