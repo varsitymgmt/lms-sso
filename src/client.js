@@ -141,7 +141,7 @@ async function onLocationChange(location, action) {
     toggleLoader(true, 'client');
     if (
       !localStorage.getItem('token') &&
-      !['/signin', 'signout', 'resetPassword'].includes(location.pathname)
+      !['/signin', '/signout', '/resetPassword'].includes(location.pathname)
     ) {
       const path = `/signin?redirectTo=${encodeURIComponent(
         location.pathname + location.search,
