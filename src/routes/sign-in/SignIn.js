@@ -45,12 +45,13 @@ class SignIn extends React.Component {
 
   componentDidMount() {
     this.setWelcomeMesage();
-    this.setIntialFields();
+    this.setInitialFormFields();
   }
 
-  setIntialFields = () => {
+  setInitialFormFields = () => {
     let host = getURLParams('host');
     if (host) {
+      // if the login source is different host then validate user exits
       host = new URL(host);
       if (
         getCookie(`token`) &&
@@ -58,6 +59,7 @@ class SignIn extends React.Component {
         getCookie(`email`) &&
         getCookie('hostID') === host.hostname.split('.')[0]
       ) {
+        // redirect back to host if valid
         window.location = host.href;
       }
     }
