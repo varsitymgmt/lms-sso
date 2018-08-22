@@ -43,21 +43,27 @@ class SignIn extends React.Component {
     this.setIntialFields();
   }
 
-  setIntialFields() {
+  setIntialFields = async () => {
     let host = getURLParams('host');
     if (host) {
       host = new URL(host);
+      const token = localStorage.getItem(`token`);
+      const accessControlToken = localStorage.getItem(`accessControlToken`);
+      const email = localStorage.getItem(`email`);
+      if (token && accessControlToken && email) {
+        this.redirectBackToHost(host, token, accessControlToken, email);
+      }
     }
     this.setState({
       formData: {
         email: document.getElementById('email').value,
         password: document.getElementById('password').value,
         rememberMe: false,
-        hostname: __DEV__ ? 'luke.dev.sso.egnify.io' : host.hostname,
+        hostname: __DEV__ ? this.context.hostNameForDev : host.hostname,
       },
       host,
     });
-  }
+  };
 
   setWelcomeMesage() {
     const hrs = new Date().getHours();
@@ -205,176 +211,6 @@ class SignIn extends React.Component {
     return div;
   };
 
-  handleFormFieldChanges = (event, field) => {
-    const formData = this.state.formData;
-    const formFieldsError = this.state.formFieldsError;
-
-    formData[field] = event.target.value;
-    formFieldsError[field] = null;
-    this.setState({ formData, formFieldsError });
-  };
-
-  handleLogin = event => {
-    event.preventDefault();
-    // Validation before sending Credentials
-    if (!this.validateDetails()) {
-      return;
-    }
-    toggleLoader(true);
-    axios
-      .post(
-        `https://accounts.dev.hydra.egnify.io/auth/local`,
-        this.state.formData,
-      )
-      .then(response => {
-        toggleLoader(false);
-        if (response.data) {
-          const token = response.data.token;
-          if (token) {
-            const accessControlToken = response.data.accessControlToken;
-            localStorage.setItem('token', token);
-            localStorage.setItem('accessControlToken', accessControlToken);
-            localStorage.setItem('email', this.state.formData.email);
-            if (this.state.host) {
-              const expires = 90 * 1000;
-              const hostname = this.state.host.hostname;
-              localStorage.setItem('hostname', hostname);
-              setCookie('token', token, expires, hostname);
-              setCookie(
-                'accessControlToken',
-                accessControlToken,
-                expires,
-                hostname,
-              );
-              setCookie('email', this.state.formData.email, expires, hostname);
-              window.location = this.state.host.href;
-            }
-          }
-        }
-      })
-      .catch(err => {
-        toggleLoader(false);
-        if (err.response && err.response.data) {
-          const data = err.response.data;
-          if (data && data.code) {
-            const formFieldsError = this.state.formFieldsError;
-            if (data.code === 'AU01') {
-              formFieldsError.email = data.message;
-            } else if (data.code === 'AU02') {
-              formFieldsError.password = data.message;
-            }
-            this.setState({ formFieldsError });
-          }
-        } else {
-          console.error(err);
-        }
-      });
-  };
-
-  validateDetails() {
-    let validity = true;
-    const formFieldsError = {};
-    if (!this.validateEmail()) {
-      formFieldsError.email = 'Invalid Email';
-      validity = false;
-    }
-    if (this.state.formData.password.length === 0) {
-      formFieldsError.password = 'Password cannot be empty';
-      validity = false;
-    }
-    this.setState({ formFieldsError });
-    return validity;
-  }
-
-  validateEmail() {
-    const email = this.state.formData.email;
-    const List = email.split('@');
-    if (List.length > 1) {
-      const tmpList = List[1].split('.');
-      if (tmpList.length === 1) {
-        return false;
-      }
-    } else {
-      return false;
-    }
-    return true;
-  }
-
-  /**
-    @description
-     This method called when text changes in passowrd feild
-    @return [void]
-    @author janardhan
-  */
-  handleFortgotPasswordEmailID = event => {
-    if (event.target.value) {
-      this.setState({
-        forgotPasswordEmaiID: event.target.value,
-        forgotPasswordError: null,
-      });
-    } else {
-      this.setState({
-        forgotPasswordEmaiID: '',
-        forgotPasswordError: null,
-      });
-    }
-  };
-
-  resetForgotPasswordChanges = () => {
-    this.setState({
-      showForgotPassword: !this.state.showForgotPassword,
-      emailValidationCompleted: false,
-    });
-  };
-
-  validateForgotPasswordEmail = async () => {
-    if (this.state.emailValidationCompleted) {
-      this.resetForgotPasswordChanges();
-    } else if (
-      this.state.forgotPasswordEmaiID &&
-      this.state.forgotPasswordEmaiID.length > 0
-    ) {
-      this.setState(
-        {
-          forgotPasswordError: null,
-          isForgotPasswordLoading: true,
-        },
-        () => {
-          // console.log(this.state.forgotPasswordEmaiID);
-          // const forgotPasswordFormData = new FormData();
-          // forgotPasswordFormData.email = this.state.forgotPasswordEmaiID;
-          axios
-            .post(`${this.context.API_URL}/api/v1/users/sendResetLink`, {
-              email: this.state.forgotPasswordEmaiID,
-              hostname: window.location.hostname,
-            })
-            .then(response => {
-              this.setState({ isForgotPasswordLoading: false });
-              if (response.data) {
-                const usersFound = response.data.usersFound;
-                if (usersFound) {
-                  this.setState({ emailValidationCompleted: true });
-                } else {
-                  this.setState({
-                    forgotPasswordError: 'Something went wrong',
-                  });
-                }
-              }
-            })
-            .catch(err => {
-              console.error(err);
-              this.setState({
-                isForgotPasswordLoading: false,
-                forgotPasswordError: 'Something went wrong',
-              });
-            });
-        },
-      );
-    } else {
-      this.setState({ forgotPasswordError: 'EmailId is empty' });
-    }
-  };
-
   displayForgotPassowrd = () => {
     const view = (
       <div
@@ -488,6 +324,179 @@ class SignIn extends React.Component {
       </div>
     );
     return view;
+  };
+
+  handleFormFieldChanges = (event, field) => {
+    const formData = this.state.formData;
+    const formFieldsError = this.state.formFieldsError;
+
+    formData[field] = event.target.value;
+    formFieldsError[field] = null;
+    this.setState({ formData, formFieldsError });
+  };
+
+  handleLogin = event => {
+    event.preventDefault();
+    // Validation before sending Credentials
+    if (!this.validateDetails()) {
+      return;
+    }
+    toggleLoader(true);
+    axios
+      .post(
+        `https://accounts.dev.hydra.egnify.io/auth/local`,
+        this.state.formData,
+      )
+      .then(response => {
+        toggleLoader(false);
+        if (response.data) {
+          const token = response.data.token;
+          if (token) {
+            const accessControlToken = response.data.accessControlToken;
+            localStorage.setItem(`token`, token);
+            localStorage.setItem(`accessControlToken`, accessControlToken);
+            localStorage.setItem(`email`, this.state.formData.email);
+            this.redirectBackToHost(
+              this.state.host,
+              token,
+              accessControlToken,
+              this.state.formData.email,
+            );
+          }
+        }
+      })
+      .catch(err => {
+        toggleLoader(false);
+        if (err.response && err.response.data) {
+          const data = err.response.data;
+          if (data && data.code) {
+            const formFieldsError = this.state.formFieldsError;
+            if (data.code === 'AU01') {
+              formFieldsError.email = data.message;
+            } else if (data.code === 'AU02') {
+              formFieldsError.password = data.message;
+            }
+            this.setState({ formFieldsError });
+          }
+        } else {
+          console.error(err);
+        }
+      });
+  };
+
+  validateDetails() {
+    let validity = true;
+    const formFieldsError = {};
+    if (!this.validateEmail()) {
+      formFieldsError.email = 'Invalid Email';
+      validity = false;
+    }
+    if (this.state.formData.password.length === 0) {
+      formFieldsError.password = 'Password cannot be empty';
+      validity = false;
+    }
+    this.setState({ formFieldsError });
+    return validity;
+  }
+
+  validateEmail() {
+    const email = this.state.formData.email;
+    const List = email.split('@');
+    if (List.length > 1) {
+      const tmpList = List[1].split('.');
+      if (tmpList.length === 1) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
+
+  redirectBackToHost = (host, token, accessControlToken, email) => {
+    if (host) {
+      const expires = 90 * 1000;
+      const hostname = host.hostname;
+      setCookie(`token`, token, expires, hostname);
+      setCookie(`accessControlToken`, accessControlToken, expires, hostname);
+      setCookie(`email`, email, expires, hostname);
+      window.location = this.state.host.href;
+    }
+  };
+
+  /**
+    @description
+     This method called when text changes in passowrd feild
+    @return [void]
+    @author janardhan
+  */
+  handleFortgotPasswordEmailID = event => {
+    if (event.target.value) {
+      this.setState({
+        forgotPasswordEmaiID: event.target.value,
+        forgotPasswordError: null,
+      });
+    } else {
+      this.setState({
+        forgotPasswordEmaiID: '',
+        forgotPasswordError: null,
+      });
+    }
+  };
+
+  resetForgotPasswordChanges = () => {
+    this.setState({
+      showForgotPassword: !this.state.showForgotPassword,
+      emailValidationCompleted: false,
+    });
+  };
+
+  validateForgotPasswordEmail = async () => {
+    if (this.state.emailValidationCompleted) {
+      this.resetForgotPasswordChanges();
+    } else if (
+      this.state.forgotPasswordEmaiID &&
+      this.state.forgotPasswordEmaiID.length > 0
+    ) {
+      this.setState(
+        {
+          forgotPasswordError: null,
+          isForgotPasswordLoading: true,
+        },
+        () => {
+          // console.log(this.state.forgotPasswordEmaiID);
+          // const forgotPasswordFormData = new FormData();
+          // forgotPasswordFormData.email = this.state.forgotPasswordEmaiID;
+          axios
+            .post(`${this.context.API_URL}/api/v1/users/sendResetLink`, {
+              email: this.state.forgotPasswordEmaiID,
+              hostname: window.location.hostname,
+            })
+            .then(response => {
+              this.setState({ isForgotPasswordLoading: false });
+              if (response.data) {
+                const usersFound = response.data.usersFound;
+                if (usersFound) {
+                  this.setState({ emailValidationCompleted: true });
+                } else {
+                  this.setState({
+                    forgotPasswordError: 'Something went wrong',
+                  });
+                }
+              }
+            })
+            .catch(err => {
+              console.error(err);
+              this.setState({
+                isForgotPasswordLoading: false,
+                forgotPasswordError: 'Something went wrong',
+              });
+            });
+        },
+      );
+    } else {
+      this.setState({ forgotPasswordError: 'EmailId is empty' });
+    }
   };
 
   handleKeyDonwEvent = e => {
