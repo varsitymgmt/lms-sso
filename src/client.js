@@ -63,15 +63,8 @@ let onRenderComplete = function initialRenderComplete() {
   if (elem) elem.parentNode.removeChild(elem);
   onRenderComplete = async function renderComplete(route, location) {
     // document.title = route.title;
-
     updateMeta('description', route.description);
     // Update necessary tags in <head> at runtime here, ie:
-    // updateMeta('keywords', route.keywords);
-    // updateCustomMeta('og:url', route.canonicalUrl);
-    // updateCustomMeta('og:image', route.imageUrl);
-    // updateLink('canonical', route.canonicalUrl);
-    // etc.
-
     let scrollX = 0;
     let scrollY = 0;
     const pos = scrollPositionsHistory[location.key];
@@ -87,16 +80,13 @@ let onRenderComplete = function initialRenderComplete() {
         }
       }
     }
-
     ReactGA.initialize(config.analytics.googleTrackingId, {
       debug: false,
     });
-
     // Restore the scroll position if it was saved into the state
     // or scroll to the given #hash anchor
     // or scroll to top of the page
     window.scrollTo(scrollX, scrollY);
-
     // Google Analytics tracking. Don't send 'pageview' event after
     // the initial rendering, as it was already sent
     if (window.ga) {
@@ -105,20 +95,6 @@ let onRenderComplete = function initialRenderComplete() {
     }
   };
 };
-
-// async function validateInstituteRegistration(location) {
-//   // institute registration check
-//   const registrationStatus = await auth.isInstituteRegistered();
-//   // console.log(localStorage.getItem('instituteName'));
-//   // document.title = localStorage.getItem('instituteName') || 'Project Hydra';
-//   if (!registrationStatus && location.pathname !== '/institute-setup') {
-//     location.pathname = '/institute-setup'; //eslint-disable-line
-//     history.replace(location.pathname);
-//   } else if (registrationStatus && location.pathname === '/institute-setup') {
-//     location.pathname = '/'; //eslint-disable-line
-//     history.replace(location.pathname);
-//   }
-// }
 
 const container = document.getElementById('app');
 let appInstance;
@@ -136,7 +112,6 @@ async function onLocationChange(location, action) {
     delete scrollPositionsHistory[location.key];
   }
   currentLocation = location;
-
   try {
     toggleLoader(true, 'client');
     if (
@@ -176,7 +151,6 @@ async function onLocationChange(location, action) {
       throw error;
     }
     Raven.captureException(error);
-
     // Do a full page reload if error occurs during client-side navigation
     if (action && currentLocation.key === location.key) {
       window.location.reload();
@@ -199,7 +173,6 @@ if (module.hot) {
       // Force-update the whole tree, including components that refuse to update
       deepForceUpdate(appInstance);
     }
-
     onLocationChange(currentLocation);
   });
 }

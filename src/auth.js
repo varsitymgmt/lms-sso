@@ -78,81 +78,11 @@ async function checkPassword(password) {
   }
 }
 
-function setInsituteNamePageTitle(instituteDetails) {
-  if (instituteDetails) {
-    const instituteName = instituteDetails.instituteName
-      ? instituteDetails.instituteName
-      : 'Egnify';
-    localStorage.setItem('instituteName', instituteName);
-    document.title = instituteName;
-  }
-}
-
-const fetchInstituteHierarchy = new Promise(async resolve => {
-  axios
-    .post(`${window.App.apiEgnifyIoUrl}/graphql`, {
-      query: `{Institute {
-          hierarchy {parent child level code noOfNodes}, instituteName
-        }
-      }`,
-    })
-    .then(response => {
-      let instituteDetails = {};
-      if (
-        response &&
-        response.data &&
-        response.data.data &&
-        response.data.data.Institute &&
-        response.data.data.Institute[0]
-      ) {
-        instituteDetails = response.data.data.Institute[0];
-      }
-      setInsituteNamePageTitle(instituteDetails);
-      resolve(instituteDetails);
-    })
-    .catch(err => {
-      resolve({});
-      console.error('fetchInstituteHierarchy: ', err);
-    });
-});
-
-async function isInstituteRegistered() {
-  let registrationStatus = localStorage.getItem('registrationStatus');
-  registrationStatus = registrationStatus === 'true';
-  if (!registrationStatus) {
-    const url = `${window.App.apiEgnifyIoUrl}/graphql`;
-    return axios
-      .post(url, { query: '{ Institute{registrationStatus} }' })
-      .then(response => {
-        if (
-          response &&
-          response.data &&
-          response.data.data &&
-          response.data.data.Institute &&
-          response.data.data.Institute[0]
-        ) {
-          const data = response.data.data.Institute[0];
-          localStorage.setItem('registrationStatus', data.registrationStatus);
-          return data.registrationStatus;
-        }
-        return false;
-      })
-      .catch(err => {
-        console.error(err);
-        return false;
-      });
-  }
-  return registrationStatus;
-}
-
 export const auth = {
   isAdmin,
   getUserDetailsIfAuthenticated,
   checkPassword,
   hasRole,
-  isInstituteRegistered,
-  setInsituteNamePageTitle,
-  fetchInstituteHierarchy,
 };
 
 export default { auth };
