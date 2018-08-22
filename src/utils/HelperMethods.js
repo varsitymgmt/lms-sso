@@ -127,11 +127,8 @@ function setCookie(key, value, expTime, domain) {
   const date = new Date();
   date.setTime(date.getTime() + expTime);
   const expires = `expires=${date.toUTCString()}`;
-  let cookie = `${key}=${value};${expires}`;
-  if (domain) {
-    cookie = `;domain=${domain}`;
-  }
-  document.cookie = cookie;
+  document.cookie = `${key}=${value};${expires};domain=${domain ||
+    '.egnify.io'}`;
 }
 
 function convertToFixedDecimal(number, decimal) {
