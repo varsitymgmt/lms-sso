@@ -9,6 +9,8 @@
 import path from 'path';
 import express from 'express';
 import bodyParser from 'body-parser';
+import morgan from 'morgan';
+import cors from 'cors';
 
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
@@ -36,7 +38,6 @@ const app = express();
 
 // enable compression
 app.use(compression());
-
 // enable helmet
 app.use(helmet());
 
@@ -72,10 +73,11 @@ global.navigator.userAgent = global.navigator.userAgent || 'all';
 // Register Node.js middleware
 // -----------------------------------------------------------------------------
 app.use(express.static(path.resolve(__dirname, 'public')));
+app.use(cors());
+app.use(morgan('short'));
 app.use(cookieParser());
 app.use(
   bodyParser.urlencoded({
-    // limit: '1mb',
     extended: true,
   }),
 );
@@ -94,8 +96,8 @@ app.use(
 app.use(
   '/graphql',
   isAuthenticated(),
-  isAdmin(),
   bodyParser.json(),
+  isAdmin(),
   graphqlExpress(req => {
     // Some sort of auth function
     // const userForThisRequest = getUserFromRequest(req);
