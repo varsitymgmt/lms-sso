@@ -226,6 +226,7 @@ async function start() {
         middleware: [server],
         open: !process.argv.includes('--silent'),
         ...(isDebug ? {} : { notify: false, ui: false }),
+        port: 3002,
       },
       (error, bs) => (error ? reject(error) : resolve(bs)),
     ),
