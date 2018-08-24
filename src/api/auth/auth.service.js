@@ -61,9 +61,12 @@ export function isAuthenticated(
               res.statusMessage = 'User need to change his password';
               return res.status(401).end();
             }
-            // console.info('hostname', req.user.hostname);
             if (req.user.hostname !== user.hostname) {
               res.statusMessage = 'hostname does not Match';
+              return res.status(401).end();
+            }
+            if (user.loginHash !== req.user.loginHash) {
+              res.statusMessage = 'User need to Login again';
               return res.status(401).end();
             }
             if (isRefreshToken) {
@@ -113,13 +116,14 @@ export function hasRole(roleRequired) {
 /**
  * Returns a jwt token signed by the app secret
  */
-export function signToken(id, role, instituteId, hostname) {
+export function signToken(id, role, instituteId, hostname, loginHash) {
   return jwt.sign(
     {
       _id: id,
       role,
       instituteId,
       hostname,
+      loginHash,
     },
     config.secrets.session,
     {
@@ -159,6 +163,7 @@ export function setTokenCookie(req, res) {
     req.user.role,
     req.user.instituteId,
     req.hostname,
+    req.user.loginHash,
   );
   res.cookie('token', token);
   return res.redirect('/');

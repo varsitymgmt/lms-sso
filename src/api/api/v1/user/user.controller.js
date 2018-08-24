@@ -10,9 +10,6 @@ const celery = require('celery-client');
 
 const emailCtrl = require('../emailTransporter/emailTransporter.controller');
 
-/**
- * Incomplete function
-*/
 async function validatedHierarchy(args, context) {
   return validateHierarchyData(args, context)
     .then(data => {
@@ -20,6 +17,11 @@ async function validatedHierarchy(args, context) {
       return true;
     })
     .catch(err => ({ err }));
+}
+
+function getRandomHash(){
+  const rand = Math.random().toString(36).slice(2);
+  return Buffer.from(rand).toString('base64');
 }
 /**
  * @author Gaurav Chauhan
@@ -428,7 +430,8 @@ export async function updateUsers(args, context) {
     instituteId,
     active: true,
   };
-  return User.updateMany(query, { $set: { role: roleName, hierarchy } })
+  const loginHash =await getRandomHash();
+  return User.updateMany(query, { $set: { role: roleName, hierarchy,loginHash } })
     .then(status => ({
       status: 'SUCCESS',
       message: `${status.n} users updated successfully`,
