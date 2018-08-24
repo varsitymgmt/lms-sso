@@ -54,13 +54,11 @@ router.post('/', (req, res, next) => {
         .status(404)
         .json({ message: 'Something went wrong, please try again.' });
     }
-    console.info('user.loginHash ', user.loginHash);
     const token = await signToken(
       user._id, // eslint-disable-line
       user.role,
       user.instituteId,
       user.hostname,
-      user.loginHash,
     );
     const { accessControlToken, status, message } = await getAccessControlToken(
       user,
@@ -79,7 +77,7 @@ router.post('/', (req, res, next) => {
 
 router.post('/refreshtoken', isAuthenticated(false, true), async (req, res) => {
   const { user } = req;
-  const token = await signToken(user._id, user.role, user.instituteId, user.hostname, user.loginHash); // eslint-disable-line
+  const token = await signToken(user._id, user.role, user.instituteId, user.hostname); // eslint-disable-line
   const { accessControlToken, status, message } = await getAccessControlToken(
     user,
   );
