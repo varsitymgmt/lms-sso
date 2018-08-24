@@ -30,7 +30,10 @@ export function verifyJWTToken(token, userId) {
  * Otherwise returns 403
  * Also attach access data with req.user.authorization object
  */
-export function isAuthenticated(isPasswordChangeRequest = false) {
+export function isAuthenticated(
+  isPasswordChangeRequest = false,
+  isRefreshToken = false,
+) {
   return (
     compose()
       // Validate jwt
@@ -47,9 +50,10 @@ export function isAuthenticated(isPasswordChangeRequest = false) {
       })
       // Attach user to request
       .use((req, res, next) => {
-        User.findById(req.user._id, { hierarchy: false }) // eslint-disable-line
+        User.findById(req.user._id) // eslint-disable-line
           .exec()
           .then(user => {
+            const { hierarchy } = user;
             if (!user) {
               return res.status(401).end();
             }
@@ -62,10 +66,15 @@ export function isAuthenticated(isPasswordChangeRequest = false) {
               res.statusMessage = 'hostname does not Match';
               return res.status(401).end();
             }
+            if (isRefreshToken) {
+              return next();
+            }
             const userData = JSON.parse(JSON.stringify(user));
+            delete userData.hierarchy;
             const { accesscontroltoken } = req.headers;
             return verifyJWTToken(accesscontroltoken, req.user._id.toString()) // eslint-disable-line
               .then(({ access }) => {
+                access.hierarchy = hierarchy.map(x => x.childCode);
                 userData.access = access;
                 req.user = userData;
                 return next();
