@@ -67,10 +67,7 @@ class SignIn extends React.Component {
         email: document.getElementById('email').value,
         password: document.getElementById('password').value,
         rememberMe: false,
-        hostname:
-          __DEV__ || host.hostname === 'localhost'
-            ? this.context.hostNameForDev
-            : host.hostname,
+        hostname: __DEV__ ? this.context.hostNameForDev : host.hostname,
       },
       host,
     });
@@ -424,8 +421,7 @@ class SignIn extends React.Component {
   redirectBackToHost = (host, token, accessControlToken, email) => {
     if (host) {
       const expires = 24 * 60 * 60 * 1000;
-      const domain =
-        __DEV__ || host.hostname === 'localhost' ? 'localhost' : '.egnify.io';
+      const domain = __DEV__ ? 'localhost' : '.egnify.io';
       setCookie({ key: 'token', value: token, expires, domain });
       setCookie({ key: 'email', value: email, expires, domain });
       setCookie({
