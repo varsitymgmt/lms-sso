@@ -277,7 +277,7 @@ class SignIn extends React.Component {
                     <input
                       id="email"
                       type="text"
-                autoFocus //eslint-disable-line
+                      autoFocus //eslint-disable-line
                       onKeyDown={this.keyUp}
                       onChange={this.handleFortgotPasswordEmailID}
                       onFocus={this.handleFocus}
@@ -424,7 +424,8 @@ class SignIn extends React.Component {
   redirectBackToHost = (host, token, accessControlToken, email) => {
     if (host) {
       const expires = 24 * 60 * 60 * 1000;
-      const domain = __DEV__ ? 'localhost' : '.egnify.io';
+      const domain =
+        __DEV__ || host.hostname === 'localhost' ? 'localhost' : '.egnify.io';
       setCookie({ key: 'token', value: token, expires, domain });
       setCookie({ key: 'email', value: email, expires, domain });
       setCookie({
