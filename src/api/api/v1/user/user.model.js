@@ -56,7 +56,7 @@ const UserSchema = new Schema({
   },
   loginHash:{
     type:String,
-    default: getRandomHash,
+    // default: getRandomHash,
   }
 });
 

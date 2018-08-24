@@ -19,7 +19,7 @@ function getAccessControlToken(user) {
   if (!user.hierarchy) user.hierarchy = [];
   return userRoles
     .find(userRoleQuery)
-    .then(docs => {
+    .then(async docs => {
       const access = {
         roleName: [],
         read: [],
@@ -31,7 +31,8 @@ function getAccessControlToken(user) {
         access.read.push(...readAccess);
         access.write.push(...writeAccess);
       });
-    return {accessControlToken:signAccessControlToken(user._id, access)}; // eslint-disable-line
+      const accessControlToken = await signAccessControlToken(user._id, access); // eslint-disable-line
+    return {accessControlToken}; // eslint-disable-line
     })
     .catch(err2 => {
       console.error(err2);
@@ -54,7 +55,6 @@ router.post('/', (req, res, next) => {
         .status(404)
         .json({ message: 'Something went wrong, please try again.' });
     }
-    console.info('user.loginHash ', user.loginHash);
     const token = await signToken(
       user._id, // eslint-disable-line
       user.role,
