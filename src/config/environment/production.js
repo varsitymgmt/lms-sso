@@ -23,6 +23,8 @@ module.exports = {
       'http://test-management-dev-hydra.dev.svc.cluster.local',
     sso: process.env.SVC_SSO || 'http://localhost:3002',
   },
+  encriptedToken: true,
+  encriptedTokenKey: 'a-very-secretive-secret',
   apolloEngineKey: process.env.APOLLO_ENGINE_KEY || 'XXXX',
   celery: {
     CELERY_BROKER_URL:

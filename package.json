@@ -31,6 +31,7 @@
     "cookie-parser": "^1.4.3",
     "core-js": "^2.4.1",
     "cors": "^2.8.4",
+    "crypto-js": "^3.1.9-1",
     "d3": "^4.11.0",
     "express": "^4.15.3",
     "express-graphql": "^0.6.12",
@@ -77,6 +78,7 @@
     "swagger-tools": "^0.10.3",
     "universal-fetch": "^1.0.0",
     "universal-router": "^3.2.0",
+    "utf8": "^3.0.0",
     "uuid-v4": "^0.1.0",
     "whatwg-fetch": "^2.0.3",
     "yamljs": "^0.3.0"

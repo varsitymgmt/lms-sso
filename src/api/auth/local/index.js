@@ -19,7 +19,7 @@ function getAccessControlToken(user) {
   if (!user.hierarchy) user.hierarchy = [];
   return userRoles
     .find(userRoleQuery)
-    .then(docs => {
+    .then(async docs => {
       const access = {
         roleName: [],
         read: [],
@@ -31,7 +31,8 @@ function getAccessControlToken(user) {
         access.read.push(...readAccess);
         access.write.push(...writeAccess);
       });
-    return {accessControlToken:signAccessControlToken(user._id, access)}; // eslint-disable-line
+      const accessControlToken = await signAccessControlToken(user._id, access); // eslint-disable-line
+    return {accessControlToken}; // eslint-disable-line
     })
     .catch(err2 => {
       console.error(err2);

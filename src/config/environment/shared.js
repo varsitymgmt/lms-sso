@@ -2,7 +2,6 @@
 exports = module.exports = {
   // List of user roles
   userRoles: ['guest', 'user', 'admin'],
-
   systemRoles:['SETTINGS','TESTS','REPORTS','ANALYSIS'],
   superAdmin : 'SUPER_ADMIN' ,
   graphqlSystemRolesEnum:{

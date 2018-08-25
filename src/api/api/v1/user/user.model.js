@@ -8,6 +8,11 @@ mongoose.Promise = require('bluebird');
 
 // import {registerEvents} from './user.events';
 
+function getRandomHash(){
+  const rand = Math.random().toString(36).slice(2);
+  return Buffer.from(rand).toString('base64');
+}
+
 const UserSchema = new Schema({
   name: String,
   email: {
@@ -49,6 +54,10 @@ const UserSchema = new Schema({
     default: [],
     required: true,
   },
+  loginHash:{
+    type:String,
+    // default: getRandomHash,
+  }
 });
 
 /**
@@ -138,6 +147,7 @@ const validatePresenceOf = function(value) {
  */
 UserSchema.pre('save', function(next) {
   // Handle new/update passwords
+
   if (!this.isModified('password')) {
     return next();
   }
