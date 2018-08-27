@@ -1,0 +1,35 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# Dependencies
+node_modules/
+src/initialSeed/node_modules/
+
+
+# misc
+src/test/
+zips/*
+
+# Compiled output
+build
+
+# Runtime data
+database.sqlite
+
+# Test coverage
+coverage
+.nyc_output
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editors and IDEs
+.idea
+.vscode
+.vscode/*
+
+# Misc
+.DS_Store
+files
+gstDocs/

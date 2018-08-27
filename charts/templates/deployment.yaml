@@ -1,0 +1,65 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "helm-charts.fullname" . }}
+  labels:
+    app: {{ template "helm-charts.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "helm-charts.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecrets }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          env:
+            - name: NODE_ENV
+              value: {{ .Values.projectEnv.nodeEnv }}
+            - name: MONGODB_URI
+              value: {{ .Values.projectEnv.mongodbUri }}
+            - name: JWT_SECRET
+              value: {{ .Values.projectEnv.jwtSecret }}
+            - name: MAILJET_API_KEY
+              value: {{ .Values.projectEnv.mailjetApiKey }}
+            - name: MAILJET_API_SECRETKEY
+              value: {{ .Values.projectEnv.mailjetApiSecretkey }}
+            - name: API_EGNIFY_IO_URL
+              value: {{ .Values.projectEnv.apiEgnifyIoUrl }}
+            - name: CRUX_PARSER_URL
+              value: {{ .Values.projectEnv.curxParserUrl }}
+            - name: SVC_SETTINGS
+              value: {{ .Values.projectEnv.svcSettings }}
+            - name: SVC_TEST
+              value: {{ .Values.projectEnv.svcTest }}
+            
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 15
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
