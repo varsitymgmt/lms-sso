@@ -17,6 +17,7 @@ class SignIn extends React.Component {
   static contextTypes = {
     // GRAPHQL_API_URL: PropTypes.string.isRequired,
     API_URL: PropTypes.string.isRequired,
+    API_EGNIFY_IO_URL: PropTypes.string.isRequired,
     // hostName for dev environment
     hostNameForDev: PropTypes.string.isRequired,
   };
@@ -351,10 +352,7 @@ class SignIn extends React.Component {
     }
     toggleLoader(true);
     axios
-      .post(
-        `https://accounts.dev.hydra.egnify.io/auth/local`,
-        this.state.formData,
-      )
+      .post(`${this.context.API_EGNIFY_IO_URL}/auth/local`, this.state.formData)
       .then(response => {
         toggleLoader(false);
         if (response.data) {
