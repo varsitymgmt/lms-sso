@@ -90,7 +90,7 @@ app.use(
   graphiqlExpress({
     endpointURL: '/graphql',
     passHeader:
-      "'Authorization': localStorage.getItem('jwt_token'),'AccessControlToken': localStorage.getItem('token')",
+      "'Authorization': localStorage.getItem('login_token'),'AccessControlToken': localStorage.getItem('access_token')",
   }),
 );
 app.use(
