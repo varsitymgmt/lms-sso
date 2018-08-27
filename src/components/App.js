@@ -15,6 +15,8 @@ const ContextType = {
   API_URL: PropTypes.string.isRequired,
   // API GraphQL Gateway URL
   GRAPHQL_API_URL: PropTypes.string.isRequired,
+  // API Accounts Gateway URL
+  API_EGNIFY_IO_URL: PropTypes.string.isRequired,
   // url of the  crux api gateway.
   API_CRUX_URL: PropTypes.string.isRequired,
   // auth module

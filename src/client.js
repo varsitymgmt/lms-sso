@@ -40,6 +40,8 @@ const context = {
   API_URL: window.App.apiEgnifyIoUrl, // 'https://api.egnify.io/graphql',
   // url of the graphql api gateway.
   GRAPHQL_API_URL: `${window.App.apiEgnifyIoUrl}/graphql`, // 'https://api.egnify.io/graphql',
+  // url of the accounts api gateway.
+  API_EGNIFY_IO_URL: window.App.apiEgnifyIoUrl,
   auth,
   // url of the  crux api gateway.
   API_CRUX_URL: window.App.curxParserUrl,
