@@ -53,6 +53,7 @@
     "node-fetch": "^1.7.1",
     "nodemailer": "^4.6.8",
     "nodemailer-smtp-transport": "^2.7.4",
+    "nodemon": "^1.18.3",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "pretty-error": "^2.1.1",
@@ -228,7 +229,7 @@
     "build-stats": "yarn run build -- --release --analyse",
     "deploy": "babel-node tools/run deploy",
     "render": "babel-node tools/run render",
-    "serve": "babel-node tools/run runServer",
+    "serve": "nodemon --watch src/api babel-node tools/run --silent runServer",
     "start": "babel-node tools/run start"
   }
 }

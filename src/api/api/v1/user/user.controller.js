@@ -10,6 +10,21 @@ const celery = require('celery-client');
 
 const emailCtrl = require('../emailTransporter/emailTransporter.controller');
 
+export async function updateAdminHierarchy(req,res) {
+    const {hierarchy} = req.body;
+    const { instituteId, email } = req.user;
+    const query = {
+    instituteId,
+    email,
+    active: true,
+    };
+    return User.update(query, { $set:{ hierarchy } })
+      .then((status) => {
+      return res.send({ status: 'SUCCESS' });
+      })
+      .catch(err => res.send({ status: 'FAILED', message: err }));
+}
+
 async function validatedHierarchy(args, context) {
   return validateHierarchyData(args, context)
     .then(data => {
@@ -135,7 +150,7 @@ function handleError(res, statusCode) {
 async function registerCeleryTask(args) {
   return new Promise(resolve => {
     try {
-      const taskName = 'create_user_by_admin';
+      const taskName = config.celeryTask.createUserTask;
       const broker = new celery.RedisHandler(config.celery.CELERY_BROKER_URL);
       const backend = new celery.RedisHandler(
         config.celery.CELERY_RESULT_BACKEND,
@@ -371,6 +386,7 @@ export async function createAdmin(req, res) {
   };
   const usrDetails = await User.find(query);
   if (usrDetails.length === 0) {
+    req.body.hierarchy = [];
     return addUser(req, res);
   }
   return res
