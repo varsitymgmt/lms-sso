@@ -135,7 +135,7 @@ function handleError(res, statusCode) {
 async function registerCeleryTask(args) {
   return new Promise(resolve => {
     try {
-      const taskName = 'create_user_by_admin';
+      const taskName = config.celeryTask.createUserTask;
       const broker = new celery.RedisHandler(config.celery.CELERY_BROKER_URL);
       const backend = new celery.RedisHandler(
         config.celery.CELERY_RESULT_BACKEND,
@@ -371,6 +371,7 @@ export async function createAdmin(req, res) {
   };
   const usrDetails = await User.find(query);
   if (usrDetails.length === 0) {
+    req.body.hierarchy = [];
     return addUser(req, res);
   }
   return res
