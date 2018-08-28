@@ -10,6 +10,25 @@ const celery = require('celery-client');
 
 const emailCtrl = require('../emailTransporter/emailTransporter.controller');
 
+export async function updateAdminHierarchy(req,res) {
+    const {hierarchy} = req.body;
+    const { instituteId, email } = req.user;
+    console.info(instituteId, email);
+    const query = {
+    instituteId,
+    email,
+    active: true,
+    };
+    console.info(query);
+    return User.update(query, { $set:{ hierarchy } })
+      .then((status) => {
+        console.info('---------------------');
+        console.info(status);
+        return res.send({ status: 'SUCCESS' });
+      })
+      .catch(err => res.send({ status: 'FAILED', message: err }));
+}
+
 async function validatedHierarchy(args, context) {
   return validateHierarchyData(args, context)
     .then(data => {
