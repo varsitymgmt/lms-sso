@@ -122,7 +122,7 @@ UserSchema.path('role').validate(async function roleValidation(role) {
 // Validate email is not taken
 UserSchema.path('email').validate(function(value) {
   return this.constructor
-    .findOne({ email: value })
+    .findOne({ email: value,active:true })
     .exec()
     .then(user => {
       if (user) {
