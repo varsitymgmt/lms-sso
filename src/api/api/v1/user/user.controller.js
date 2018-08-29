@@ -12,14 +12,20 @@ const emailCtrl = require('../emailTransporter/emailTransporter.controller');
 
 export async function updateAdminHierarchy(req,res) {
     const {hierarchy} = req.body;
+    console.info("------------------------------------");
+    console.info(hierarchy);
+    console.info("------------------------------------");
     const { instituteId, email } = req.user;
     const query = {
     instituteId,
     email,
     active: true,
     };
-    return User.update(query, { $set:{ hierarchy } })
+    console.info(query);
+    console.info("------------------------------------");
+    return User.updateOne(query, { $set:{ hierarchy } })
       .then((status) => {
+      console.info(status);
       return res.send({ status: 'SUCCESS' });
       })
       .catch(err => res.send({ status: 'FAILED', message: err }));

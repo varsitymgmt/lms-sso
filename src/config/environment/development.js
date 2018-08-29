@@ -14,7 +14,7 @@ module.exports = {
     test: 'http://localhost:5002',
     sso: 'http://localhost:3002',
   },
-  encriptedToken: false,
+  encriptedToken: true,
   encriptedTokenKey: 'a-very-secretive-secret',
   apolloEngineKey: 'service:egnify-jeet-dev:-aBvwR1LrRIp5ym1C6gVPQ',
   celery: {
