@@ -70,7 +70,11 @@ export function isAuthenticated(
         validateJwt(req, res, next);
       })
       // Attach user to request
-      .use((req, res, next) => {
+      .use((req, res, next) => {// eslint-disable-line
+        if (!req.user || !req.user._id) {// eslint-disable-line
+          res.statusMessage = 'User Data is Null';
+          return res.status(401).end();
+        }
         User.findById(req.user._id) // eslint-disable-line
           .exec()
           .then(user => {
