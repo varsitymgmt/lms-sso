@@ -19,6 +19,8 @@ projectEnv:
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
   apiEgnifyIoUrl: "https://accounts.qa.sso.egnify.io"
   curxParserUrl: "https://crux-parser-v1.egnify.com"
+  celeryBrokerUrl: "redis://:4C00Z1MZXO@redis-qa-master.qa.svc.cluster.local:6379/0"
+  celeryResultBackend: "redis://:4C00Z1MZXO@redis-qa-master.qa.svc.cluster.local:6379/0"
 
 service:
   name: sso

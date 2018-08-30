@@ -39,6 +39,10 @@ spec:
               value: {{ .Values.projectEnv.svcSettings }}
             - name: SVC_TEST
               value: {{ .Values.projectEnv.svcTest }}
+            - name: CELERY_BROKER_URL
+              value: {{ .Values.projectEnv.celeryBrokerUrl }}
+            - name: CELERY_RESULT_BACKEND
+              value: {{ .Values.projectEnv.celeryResultBackend }}
             
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
