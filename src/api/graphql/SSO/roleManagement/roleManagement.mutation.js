@@ -148,7 +148,7 @@ export const RegisterNewUser = {
       description: 'role to be assigned to these users ',
     },
     hierarchy: {
-      type: new NonNull(InputHierarchyType),
+      type: new NonNull(new List(InputHierarchyType)),
       description: 'Hierarcy for which these roles are applicable',
     },
   },

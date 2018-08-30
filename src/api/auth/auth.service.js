@@ -58,14 +58,15 @@ export function isAuthenticated(
         if (req.query && typeof req.headers.authorization === 'undefined') {
           req.headers.authorization = `Bearer ${req.cookies.token}`;
         }
+        const { authorization } = req.headers;
         if (config.encriptedToken) {
-          const { authorization } = req.headers;
           const bytes = CryptoJS.AES.decrypt(
             authorization.toString(),
             config.encriptedTokenKey,
           );
           req.headers.authorization = bytes.toString(CryptoJS.enc.Utf8);
         }
+        req.authorization = authorization;
         req.headers.authorization = `Bearer ${req.headers.authorization}`;
         validateJwt(req, res, next);
       })
@@ -104,7 +105,14 @@ export function isAuthenticated(
               .then(({ access }) => {
                 access.hierarchy = hierarchy.map(x => x.childCode);
                 userData.access = access;
+                const { authorization } = req;
+                delete req.authorization;
+                userData.token = {
+                  authorization,
+                  accesscontroltoken,
+                };
                 req.user = userData;
+
                 return next();
               })
               .catch(err => {
