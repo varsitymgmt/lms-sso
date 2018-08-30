@@ -414,7 +414,8 @@ export async function registerUsers(args, context) {
   const doesUserExist = await checkUserinDb(emails, context);
   if (doesUserExist.err)
     return { status: 'FAILED', message: doesUserExist.err };
-  const celeryArgs = [emails, roleName, context.user, context.headers];
+  const {token} = context.user;
+  const celeryArgs = [emails, roleName, context.user,token];
   let returnData = {};
   return registerCeleryTask(celeryArgs).then(status => {
     if (status.err) {
