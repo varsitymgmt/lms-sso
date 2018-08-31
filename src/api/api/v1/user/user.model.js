@@ -54,6 +54,11 @@ const UserSchema = new Schema({
     default: [],
     required: true,
   },
+  rawHierarchy:{
+    type: JSON,
+    default: [],
+    required: true,
+  },
   loginHash:{
     type:String,
     // default: getRandomHash,

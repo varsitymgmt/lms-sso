@@ -28,6 +28,7 @@ export async function updateAdminHierarchy(req,res) {
 async function validatedHierarchy(args, context) {
   return validateHierarchyData(args, context)
     .then(data => {
+      args.rawHierarchy = args.hierarchy
       args.hierarchy = data;
       return true;
     })
@@ -410,12 +411,12 @@ export async function registerUsers(args, context) {
   if (isValid.err) {
     return { status: 'FAILED', message: isValid.err };
   }
-  const { emails, roleName } = args;
+  const { emails, roleName,hierarchy,rawHierarchy } = args;
   const doesUserExist = await checkUserinDb(emails, context);
   if (doesUserExist.err)
     return { status: 'FAILED', message: doesUserExist.err };
   const {token} = context.user;
-  const celeryArgs = [emails, roleName, context.user,token];
+  const celeryArgs = [emails, roleName,hierarchy,rawHierarchy, context.user,token];
   let returnData = {};
   return registerCeleryTask(celeryArgs).then(status => {
     if (status.err) {
@@ -498,11 +499,11 @@ export function getUserList(args, context) {
   };
   if (emails) {
     const invalidEmail = [];
-    for (let i = 0; i < emails.length(); i += 1) {
+    for (let i = 0; i < emails.length; i += 1) {
       const email = emails[i];
       if (!validateEmail(email)) invalidEmail.push(email);
     }
-    if (invalidEmail.length() > 0) {
+    if (invalidEmail.length > 0) {
       return {
         status: 'FAILED',
         message: `Invalid Email ${invalidEmail.length === 1
@@ -510,7 +511,8 @@ export function getUserList(args, context) {
           : ''} provided:${invalidEmail.join(' , ')}`,
       };
     }
-    query.email = { $in: { emails } };
+
+    query.email = {'$in':emails};
   }
 
   return User.find(query).then(users => users).catch(err => {
