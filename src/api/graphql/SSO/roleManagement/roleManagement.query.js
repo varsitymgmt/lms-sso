@@ -50,6 +50,7 @@ const UserListType = new ObjectType({
     role: { type: new List(StringType), description: 'role Id' },
     email: { type: StringType, description: 'Email' },
     hierarchy: { type: GraphQLJSON, description: 'Access Hierarchy' },
+    rawHierarchy: { type: GraphQLJSON, description: 'Raw Hierarchy for Ui' },
   },
 });
 
