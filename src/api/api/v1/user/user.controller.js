@@ -161,6 +161,7 @@ async function registerCeleryTask(args) {
       const taskOptions = {
         eta: Date.now(),
         retries: 3,
+        queue: config.celery.QUEUE_NS,
       };
       celeryClient.putTask(
         `app.${taskName}`,
