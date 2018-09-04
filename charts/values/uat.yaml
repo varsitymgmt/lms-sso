@@ -19,7 +19,8 @@ projectEnv:
   curxParserUrl: "https://crux-parser-v1.egnify.com"
   celeryBrokerUrl: "redis://:rQsVPF2gbiHi@35.200.217.200:6379/0"
   celeryResultBackend: "redis://:rQsVPF2gbiHi@35.200.217.200:6379/0"
-
+  QUEUE_NS: "sso-uat-mq"
+  
 service:
   name: hydra-ui
   type: ClusterIP

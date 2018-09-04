@@ -21,7 +21,8 @@ projectEnv:
   curxParserUrl: "https://crux-parser-v1.egnify.com"
   celeryBrokerUrl: "redis://:4C00Z1MZXO@redis-qa-master.qa.svc.cluster.local:6379/0"
   celeryResultBackend: "redis://:4C00Z1MZXO@redis-qa-master.qa.svc.cluster.local:6379/0"
-
+  QUEUE_NS: "sso-qa-mq"
+  
 service:
   name: sso
   tier: backend
