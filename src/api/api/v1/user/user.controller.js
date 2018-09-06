@@ -161,6 +161,7 @@ async function registerCeleryTask(args) {
       const taskOptions = {
         eta: Date.now(),
         retries: 3,
+        queue: config.celery.QUEUE_NS,
       };
       celeryClient.putTask(
         `app.${taskName}`,
@@ -434,11 +435,13 @@ export async function registerUsers(args, context) {
  *     status.
 */
 export async function updateUsers(args, context) {
+  const rawHierarchy = args.hierarchy;
   const isValid = await validateUsersData(args, context.user);
   if (isValid.err) {
     return { status: 'FAILED', message: isValid.err };
   }
   const { emails, roleName, hierarchy } = args;
+  
   const doesUserNotExist = await checkUserinDb(emails, context, true);
   if (doesUserNotExist.err)
     return { status: 'FAILED', message: doesUserNotExist.err };
@@ -449,7 +452,7 @@ export async function updateUsers(args, context) {
     active: true,
   };
   const loginHash =await getRandomHash();
-  return User.updateMany(query, { $set: { role: roleName, hierarchy,loginHash } })
+  return User.updateMany(query, { $set: { role: roleName, rawHierarchy, hierarchy, loginHash } })
     .then(status => ({
       status: 'SUCCESS',
       message: `${status.n} users updated successfully`,
