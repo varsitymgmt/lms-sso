@@ -5,7 +5,7 @@
 module.exports = {
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/tenantregistry',
+    uri: 'mongodb://localhost:27017/tenantregistry',
   },
   // Seed database on startup
   seedDB: true,
@@ -22,5 +22,6 @@ module.exports = {
       process.env.CELERY_BROKER_URL || 'redis://localhost:6379/0',
     CELERY_RESULT_BACKEND:
       process.env.CELERY_RESULT_BACKEND || 'redis://localhost:6379/0',
+    QUEUE_NS: process.env.QUEUE_NS || 'sso-dev-mq',
   },
 };

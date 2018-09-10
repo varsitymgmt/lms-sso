@@ -28,6 +28,7 @@ export async function updateAdminHierarchy(req,res) {
 async function validatedHierarchy(args, context) {
   return validateHierarchyData(args, context)
     .then(data => {
+      args.rawHierarchy = args.hierarchy
       args.hierarchy = data;
       return true;
     })
@@ -160,6 +161,7 @@ async function registerCeleryTask(args) {
       const taskOptions = {
         eta: Date.now(),
         retries: 3,
+        queue: config.celery.QUEUE_NS,
       };
       celeryClient.putTask(
         `app.${taskName}`,
@@ -410,12 +412,12 @@ export async function registerUsers(args, context) {
   if (isValid.err) {
     return { status: 'FAILED', message: isValid.err };
   }
-  const { emails, roleName } = args;
+  const { emails, roleName,hierarchy,rawHierarchy } = args;
   const doesUserExist = await checkUserinDb(emails, context);
   if (doesUserExist.err)
     return { status: 'FAILED', message: doesUserExist.err };
   const {token} = context.user;
-  const celeryArgs = [emails, roleName, context.user,token];
+  const celeryArgs = [emails, roleName,hierarchy,rawHierarchy, context.user,token];
   let returnData = {};
   return registerCeleryTask(celeryArgs).then(status => {
     if (status.err) {
@@ -433,11 +435,13 @@ export async function registerUsers(args, context) {
  *     status.
 */
 export async function updateUsers(args, context) {
+  const rawHierarchy = args.hierarchy;
   const isValid = await validateUsersData(args, context.user);
   if (isValid.err) {
     return { status: 'FAILED', message: isValid.err };
   }
   const { emails, roleName, hierarchy } = args;
+  
   const doesUserNotExist = await checkUserinDb(emails, context, true);
   if (doesUserNotExist.err)
     return { status: 'FAILED', message: doesUserNotExist.err };
@@ -448,7 +452,7 @@ export async function updateUsers(args, context) {
     active: true,
   };
   const loginHash =await getRandomHash();
-  return User.updateMany(query, { $set: { role: roleName, hierarchy,loginHash } })
+  return User.updateMany(query, { $set: { role: roleName, rawHierarchy, hierarchy, loginHash } })
     .then(status => ({
       status: 'SUCCESS',
       message: `${status.n} users updated successfully`,
@@ -498,11 +502,11 @@ export function getUserList(args, context) {
   };
   if (emails) {
     const invalidEmail = [];
-    for (let i = 0; i < emails.length(); i += 1) {
+    for (let i = 0; i < emails.length; i += 1) {
       const email = emails[i];
       if (!validateEmail(email)) invalidEmail.push(email);
     }
-    if (invalidEmail.length() > 0) {
+    if (invalidEmail.length > 0) {
       return {
         status: 'FAILED',
         message: `Invalid Email ${invalidEmail.length === 1
@@ -510,7 +514,8 @@ export function getUserList(args, context) {
           : ''} provided:${invalidEmail.join(' , ')}`,
       };
     }
-    query.email = { $in: { emails } };
+
+    query.email = {'$in':emails};
   }
 
   return User.find(query).then(users => users).catch(err => {

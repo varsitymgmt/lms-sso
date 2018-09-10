@@ -17,7 +17,10 @@ projectEnv:
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
   apiEgnifyIoUrl: "https://api.uat.hydra.egnify.io"
   curxParserUrl: "https://crux-parser-v1.egnify.com"
-
+  celeryBrokerUrl: "redis://:rQsVPF2gbiHi@35.200.217.200:6379/0"
+  celeryResultBackend: "redis://:rQsVPF2gbiHi@35.200.217.200:6379/0"
+  QUEUE_NS: "sso-uat-mq"
+  
 service:
   name: hydra-ui
   type: ClusterIP
