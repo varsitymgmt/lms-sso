@@ -44,7 +44,7 @@ const UserSchema = new Schema({
   },
   forgotPassSecureHash: { type: String, default: '' },
   forgotPassSecureHashExp: { type: Date },
-  passwordChange: { type: Boolean, default: false },
+  passwordChange: { type: Boolean, default: true },
   userId: { type: String },
   username: { type: String, required: true },
   imageUrl: { type: String },
