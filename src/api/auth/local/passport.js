@@ -9,6 +9,7 @@ AU02 - Password mismatch
 function localAuthenticate(req, User, email, password, done) {
   User.findOne({
     email: email.toLowerCase(),
+    active: true,
   })
     .exec()
     .then(user => {
