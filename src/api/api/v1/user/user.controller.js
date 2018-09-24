@@ -472,19 +472,34 @@ export async function updateUsers(args, context) {
  *     status.
 */
 export async function removeUser(args, context) {
-  const { email } = args;
-  if (!email) {
+  const { email,username } = args;
+  if (!email && !username) {
     return { status: 'FAILED', message: 'No email ids provided' };
   }
-  if (!validateEmail(email)) {
+  if (!username && !validateEmail(email)) {
     return { status: 'FAILED', message: 'Invalid email id provided' };
   }
   const query = {
-    email,
+    $or: [
+      {
+        email,
+      },
+      {
+        username,
+      },
+    ],
     instituteId: context.user.instituteId,
     active: true,
   };
-  return User.update(query, { $set: { active: false } }).then(docs => {
+  const user = await User.findOne(query);
+  if(!user){
+    return { status: 'FAILED', message: 'Email does not exist' };
+  }
+  const {role} = user;
+  if(role.includes('SUPER_ADMIN')){
+    return { status: 'FAILED', message: 'Cannot delete SUPER_ADMIN' };
+  }
+  return User.updateMany(query, { $set: { active: false } }).then(docs => {
     if (docs.n === 0)
       return { status: 'FAILED', message: 'Email does not exist' };
     if (docs.nModified === 0)
@@ -640,7 +655,7 @@ export async function createStudents(req,res){
 export async function deleteStudents(req,res){
   try {
     const args = req.body;
-    const context = req.user
+    const context = {user:req.user};
     const {status,message} = await removeUser(args,context);
     switch (status) {
       case 'SUCCESS':res.status(200).send({status})
