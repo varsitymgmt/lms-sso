@@ -441,7 +441,7 @@ export async function updateUsers(args, context) {
     return { status: 'FAILED', message: isValid.err };
   }
   const { emails, roleName, hierarchy } = args;
-  
+
   const doesUserNotExist = await checkUserinDb(emails, context, true);
   if (doesUserNotExist.err)
     return { status: 'FAILED', message: doesUserNotExist.err };
@@ -624,4 +624,39 @@ export function me(req, res, next) {
  */
 export function authCallback(req, res) {
   res.redirect('/');
+}
+
+//function to create Student users
+export async function createStudents(req,res){
+  try{
+    addUser(req,res);
+  }
+  catch(error){
+    console.error(error);
+    res.status.send({status:"Unknown Error",message:error})
+  }
+}
+//function to delete Student users
+export async function deleteStudents(req,res){
+  try {
+    const args = req.body;
+    const context = req.user
+    const {status,message} = await removeUser(args,context);
+    switch (status) {
+      case 'SUCCESS':res.status(200).send({status})
+        break;
+      case 'FAILED': res.status(404).send({status,message})
+        break;
+      default: throw new Error("Unknown Status");
+      }
+
+  }
+  catch(error){
+    console.error(error);
+    res.status(404).send({
+      status:"Unknown Error",
+      message:error,
+    })
+  }
+
 }

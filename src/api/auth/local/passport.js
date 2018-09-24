@@ -6,9 +6,16 @@ Error Code list:
 AU01 - EMail mismatch
 AU02 - Password mismatch
 */
-function localAuthenticate(req, User, email, password, done) {
+function localAuthenticate(req, User, login, password, done) {
   User.findOne({
-    email: email.toLowerCase(),
+    $or: [
+      {
+        email: login.toLowerCase(),
+      },
+      {
+        username: login,
+      },
+    ],
     active: true,
   })
     .exec()
@@ -16,7 +23,7 @@ function localAuthenticate(req, User, email, password, done) {
       // return done(null, user);
       if (!user) {
         return done(null, false, {
-          message: 'This email is not registered.',
+          message: 'This email/username is not registered.',
           code: 'AU01',
         });
       }
@@ -25,7 +32,7 @@ function localAuthenticate(req, User, email, password, done) {
         // console.info('not matching', user.hostname);
 
         return done(null, false, {
-          message: 'This email is not registered.',
+          message: 'This email/username is not registered.',
           code: 'AU01',
         });
       }

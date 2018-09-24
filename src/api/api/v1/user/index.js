@@ -30,5 +30,16 @@ router.post(
   auth.isAdmin(),
   controller.updateAdminHierarchy,
 );
+// routes to create and delete students
+router.post(
+  '/create/students',
+  auth.isAuthenticated(),
+  controller.createStudents,
+);
+router.post(
+  '/delete/students',
+  auth.isAuthenticated(),
+  controller.deleteStudents,
+);
 
 export default router;
