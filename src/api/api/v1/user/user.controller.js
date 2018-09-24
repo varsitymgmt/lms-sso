@@ -472,6 +472,7 @@ export async function updateUsers(args, context) {
  *     status.
 */
 export async function removeUser(args, context) {
+  // can remove using email or username
   const { email,username } = args;
   if (!email && !username) {
     return { status: 'FAILED', message: 'No email ids provided' };
@@ -495,6 +496,7 @@ export async function removeUser(args, context) {
   if(!user){
     return { status: 'FAILED', message: 'Email does not exist' };
   }
+  // Reject requests to remove SUPER_ADMIN
   const {role} = user;
   if(role.includes('SUPER_ADMIN')){
     return { status: 'FAILED', message: 'Cannot delete SUPER_ADMIN' };

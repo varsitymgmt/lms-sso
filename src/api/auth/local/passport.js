@@ -7,6 +7,7 @@ AU01 - EMail mismatch
 AU02 - Password mismatch
 */
 function localAuthenticate(req, User, login, password, done) {
+  // can login through both username and emailId
   User.findOne({
     $or: [
       {
