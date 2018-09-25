@@ -44,8 +44,10 @@ spec:
             - name: CELERY_RESULT_BACKEND
               value: {{ .Values.projectEnv.celeryResultBackend }}
             - name: QUEUE_NS
-              value: {{ .Values.projectEnv.QUEUE_NS }}  
-            
+              value: {{ .Values.projectEnv.QUEUE_NS }}
+            - name: HOST_NAME_FOR_ACCOUNTS
+              value: {{ .Values.projectEnv.hostNameForAccounts }}
+
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}

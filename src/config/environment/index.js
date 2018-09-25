@@ -30,6 +30,9 @@ const all = {
   // Server port
   port: process.env.PORT || 3000,
 
+  //Host Name for Accounts service
+  hostNameForAccounts : process.env.HOST_NAME_FOR_ACCOUNTS||'accounts.dev.hydra.egnify.io',
+
   // API Gateway
   api: {
     // API URL to be used in the client-side code
@@ -40,6 +43,7 @@ const all = {
 
     // hostNameForDev to be used login details where hostname is attached
     hostNameForDev: 'luke.dev.sso.egnify.io',
+
 
     // curxParserUrl to be used in the client-side code
     curxParserUrl: process.env.CRUX_PARSER_URL || 'https://crux-parser-v1.egnify.com',

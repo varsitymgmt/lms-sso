@@ -21,8 +21,9 @@ projectEnv:
   curxParserUrl: "https://crux-parser-v1.egnify.com"
   celeryBrokerUrl: "redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
   celeryResultBackend: "redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
+  hostNameForAccounts: "accounts.dev.hydra.egnify.io"
   QUEUE_NS: 'sso-dev-mq'
-  
+
 service:
   name: hydra-sso
   tier: backend

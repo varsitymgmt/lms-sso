@@ -1,5 +1,6 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
+import { config } from '../../../config/environment';
 
 /*
 Error Code list:
@@ -20,15 +21,17 @@ function localAuthenticate(req, User, email, password, done) {
           code: 'AU01',
         });
       }
-      // console.info('user', user.hostname, req.body.hostname);
-      if (user.hostname !== req.body.hostname) {
-        // console.info('not matching', user.hostname);
 
+      if (
+        user.hostname !== req.body.hostname &&
+        config.hostNameForAccounts !== req.body.hostname
+      ) {
         return done(null, false, {
           message: 'This email is not registered.',
           code: 'AU01',
         });
       }
+
       return user.authenticate(password, (authError, authenticated) => {
         if (authError) {
           return done(authError);
