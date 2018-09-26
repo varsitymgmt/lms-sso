@@ -1,7 +1,6 @@
 /* eslint-disable */
 exports = module.exports = {
   // List of user roles
-  userRoles: ['guest', 'user', 'admin'],
   systemRoles:['SETTINGS','TESTS','REPORTS','ANALYSIS'],
   superAdmin : 'SUPER_ADMIN' ,
   graphqlSystemRolesEnum:{
@@ -11,6 +10,6 @@ exports = module.exports = {
     ANALYSIS:{value:'ANALYSIS'}
   },
   celeryTask:{
-    createUserTask:'create_user_by_admin'  
+    createUserTask:'create_user_by_admin'
   },
 };

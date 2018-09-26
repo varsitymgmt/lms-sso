@@ -498,10 +498,10 @@ export async function removeUser(args, context) {
   }
   // Reject requests to remove SUPER_ADMIN
   const {role} = user;
-  if(role.includes('SUPER_ADMIN')){
+  if(role.includes(config.superAdmin)){
     return { status: 'FAILED', message: 'Cannot delete SUPER_ADMIN' };
   }
-  return User.updateMany(query, { $set: { active: false } }).then(docs => {
+  return User.updateOne(query, { $set: { active: false } }).then(docs => {
     if (docs.n === 0)
       return { status: 'FAILED', message: 'Email does not exist' };
     if (docs.nModified === 0)
