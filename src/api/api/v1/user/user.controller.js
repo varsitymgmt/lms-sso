@@ -441,7 +441,7 @@ export async function updateUsers(args, context) {
     return { status: 'FAILED', message: isValid.err };
   }
   const { emails, roleName, hierarchy } = args;
-  
+
   const doesUserNotExist = await checkUserinDb(emails, context, true);
   if (doesUserNotExist.err)
     return { status: 'FAILED', message: doesUserNotExist.err };
@@ -472,19 +472,36 @@ export async function updateUsers(args, context) {
  *     status.
 */
 export async function removeUser(args, context) {
-  const { email } = args;
-  if (!email) {
+  // can remove using email or username
+  const { email,username } = args;
+  if (!email && !username) {
     return { status: 'FAILED', message: 'No email ids provided' };
   }
-  if (!validateEmail(email)) {
+  if (!username && !validateEmail(email)) {
     return { status: 'FAILED', message: 'Invalid email id provided' };
   }
   const query = {
-    email,
+    $or: [
+      {
+        email,
+      },
+      {
+        username,
+      },
+    ],
     instituteId: context.user.instituteId,
     active: true,
   };
-  return User.update(query, { $set: { active: false } }).then(docs => {
+  const user = await User.findOne(query);
+  if(!user){
+    return { status: 'FAILED', message: 'Email does not exist' };
+  }
+  // Reject requests to remove SUPER_ADMIN
+  const {role} = user;
+  if(role.includes(config.superAdmin)){
+    return { status: 'FAILED', message: 'Cannot delete SUPER_ADMIN' };
+  }
+  return User.updateOne(query, { $set: { active: false } }).then(docs => {
     if (docs.n === 0)
       return { status: 'FAILED', message: 'Email does not exist' };
     if (docs.nModified === 0)
@@ -624,4 +641,39 @@ export function me(req, res, next) {
  */
 export function authCallback(req, res) {
   res.redirect('/');
+}
+
+//function to create Student users
+export async function createStudents(req,res){
+  try{
+    addUser(req,res);
+  }
+  catch(error){
+    console.error(error);
+    res.status.send({status:"Unknown Error",message:error})
+  }
+}
+//function to delete Student users
+export async function deleteStudents(req,res){
+  try {
+    const args = req.body;
+    const context = {user:req.user};
+    const {status,message} = await removeUser(args,context);
+    switch (status) {
+      case 'SUCCESS':res.status(200).send({status})
+        break;
+      case 'FAILED': res.status(404).send({status,message})
+        break;
+      default: throw new Error("Unknown Status");
+      }
+
+  }
+  catch(error){
+    console.error(error);
+    res.status(404).send({
+      status:"Unknown Error",
+      message:error,
+    })
+  }
+
 }
