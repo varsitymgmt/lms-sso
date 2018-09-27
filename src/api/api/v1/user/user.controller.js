@@ -1,5 +1,6 @@
 /* eslint-disable */
 import jwt from 'jsonwebtoken';
+import {map,find,forEach,pull} from 'lodash';
 import User from './user.model';
 import { config } from '../../../../config/environment';
 import userRoles from '../userRoles/userRoles.model';
@@ -676,4 +677,110 @@ export async function deleteStudents(req,res){
     })
   }
 
+}
+
+
+
+
+/**
+ * resetStudentPassword - function to reset password for students
+ *
+ * @param  {type} req description
+ * @param  {type} res description
+ * @return {type}     description
+ */
+export async function resetStudentPassword(req,res){
+  try{
+    const context = req.user
+    if(!context){
+     return res.status(404).send({error:"User Context Not Found"});
+    }
+    const {instituteId,access} = context;
+    const {write} = access;
+    //check if the user has write access in settings
+    if(!find(write,{name :config.role.settings})){
+      return res.status(403).send({error:"User doesnot have write access"});
+    }
+
+    //null check for neccessary params
+    const {usernameList,password} = req.body
+    if(!usernameList || !usernameList[0] || !password){
+      return res.status(400).send({error:"Incomplete Params. Please provide with a list of student username and a password to be set"});
+    }
+    const query = {
+      active: true,
+      instituteId,
+      username:{$in:usernameList}
+    }
+    // error codes
+    const errorList = {
+      studentUserError : {
+        error: "User is not a Student",
+        data : []
+      },
+      userNotFoundError: {
+        error: "User Not Found",
+        data : usernameList,
+      },
+      dbInsertError: {
+        error: "Something went wrong while inserting in DB",
+        data:[]
+      }
+
+    }
+
+    User.find(query)
+    .then(async(userList)=>{
+      return Promise.all(userList.map(async(user)=>{
+        const {username }= user;
+        if(!user.role.includes(config.userRoles.student)){
+           errorList.studentUserError.data.push(username);
+           return "null";
+        }
+        user.password = password;
+        //TODO: Change this to false when forced password reset is complete
+        user.passwordChange = true;
+        const updatedUser = await user.save();
+        if(!updatedUser.username){
+          errorList.dbInsertError.data.push(username);
+        }
+        pull(errorList.userNotFoundError.data,username);
+        return username;
+
+      }));
+    })
+    .then(successUserList=>{
+
+      const data = {
+        data:pull(successUserList,"null"),
+        errorList:{},
+      }
+      forEach(errorList,(errorValue,error)=>{
+        if(errorValue.data[0]){
+          data.errorList[`${error}`]= errorValue
+        }
+      })
+      return res.send(data);
+    })
+    .catch((err)=>{
+      console.info(err)
+      const data = {
+        data:null,
+        errorList:{},
+      }
+      forEach(errorList,(errorValue,error)=>{
+        if(errorValue.data[0]){
+          data.errorList[`${error}`]= errorValue
+        }
+      })
+      return res.send(data);
+    });
+
+  }catch(err){
+    console.error(err);
+    res.status(404).send({
+      status:"Error",
+      message:err,
+    })
+  }
 }
