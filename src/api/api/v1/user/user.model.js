@@ -90,6 +90,11 @@ UserSchema.path('email').validate(
   email => email.length,
   'Email cannot be blank',
 );
+// Validate empty email
+UserSchema.path('username').validate(
+  username => username.length,
+  'username cannot be blank',
+);
 
 // Validate empty password
 UserSchema.path('password').validate(

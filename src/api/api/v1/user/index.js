@@ -41,5 +41,10 @@ router.post(
   auth.isAuthenticated(),
   controller.deleteStudents,
 );
+router.post(
+  '/resetpassword/students',
+  auth.isAuthenticated(),
+  controller.resetStudentPassword,
+);
 
 export default router;
