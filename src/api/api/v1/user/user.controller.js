@@ -698,14 +698,14 @@ export async function resetStudentPassword(req,res){
     const {instituteId,access} = context;
     const {write} = access;
     //check if the user has write access in settings
-    if(!find(write,{name :config.systemRolesObject.settings})){
+    if(!find(write,{name :config.role.settings})){
       return res.status(403).send({error:"User doesnot have write access"});
     }
 
     //null check for neccessary params
     const {usernameList,password} = req.body
     if(!usernameList || !usernameList[0] || !password){
-      return res.status(404).send({error:"Incomplete Params. Please provide with a list of student username and a password to be set"});
+      return res.status(400).send({error:"Incomplete Params. Please provide with a list of student username and a password to be set"});
     }
     const query = {
       active: true,

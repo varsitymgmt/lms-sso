@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import expressJwt from 'express-jwt';
 import compose from 'composable-middleware';
 import { config } from '../../config/environment';
+
 import User from '../api/v1/user/user.model';
 
 const utf8 = require('utf8');
@@ -128,23 +129,23 @@ export function isAuthenticated(
 /**
  * Checks if the user role meets the minimum requirements of the route
  */
-export function hasRole(roleRequired) {
-  if (!roleRequired) {
-    throw new Error('Required role needs to be set');
-  }
-
-  return compose()
-    .use(isAuthenticated())
-    .use((req, res, next) => {
-      if (
-        config.userRoles.indexOf(req.user.role) >=
-        config.userRoles.indexOf(roleRequired)
-      ) {
-        return next();
-      }
-      return res.status(403).send('Forbidden');
-    });
-}
+// export function hasRole(roleRequired) {
+//   if (!roleRequired) {
+//     throw new Error('Required role needs to be set');
+//   }
+//
+//   return compose()
+//     .use(isAuthenticated())
+//     .use((req, res, next) => {
+//       if (
+//         config.userRoles.indexOf(req.user.role) >=
+//         config.userRoles.indexOf(roleRequired)
+//       ) {
+//         return next();
+//       }
+//       return res.status(403).send('Forbidden');
+//     });
+// }
 
 /**
  * Returns a jwt token signed by the app secret
@@ -225,4 +226,55 @@ export function isAdmin() {
     const isSuperAdmin = req.user.access.roleName.includes('SUPER_ADMIN');
     return isSuperAdmin ? next() : res.status(403).end();
   });
+}
+
+/**
+ * @author GAURAV CHAUHAN
+ * @description This function is part of user management,
+ *              and used for route blocking according to the api's requirement.
+ * @param {String} systemRole  : System role from which you want to set Read/Write access
+ * @param {Array} readOnlyRole : System role from which you want to set  ReadOnly access
+ * @returns {function} It returns a function which take accessType
+ *                    as input(read or write[taken from config]).
+ * @example
+ *    const can = hasRole(config.role.settings,[config.role.tests]) -> read/write access for setting
+ *                and readOnly access for tests.
+ *    app.use('/read',can(config.accessType.read),*) // setting and tests access to this api.
+ *    app.use('/read',can(config.accessType.wite),*) // only setting access to this api.
+ */
+export function hasRole(systemRole, readOnlyRole = []) {
+  return accessType => {
+    if (!systemRole || !accessType) {
+      throw new Error('Required systemRole/accessType needs to be set');
+    }
+    if (readOnlyRole.length) {
+      readOnlyRole.forEach(role => {
+        if (!config.systemRoles.includes(role)) {
+          throw new Error('Invalid ReadOnly role');
+        }
+      });
+    }
+    if (!config.systemRoles.includes(systemRole)) {
+      throw new Error('Invalid system-role');
+    }
+    return compose().use((req, res, next) => {
+      const { access } = req.user;
+      const canRead = access.read.find(x => x.name === systemRole);
+      const canWrite = access.write.find(x => x.name === systemRole);
+      if (accessType === config.accessType.read) {
+        if (canRead) next();
+        else {
+          // Go to next if the request is from any of the readOnly modules
+          let canReadOnly;
+          for (let i = 0; i < readOnlyRole.length; i += 1) {
+            canReadOnly = access.read.find(x => x.name === readOnlyRole[i]);
+            if (canReadOnly) break;
+          }
+          if (canReadOnly) next();
+          else res.status(403).end();
+        }
+      } else if (accessType === config.accessType.write && canWrite) next();
+      else res.status(403).end();
+    });
+  };
 }

@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import * as controller from './user.controller';
 import * as auth from '../../../auth/auth.service';
+import { config } from '../../../../config/environment';
 
 const router = new Router();
+const can = auth.hasRole(config.role.settings);
 
 // router.get('/', auth.hasRole('admin'), controller.index);
 // router.delete('/:id', auth.hasRole('admin'), controller.destroy);
@@ -44,6 +46,7 @@ router.post(
 router.post(
   '/resetpassword/students',
   auth.isAuthenticated(),
+  can(config.accessType.write),
   controller.resetStudentPassword,
 );
 
