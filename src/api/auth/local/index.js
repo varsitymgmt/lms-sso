@@ -12,7 +12,7 @@ const router = express.Router();
 /* ------------------------------UTIL FUNCTION----------------------------------*/
 function getAccessControlToken(user) {
   const userRoleQuery = {
-    roleName: { $in: user.role },
+    roleId: { $in: user.role },
     instituteId: user.instituteId,
     active: true,
   };

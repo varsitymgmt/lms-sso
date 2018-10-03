@@ -128,23 +128,23 @@ export function isAuthenticated(
 /**
  * Checks if the user role meets the minimum requirements of the route
  */
-export function hasRole(roleRequired) {
-  if (!roleRequired) {
-    throw new Error('Required role needs to be set');
-  }
+// export function hasRole(roleRequired) {
+//   if (!roleRequired) {
+//     throw new Error('Required role needs to be set');
+//   }
 
-  return compose()
-    .use(isAuthenticated())
-    .use((req, res, next) => {
-      if (
-        config.userRoles.indexOf(req.user.role) >=
-        config.userRoles.indexOf(roleRequired)
-      ) {
-        return next();
-      }
-      return res.status(403).send('Forbidden');
-    });
-}
+//   return compose()
+//     .use(isAuthenticated())
+//     .use((req, res, next) => {
+//       if (
+//         config.userRoles.indexOf(req.user.role) >=
+//         config.userRoles.indexOf(roleRequired)
+//       ) {
+//         return next();
+//       }
+//       return res.status(403).send('Forbidden');
+//     });
+// }
 
 /**
  * Returns a jwt token signed by the app secret
