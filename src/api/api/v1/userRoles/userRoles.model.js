@@ -8,6 +8,7 @@ import mongoose, { Schema } from 'mongoose';
 /**
  * Schema for system roles
  */
+
 const SystemRoleSchema = new Schema({
   name: { type: String },
 });
@@ -24,6 +25,8 @@ const UserRoleSchema = new Schema(
     readAccess: [SystemRoleSchema],
     writeAccess: [SystemRoleSchema],
     active: { type: Boolean, default: true },
+    visible: { type: Boolean, default: true },
+    defaultRole: { type: Boolean, default: false },
   },
   {
     collection: 'userRoles',

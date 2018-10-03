@@ -89,17 +89,16 @@ export async function validateRoleName(roleName, context) {
     return { err: 'Role Name is Mandatory' };
   }
   const { instituteId } = context;
-  const roleId = `${instituteId}_${roleName.toLowerCase()}`;
   const query = {
-    roleId,
     roleName,
+    instituteId,
     active: true,
   };
   const docs = await userRoles.findOne(query);
   if (!docs) {
     return { err: 'Invalid Role Name provided' };
   }
-  return true;
+  return docs.roleId;
 }
 async function validateUsersData(data, context) {
   const { emails, roleName } = data;
@@ -120,15 +119,17 @@ async function validateUsersData(data, context) {
       err: `${config.superAdmin} is a reserved role,it cannot be assigned to other users`,
     };
   }
+  const roleId = [];
   for (let i = 0; i < roleName.length; i += 1) {
     const isValidRole = await validateRoleName(roleName[i], context);
     if (isValidRole.err) return isValidRole;
+    roleId.push(isValidRole);
   }
   const isValidHierarchy = await validatedHierarchy(data, context);
   if (isValidHierarchy.err) {
     return isValidHierarchy;
   }
-  return true;
+  return roleId;
 }
 
 function validationError(res, statusCode) {
@@ -412,12 +413,13 @@ export async function registerUsers(args, context) {
   if (isValid.err) {
     return { status: 'FAILED', message: isValid.err };
   }
-  const { emails, roleName,hierarchy,rawHierarchy } = args;
+  const roleId = isValid;
+  const { emails, hierarchy, rawHierarchy } = args;
   const doesUserExist = await checkUserinDb(emails, context);
   if (doesUserExist.err)
     return { status: 'FAILED', message: doesUserExist.err };
   const {token} = context.user;
-  const celeryArgs = [emails, roleName,hierarchy,rawHierarchy, context.user,token];
+  const celeryArgs = [emails, roleId, hierarchy, rawHierarchy, context.user,token];
   let returnData = {};
   return registerCeleryTask(celeryArgs).then(status => {
     if (status.err) {
@@ -440,6 +442,7 @@ export async function updateUsers(args, context) {
   if (isValid.err) {
     return { status: 'FAILED', message: isValid.err };
   }
+  const roleId = isValid;
   const { emails, roleName, hierarchy } = args;
   
   const doesUserNotExist = await checkUserinDb(emails, context, true);
@@ -452,7 +455,7 @@ export async function updateUsers(args, context) {
     active: true,
   };
   const loginHash =await getRandomHash();
-  return User.updateMany(query, { $set: { role: roleName, rawHierarchy, hierarchy, loginHash } })
+  return User.updateMany(query, { $set: { role: roleId, rawHierarchy, hierarchy, loginHash } })
     .then(status => ({
       status: 'SUCCESS',
       message: `${status.n} users updated successfully`,
