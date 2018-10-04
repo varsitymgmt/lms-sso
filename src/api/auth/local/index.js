@@ -73,6 +73,7 @@ router.post('/', (req, res, next) => {
       token,
       accessControlToken,
       firstTimePasswordChanged: user.passwordChange,
+      redirectionLink: `https://${user.hostname}`,
     });
   })(req, res, next);
 });

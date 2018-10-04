@@ -1,14 +1,23 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
+import { config } from '../../../config/environment';
 
 /*
 Error Code list:
 AU01 - EMail mismatch
 AU02 - Password mismatch
 */
-function localAuthenticate(req, User, email, password, done) {
+function localAuthenticate(req, User, login, password, done) {
+  // can login through both username and emailId
   User.findOne({
-    email: email.toLowerCase(),
+    $or: [
+      {
+        email: login.toLowerCase(),
+      },
+      {
+        username: login.toLowerCase(),
+      },
+    ],
     active: true,
   })
     .exec()
@@ -16,19 +25,21 @@ function localAuthenticate(req, User, email, password, done) {
       // return done(null, user);
       if (!user) {
         return done(null, false, {
-          message: 'This email is not registered.',
+          message: 'This email/username is not registered.',
           code: 'AU01',
         });
       }
-      // console.info('user', user.hostname, req.body.hostname);
-      if (user.hostname !== req.body.hostname) {
-        // console.info('not matching', user.hostname);
 
+      if (
+        user.hostname !== req.body.hostname &&
+        config.hostNameForAccounts !== req.body.hostname
+      ) {
         return done(null, false, {
-          message: 'This email is not registered.',
+          message: 'This email/username is not registered.',
           code: 'AU01',
         });
       }
+
       return user.authenticate(password, (authError, authenticated) => {
         if (authError) {
           return done(authError);
