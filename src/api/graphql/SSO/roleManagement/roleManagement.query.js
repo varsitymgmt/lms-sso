@@ -3,6 +3,7 @@ import {
   GraphQLNonNull as NonNull,
   GraphQLString as StringType,
   GraphQLObjectType as ObjectType,
+  GraphQLBoolean as BooleanType,
 } from 'graphql';
 import GraphQLJSON from 'graphql-type-json';
 
@@ -25,8 +26,12 @@ const ReadWriteDataType = new ObjectType({
 const ReadResultType = new ObjectType({
   name: 'ReadResultType',
   fields: {
-    roleName: { type: new NonNull(StringType), description: 'role name' },
-    roleId: { type: new NonNull(StringType), description: 'role Id' },
+    roleName: { type: StringType, description: 'role name' },
+    roleId: { type: StringType, description: 'role Id' },
+    defaultRole: {
+      type: BooleanType,
+      description: 'default role cannot be changed',
+    },
     data: { type: new NonNull(ReadWriteDataType), description: 'matrix data' },
   },
 });

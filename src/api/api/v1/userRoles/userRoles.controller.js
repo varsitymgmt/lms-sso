@@ -6,6 +6,8 @@ import _ from 'lodash';
 import userRoles from './userRoles.model';
 import { config } from '../../../../config/environment';
 
+const shortId = require('shortid');
+
 /* --------------------UTIL FUNCTIONS------------------------- */
 // export async function checkIfRoleExist(role, instituteId) {
 //   const query = {
@@ -57,9 +59,9 @@ function validateRoleData(data) {
 }
 
 function getMongoQuerry(instituteId, roleName) {
-  const roleId = `${instituteId}_${roleName.toLowerCase()}`;
   const query = {
-    roleId,
+    roleName,
+    instituteId,
     active: true,
   };
   return query;
@@ -109,7 +111,12 @@ function getReadWriteRole(read, write) {
   /* eslint-enable */
   return rw;
 }
-
+function updateRoleName(roleName) {
+  return roleName
+    .trim()
+    .replace(/\s/g, '')
+    .toUpperCase();
+}
 /**
  * Common callback function for update and delete
  */
@@ -139,6 +146,7 @@ export function createRole(args, context) {
   if (isValid.err) {
     return { status: 'FAILED', message: isValid.err };
   }
+  args.roleName = updateRoleName(args.roleName);
   const { readAccess, writeAccess, roleName } = args;
   const { instituteId } = context.user;
   const query = getMongoQuerry(instituteId, roleName);
@@ -147,7 +155,7 @@ export function createRole(args, context) {
       return { status: 'FAILED', message: 'Role already exist in the system' };
     }
     const dataToInsert = {
-      roleId: query.roleId,
+      roleId: shortId.generate(),
       roleName,
       instituteId,
       readAccess: _.uniqBy(readAccess, 'name'),
@@ -171,19 +179,44 @@ export function createRole(args, context) {
  * @returns message -> if FAILED.
  */
 
-export function updateUserRoles(args, context) {
+export async function updateUserRoles(args, context) {
   const isValid = validateRoleData(args);
   if (isValid.err) {
     return { status: 'FAILED', message: isValid.err };
   }
-  const { readAccess, writeAccess, roleName } = args;
+  args.roleName = updateRoleName(args.roleName);
+  const { readAccess, writeAccess, roleName, roleId } = args;
   const { instituteId } = context.user;
-  const query = getMongoQuerry(instituteId, roleName);
+  const isPresent = await userRoles
+    .findOne({ roleName, active: true, instituteId })
+    .then(
+      doc =>
+        doc && doc.roleId !== roleId // if the other role with same roleName already exist in the system reject it.
+          ? {
+              status: 'FAILED',
+              message: doc.defaultRole
+                ? `${roleName} is a reserved role name, try some other role name`
+                : `${roleName} is already in use`,
+            }
+          : false,
+    );
+  if (isPresent) return isPresent;
+  const query = {
+    roleId,
+    instituteId,
+    defaultRole: false,
+    active: true,
+  };
   const access = {
     readAccess: _.uniqBy(readAccess, 'name'),
     writeAccess: _.uniqBy(writeAccess, 'name'),
   };
-  return userRoles.update(query, { $set: access }).then(updateCallback);
+  const data = {
+    roleName,
+    readAccess: access.readAccess,
+    writeAccess: access.writeAccess,
+  };
+  return userRoles.update(query, { $set: data }).then(updateCallback);
 }
 
 /**
@@ -197,6 +230,7 @@ export function readRoles(args, context) {
   const query = {
     instituteId: context.user.instituteId,
     active: true,
+    visible: true,
   };
   if (args.roleName) {
     query.roleName = { $in: args.roleName };
@@ -206,11 +240,18 @@ export function readRoles(args, context) {
     .then(docs => {
       const Roles = [];
       docs.forEach(accessData => {
-        const { roleName, roleId, readAccess, writeAccess } = accessData;
+        const {
+          roleName,
+          roleId,
+          readAccess,
+          writeAccess,
+          defaultRole,
+        } = accessData;
         const data = getReadWriteRole(readAccess, writeAccess);
         const role = {
           roleName,
           roleId,
+          defaultRole,
           data,
         };
         Roles.push(role);
@@ -233,6 +274,7 @@ export function deleteUserRoles(args, context) {
   }
 
   const query = getMongoQuerry(instituteId, roleName);
+  query.defaultRole = false;
   return userRoles
     .update(query, { $set: { active: false } })
     .then(updateCallback)

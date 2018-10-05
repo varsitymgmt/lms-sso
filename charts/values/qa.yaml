@@ -13,7 +13,7 @@ projectEnv:
   mongodbUri: "mongodb://hydra:AkdjsAIYHjk87y23l1m2klRrtyhjnmrti92w33@35.200.234.132:27017/tenantregistry-sso-qa"
   svcSettings: "http://settings-qa-sso.qa.svc.cluster.local"
   svcTest: "http://test-management-qa-sso.qa.svc.cluster.local"
-  jwtSecret: "KAJDK656kllksklfmFGDFGS765ujh765T6GHAJDSjjjkjiursrda"
+  jwtSecret: "KAJDK656kllksklfmFGDFGS765ujh765T6GHAJDSjjjkjiursrdaqa"
   mailjetApiKey: "a1fb4988b5a359099061d2cb8aebc80d"
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
