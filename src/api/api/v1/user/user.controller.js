@@ -5,6 +5,7 @@ import User from './user.model';
 import { config } from '../../../../config/environment';
 import userRoles from '../userRoles/userRoles.model';
 import { validateHierarchyData } from '../hierarchy/hierarchy.controller';
+import _ from 'lodash';
 
 const bcrypt = require('bcrypt');
 const celery = require('celery-client');
@@ -175,7 +176,7 @@ async function registerCeleryTask(args) {
             console.error(err);
             return resolve({ err: 'Unable to create students.' });
           }
-          console.info('Sync Tests Task >', taskId);
+          console.info('User Creation Task >', taskId);
           return resolve({ msg: 'User ceation started' });
         },
         (err, celeryResult) => {
@@ -514,7 +515,7 @@ export async function removeUser(args, context) {
   });
 }
 
-export function getUserList(args, context) {
+export async function getUserList(args, context) {
   const { instituteId } = context.user;
   const { emails } = args;
   const query = {
@@ -535,11 +536,28 @@ export function getUserList(args, context) {
           : ''} provided:${invalidEmail.join(' , ')}`,
       };
     }
-
     query.email = {'$in':emails};
   }
 
-  return User.find(query).then(users => users).catch(err => {
+  const userRolesQuery = {
+    instituteId,
+    visible:true,
+    active:true
+  }
+  const userRolesList = await userRoles.find(userRolesQuery,{roleId:true,roleName:true,_id:false}).lean();
+  const roleIds = {};
+    await _.forEach(userRolesList,x=>
+    roleIds[x.roleId] = x.roleName
+  );
+  query.role ={ $in:Object.keys(roleIds) };
+  const projection= {username:true,role:true,email:true, hierarchy:true,rawHierarchy:true,_id:false};
+
+  return User.find(query,projection).lean()
+    .then(users => _.map(users,user=>{
+      user.role = user.role.map(x=>roleIds[x]);
+      return user;
+    }))
+    .catch(err => {
     console.error(err);
     return { status: 'FAILED', message: 'Something went wrong' };
   });
