@@ -29,9 +29,9 @@ export async function updateAdminHierarchy(req,res) {
 
 async function validatedHierarchy(args, context) {
   return validateHierarchyData(args, context)
-    .then(data => {
-      args.rawHierarchy = args.hierarchy
-      args.hierarchy = data;
+    .then(async data => {
+      args.rawHierarchy = args.hierarchy;
+      args.hierarchy = await data.filter(x=>x.isLeafNode);
       return true;
     })
     .catch(err => ({ err }));
