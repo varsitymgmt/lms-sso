@@ -86,6 +86,23 @@ async function checkUserinDb(emails, context, sholudExist = false) {
     return true;
   });
 }
+export async function validateRoleId(roleId, context) {
+  if (!roleName) {
+    return { err: 'Role is Mandatory' };
+  }
+  const { instituteId } = context;
+  const query = {
+    roleId,
+    instituteId,
+    active: true,
+  };
+  const docs = await userRoles.findOne(query);
+  if (!docs) {
+    return { err: 'Invalid Role provided' };
+  }
+  return true;
+}
+
 export async function validateRoleName(roleName, context) {
   if (!roleName) {
     return { err: 'Role Name is Mandatory' };
