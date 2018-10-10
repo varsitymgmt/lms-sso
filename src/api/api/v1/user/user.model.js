@@ -2,7 +2,7 @@
 /* eslint-disable */
 import crypto from 'crypto';
 import mongoose, { Schema } from 'mongoose';
-import { validateRoleName } from '../user/user.controller';
+import { validateRoleId } from '../user/user.controller';
 
 mongoose.Promise = require('bluebird');
 
@@ -121,7 +121,7 @@ UserSchema.path('role').validate(async function roleValidation(role) {
   };
   const isValid = true;
   for (let i = 0; i < role.length; i += 1) {
-    const isValidRole = await validateRoleName(role[i], context); // eslint-disable-line// eslint-disable-line
+    const isValidRole = await validateRoleId(role[i], context); // eslint-disable-line// eslint-disable-line
     if (isValidRole.err) {
       return false;
     }
