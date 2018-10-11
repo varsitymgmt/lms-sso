@@ -31,7 +31,7 @@ async function validatedHierarchy(args, context) {
   return validateHierarchyData(args, context)
     .then(async data => {
       args.rawHierarchy = args.hierarchy;
-      args.hierarchy = await data.filter(x=>x.isLeafNode);
+      args.hierarchy =  data;
       return true;
     })
     .catch(err => ({ err }));
