@@ -24,13 +24,15 @@ export async function validateHierarchyData(args, context) {
           }
           const { nodes } = hierarchy;
           const filteredData = [];
-          nodes.forEach(({ isLeafNode, child, childCode, level }) => {
-            filteredData.push({
-              isLeafNode,
-              child,
-              childCode,
-              level,
-            });
+          nodes.forEach(({ isLeafNode, child, childCode, level, selected }) => {
+            if (selected && isLeafNode) {
+              filteredData.push({
+                isLeafNode,
+                child,
+                childCode,
+                level,
+              });
+            }
           });
           return resolve(filteredData);
         }
