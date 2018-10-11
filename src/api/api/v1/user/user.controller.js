@@ -5,6 +5,7 @@ import User from './user.model';
 import { config } from '../../../../config/environment';
 import userRoles from '../userRoles/userRoles.model';
 import { validateHierarchyData } from '../hierarchy/hierarchy.controller';
+import _ from 'lodash';
 
 const bcrypt = require('bcrypt');
 const celery = require('celery-client');
@@ -28,9 +29,9 @@ export async function updateAdminHierarchy(req,res) {
 
 async function validatedHierarchy(args, context) {
   return validateHierarchyData(args, context)
-    .then(data => {
-      args.rawHierarchy = args.hierarchy
-      args.hierarchy = data;
+    .then(async data => {
+      args.rawHierarchy = args.hierarchy;
+      args.hierarchy = await data.filter(x=>x.isLeafNode);
       return true;
     })
     .catch(err => ({ err }));
@@ -85,22 +86,38 @@ async function checkUserinDb(emails, context, sholudExist = false) {
     return true;
   });
 }
+export async function validateRoleId(roleId, context) {
+  if (!roleId) {
+    return { err: 'Role is Mandatory' };
+  }
+  const { instituteId } = context;
+  const query = {
+    roleId,
+    instituteId,
+    active: true,
+  };
+  const docs = await userRoles.findOne(query);
+  if (!docs) {
+    return { err: 'Invalid Role provided' };
+  }
+  return true;
+}
+
 export async function validateRoleName(roleName, context) {
   if (!roleName) {
     return { err: 'Role Name is Mandatory' };
   }
   const { instituteId } = context;
-  const roleId = `${instituteId}_${roleName.toLowerCase()}`;
   const query = {
-    roleId,
     roleName,
+    instituteId,
     active: true,
   };
   const docs = await userRoles.findOne(query);
   if (!docs) {
     return { err: 'Invalid Role Name provided' };
   }
-  return true;
+  return docs.roleId;
 }
 async function validateUsersData(data, context) {
   const { emails, roleName } = data;
@@ -121,15 +138,17 @@ async function validateUsersData(data, context) {
       err: `${config.superAdmin} is a reserved role,it cannot be assigned to other users`,
     };
   }
+  const roleId = [];
   for (let i = 0; i < roleName.length; i += 1) {
     const isValidRole = await validateRoleName(roleName[i], context);
     if (isValidRole.err) return isValidRole;
+    roleId.push(isValidRole);
   }
   const isValidHierarchy = await validatedHierarchy(data, context);
   if (isValidHierarchy.err) {
     return isValidHierarchy;
   }
-  return true;
+  return roleId;
 }
 
 function validationError(res, statusCode) {
@@ -174,7 +193,7 @@ async function registerCeleryTask(args) {
             console.error(err);
             return resolve({ err: 'Unable to create students.' });
           }
-          console.info('Sync Tests Task >', taskId);
+          console.info('User Creation Task >', taskId);
           return resolve({ msg: 'User ceation started' });
         },
         (err, celeryResult) => {
@@ -413,12 +432,13 @@ export async function registerUsers(args, context) {
   if (isValid.err) {
     return { status: 'FAILED', message: isValid.err };
   }
-  const { emails, roleName,hierarchy,rawHierarchy } = args;
+  const roleId = isValid;
+  const { emails, hierarchy, rawHierarchy } = args;
   const doesUserExist = await checkUserinDb(emails, context);
   if (doesUserExist.err)
     return { status: 'FAILED', message: doesUserExist.err };
   const {token} = context.user;
-  const celeryArgs = [emails, roleName,hierarchy,rawHierarchy, context.user,token];
+  const celeryArgs = [emails, roleId, hierarchy, rawHierarchy, context.user,token];
   let returnData = {};
   return registerCeleryTask(celeryArgs).then(status => {
     if (status.err) {
@@ -441,6 +461,7 @@ export async function updateUsers(args, context) {
   if (isValid.err) {
     return { status: 'FAILED', message: isValid.err };
   }
+  const roleId = isValid;
   const { emails, roleName, hierarchy } = args;
 
   const doesUserNotExist = await checkUserinDb(emails, context, true);
@@ -453,7 +474,7 @@ export async function updateUsers(args, context) {
     active: true,
   };
   const loginHash =await getRandomHash();
-  return User.updateMany(query, { $set: { role: roleName, rawHierarchy, hierarchy, loginHash } })
+  return User.updateMany(query, { $set: { role: roleId, rawHierarchy, hierarchy, loginHash } })
     .then(status => ({
       status: 'SUCCESS',
       message: `${status.n} users updated successfully`,
@@ -511,7 +532,7 @@ export async function removeUser(args, context) {
   });
 }
 
-export function getUserList(args, context) {
+export async function getUserList(args, context) {
   const { instituteId } = context.user;
   const { emails } = args;
   const query = {
@@ -532,11 +553,28 @@ export function getUserList(args, context) {
           : ''} provided:${invalidEmail.join(' , ')}`,
       };
     }
-
     query.email = {'$in':emails};
   }
 
-  return User.find(query).then(users => users).catch(err => {
+  const userRolesQuery = {
+    instituteId,
+    visible:true,
+    active:true
+  }
+  const userRolesList = await userRoles.find(userRolesQuery,{roleId:true,roleName:true,_id:false}).lean();
+  const roleIds = {};
+    await _.forEach(userRolesList,x=>
+    roleIds[x.roleId] = x.roleName
+  );
+  query.role ={ $in:Object.keys(roleIds) };
+  const projection= {username:true,role:true,email:true, hierarchy:true,rawHierarchy:true,_id:false};
+
+  return User.find(query,projection).lean()
+    .then(users => _.map(users,user=>{
+      user.role = user.role.map(x=>roleIds[x]);
+      return user;
+    }))
+    .catch(err => {
     console.error(err);
     return { status: 'FAILED', message: 'Something went wrong' };
   });

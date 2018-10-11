@@ -105,6 +105,10 @@ export const CreateUserRole = {
 
 export const UpdateUserRole = {
   args: {
+    roleId: {
+      type: new NonNull(StringType),
+      description: 'Role id is required',
+    },
     roleName: {
       type: new NonNull(StringType),
       description: 'Role name is required',

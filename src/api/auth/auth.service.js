@@ -104,6 +104,7 @@ export function isAuthenticated(
             const { accesscontroltoken } = req.headers;
             return verifyJWTToken(accesscontroltoken, req.user._id.toString()) // eslint-disable-line
               .then(({ access }) => {
+                if (!access) return res.status(401).end();
                 access.hierarchy = hierarchy.map(x => x.childCode);
                 userData.access = access;
                 const { authorization } = req;
@@ -113,12 +114,11 @@ export function isAuthenticated(
                   accesscontroltoken,
                 };
                 req.user = userData;
-
                 return next();
               })
               .catch(err => {
                 console.error(err);
-                return res.status(403).end();
+                return res.status(401).end();
               });
           })
           .catch(err => next(err));
@@ -133,7 +133,7 @@ export function isAuthenticated(
 //   if (!roleRequired) {
 //     throw new Error('Required role needs to be set');
 //   }
-//
+
 //   return compose()
 //     .use(isAuthenticated())
 //     .use((req, res, next) => {
