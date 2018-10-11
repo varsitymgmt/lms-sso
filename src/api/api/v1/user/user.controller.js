@@ -87,7 +87,7 @@ async function checkUserinDb(emails, context, sholudExist = false) {
   });
 }
 export async function validateRoleId(roleId, context) {
-  if (!roleName) {
+  if (!roleId) {
     return { err: 'Role is Mandatory' };
   }
   const { instituteId } = context;
