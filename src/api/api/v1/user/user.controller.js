@@ -519,9 +519,11 @@ export async function removeUser(args, context) {
     return { status: 'FAILED', message: 'Email does not exist' };
   }
   // Reject requests to remove SUPER_ADMIN
-  const {role} = user;
-  if(role.includes(config.superAdmin)){
-    return { status: 'FAILED', message: 'Cannot delete SUPER_ADMIN' };
+  const role = await userRoles.find({'roleId':{$in:user.role}},{'_id':false,roleName:true}).lean();
+  const isSuperAdmin = _.findIndex(role,x=>x.roleName===config.superAdmin) !== -1;
+
+  if(isSuperAdmin){
+    return { status: 'FAILED', message: `Cannot delete ${config.superAdmin}` };
   }
   return User.updateOne(query, { $set: { active: false } }).then(docs => {
     if (docs.n === 0)
