@@ -8,6 +8,7 @@ import {
   toggleLoader,
   setCookie,
   getCookie,
+  decriptedAccessToken,
 } from 'utils/HelperMethods';
 import Loader from 'components/Loader';
 import welcomeImg from './welcome.svg';
@@ -420,8 +421,10 @@ class SignIn extends React.Component {
     if (host) {
       const expires = 24 * 60 * 60 * 1000;
       const domain = __DEV__ ? 'localhost' : '.egnify.io';
+      const { roleName } = decriptedAccessToken(accessControlToken);
       setCookie({ key: 'token', value: token, expires, domain });
       setCookie({ key: 'email', value: email, expires, domain });
+      setCookie({ key: 'roleName', value: roleName, expires, domain });
       setCookie({
         key: 'hostID',
         value: host.hostname.split('.')[0],
