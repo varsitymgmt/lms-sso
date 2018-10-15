@@ -74,7 +74,7 @@ global.navigator.userAgent = global.navigator.userAgent || 'all';
 // -----------------------------------------------------------------------------
 app.use(express.static(path.resolve(__dirname, 'public')));
 app.use(cors());
-app.use(morgan('short'));
+app.use(morgan('combined'));
 app.use(cookieParser());
 app.use(
   bodyParser.urlencoded({
