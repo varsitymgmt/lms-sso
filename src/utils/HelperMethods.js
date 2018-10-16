@@ -1,3 +1,6 @@
+import CryptoJS from 'crypto-js';
+import { config } from '../../src/config/environment';
+
 function alphaNumericSort(a, b) {
   if (typeof a === 'number' && typeof b === 'number') {
     return a - b;
@@ -228,6 +231,27 @@ function updateURLParams(key, value) {
   }
 }
 
+function parseJWT(token) {
+  if (token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace('-', '+').replace('_', '/');
+    return JSON.parse(window.atob(base64));
+  }
+  return null;
+}
+
+function decriptedAccessToken(accessControlToken) {
+  if (config.encriptedToken) {
+    accessControlToken = CryptoJS.AES.decrypt(
+      accessControlToken,
+      config.encriptedTokenKey,
+    );
+    accessControlToken = accessControlToken.toString(CryptoJS.enc.Utf8);
+  }
+  const parsedToken = parseJWT(accessControlToken);
+  return parsedToken.access;
+}
+
 export {
   alphaNumericSort,
   arrayHasValues,
@@ -248,4 +272,5 @@ export {
   toMonthFormatedDate,
   toggleLoader,
   updateURLParams,
+  decriptedAccessToken,
 };

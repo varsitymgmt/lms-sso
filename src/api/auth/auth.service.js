@@ -77,13 +77,17 @@ export function isAuthenticated(
           res.statusMessage = 'User Data is Null';
           return res.status(401).end();
         }
-        User.findById(req.user._id) // eslint-disable-line
+        const findUserQuery = {
+          _id: req.user._id,  // eslint-disable-line
+          active: true,
+        };
+        User.findOne(findUserQuery)
           .exec()
           .then(user => {
-            const { hierarchy } = user;
             if (!user) {
               return res.status(401).end();
             }
+            const { hierarchy } = user;
             if (!isPasswordChangeRequest && !user.passwordChange) {
               res.statusMessage = 'User need to change his password';
               return res.status(401).end();
@@ -125,27 +129,6 @@ export function isAuthenticated(
       })
   );
 }
-
-/**
- * Checks if the user role meets the minimum requirements of the route
- */
-// export function hasRole(roleRequired) {
-//   if (!roleRequired) {
-//     throw new Error('Required role needs to be set');
-//   }
-
-//   return compose()
-//     .use(isAuthenticated())
-//     .use((req, res, next) => {
-//       if (
-//         config.userRoles.indexOf(req.user.role) >=
-//         config.userRoles.indexOf(roleRequired)
-//       ) {
-//         return next();
-//       }
-//       return res.status(403).send('Forbidden');
-//     });
-// }
 
 /**
  * Returns a jwt token signed by the app secret
