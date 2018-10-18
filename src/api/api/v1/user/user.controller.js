@@ -5,6 +5,7 @@ import User from './user.model';
 import { config } from '../../../../config/environment';
 import userRoles from '../userRoles/userRoles.model';
 import { validateHierarchyData } from '../hierarchy/hierarchy.controller';
+import { getRandomHash } from '../../../utils/index'
 import _ from 'lodash';
 
 const bcrypt = require('bcrypt');
@@ -37,10 +38,15 @@ async function validatedHierarchy(args, context) {
     .catch(err => ({ err }));
 }
 
-function getRandomHash(){
-  const rand = Math.random().toString(36).slice(2);
-  return Buffer.from(rand).toString('base64');
+export function logOutOnRoleChange(query){
+    return User.updateMany(query,{'$set': {loginHash: getRandomHash()} })
+    .then(data=>{status:"SUCCESS",data})
+    .catch(err=>{
+      console.error(err);
+      return {status:"FAILED"}
+    });
 }
+
 /**
  * @author Gaurav Chauhan
  * @param {*} emails _> emails to search in db
