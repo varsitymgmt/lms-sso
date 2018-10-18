@@ -4,6 +4,7 @@
  */
 import _ from 'lodash';
 import userRoles from './userRoles.model';
+import { logOutOnRoleChange } from '../user/user.controller';
 import { config } from '../../../../config/environment';
 
 const shortId = require('shortid');
@@ -20,7 +21,7 @@ const shortId = require('shortid');
 // }
 
 function checkIfAdmin(roleName) {
-  return roleName === 'SUPER_ADMIN'
+  return roleName === config.superAdmin
     ? { msg: 'Roles for Super Admin cannot be updated' }
     : false;
 }
@@ -216,6 +217,12 @@ export async function updateUserRoles(args, context) {
     readAccess: access.readAccess,
     writeAccess: access.writeAccess,
   };
+  const logOutQuery = {
+    role: roleId,
+    instituteId,
+    active: true,
+  };
+  await logOutOnRoleChange(logOutQuery);
   return userRoles.update(query, { $set: data }).then(updateCallback);
 }
 

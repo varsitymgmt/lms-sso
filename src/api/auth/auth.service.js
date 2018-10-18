@@ -206,7 +206,7 @@ export function setTokenCookie(req, res) {
  */
 export function isAdmin() {
   return compose().use((req, res, next) => {
-    const isSuperAdmin = req.user.access.roleName.includes('SUPER_ADMIN');
+    const isSuperAdmin = req.user.access.roleName.includes(config.superAdmin);
     return isSuperAdmin ? next() : res.status(403).end();
   });
 }
