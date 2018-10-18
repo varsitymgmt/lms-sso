@@ -252,6 +252,15 @@ function decriptedAccessToken(accessControlToken) {
   return parsedToken.access;
 }
 
+function getRoleBasedHost(url, read) {
+  const parsedUrl = new URL(url);
+  const routeModule = parsedUrl.pathname.split('/')[1].toUpperCase();
+  let isAllowed = false;
+  read.forEach(systemRole => {
+    if (systemRole.name === routeModule) isAllowed = true;
+  });
+  return isAllowed ? url : parsedUrl.origin;
+}
 export {
   alphaNumericSort,
   arrayHasValues,
@@ -273,4 +282,5 @@ export {
   toggleLoader,
   updateURLParams,
   decriptedAccessToken,
+  getRoleBasedHost,
 };
