@@ -14,7 +14,9 @@ import _ from 'lodash';
 // ============================================
 const all = {
   env: process.env.NODE_ENV,
-
+  
+  //COMMON HOST USED TO SET COOKIE
+  commonHost: process.env.COMMON_HOST || '.egnify.io',
   // Storage
   GCLOUD_STORAGE_BUCKET: process.env.GCLOUD_STORAGE_BUCKET || 'vega-demo-cdn',
 

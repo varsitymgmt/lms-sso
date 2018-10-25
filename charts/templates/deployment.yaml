@@ -47,6 +47,8 @@ spec:
               value: {{ .Values.projectEnv.QUEUE_NS }}
             - name: HOST_NAME_FOR_ACCOUNTS
               value: {{ .Values.projectEnv.hostNameForAccounts }}
+            - name: COMMON_HOST
+              value: {{ .Values.projectEnv.commonHost }}  
 
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
