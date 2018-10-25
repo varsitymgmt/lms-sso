@@ -256,7 +256,7 @@ function setDefaultLink(read) {
   const { systemRoles } = config;
   let defaultLink = '';
   const expires = 24 * 60 * 60 * 1000;
-  const domain = __DEV__ ? 'localhost' : '.egnify.io';
+  const domain = __DEV__ ? 'localhost' : config.commonHost;
   systemRoles.forEach(role => {
     _.forEach(read, roleName => {
       if (!defaultLink && roleName.name === role) {

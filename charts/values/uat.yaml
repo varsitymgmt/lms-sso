@@ -20,6 +20,7 @@ projectEnv:
   celeryBrokerUrl: "redis://:rQsVPF2gbiHi@35.200.217.200:6379/0"
   celeryResultBackend: "redis://:rQsVPF2gbiHi@35.200.217.200:6379/0"
   hostNameForAccounts: "accounts.uat.sso.egnify.io"
+  commonHost: ".egnify.io"
   QUEUE_NS: "sso-uat-mq"
 
 service:

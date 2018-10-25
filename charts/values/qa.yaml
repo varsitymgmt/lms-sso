@@ -22,6 +22,7 @@ projectEnv:
   celeryBrokerUrl: "redis://:4C00Z1MZXO@redis-qa-master.qa.svc.cluster.local:6379/0"
   celeryResultBackend: "redis://:4C00Z1MZXO@redis-qa-master.qa.svc.cluster.local:6379/0"
   hostNameForAccounts: "accounts.qa.sso.egnify.io"
+  commonHost: ".egnify.io"
   QUEUE_NS: "sso-qa-mq"
 
 service:
