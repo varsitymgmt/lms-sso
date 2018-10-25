@@ -109,11 +109,18 @@ const all = {
         'KTZ6cxoKnEakQCeSpZlaUCJWGAlTEBJj0y2EMkUBujA7zWSvaQ',
     },
   },
-
-  emailAuth: {
-    user: process.env.MAILJET_API_KEY || 'email-api-key',
-    pass: process.env.MAILJET_API_SECRETKEY || 'email-api-secretKey',
-  },
+  emailTranspoter :{
+    service: process.env.EMAIL_SERVICE ||'gmail',
+    host: process.env.EMAIL_HOST ||'smtp.gmail.com',
+    auth: {
+      user: process.env.EMAIL_USER ||'support@egnify.com',
+      pass: process.env.EMAIL_PASS ||'$dew$008',
+    },
+  }
+  // emailAuth: {
+  //   user: process.env.MAILJET_API_KEY || 'email-api-key',
+  //   pass: process.env.MAILJET_API_SECRETKEY || 'email-api-secretKey',
+  // },
 };
 
 // Export the config object based on the NODE_ENV

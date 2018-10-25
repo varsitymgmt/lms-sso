@@ -1,15 +1,8 @@
 import { config } from '../../../../config/environment';
 
 const mailer = require('nodemailer');
-const smtp = require('nodemailer-smtp-transport');
 
-const transport = mailer.createTransport(
-  smtp({
-    host: 'in.mailjet.com',
-    port: 2525,
-    auth: config.emailAuth,
-  }),
-);
+const transport = mailer.createTransport(config.emailTranspoter);
 // function to send email
 export function sendEmail(fromAddr, toAddr, emailSubject, bodyHtml) {
   transport.sendMail(
@@ -21,6 +14,7 @@ export function sendEmail(fromAddr, toAddr, emailSubject, bodyHtml) {
     },
     (err, json) => {
       if (err) {
+        console.info('error while sending email');
         console.error(err);
       } else {
         console.error(json);
