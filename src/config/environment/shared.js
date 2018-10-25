@@ -3,7 +3,7 @@ exports = module.exports = {
   // List of user roles
   accessType:{ read: 2,write:3 },
 
-  systemRoles:['SETTINGS','TESTS','REPORTS','ANALYSIS'],
+  systemRoles:['ANALYSIS','REPORTS','TESTS','SETTINGS'],  //based on redirection priority
   role : {
     settings: "SETTINGS",
     tests: "TESTS",

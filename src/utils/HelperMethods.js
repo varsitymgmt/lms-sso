@@ -1,4 +1,5 @@
 import CryptoJS from 'crypto-js';
+import _ from 'lodash';
 import { config } from '../../src/config/environment';
 
 function alphaNumericSort(a, b) {
@@ -251,6 +252,21 @@ function decriptedAccessToken(accessControlToken) {
   const parsedToken = parseJWT(accessControlToken);
   return parsedToken.access;
 }
+function setDefaultLink(read) {
+  const { systemRoles } = config;
+  let defaultLink = '';
+  const expires = 24 * 60 * 60 * 1000;
+  const domain = __DEV__ ? 'localhost' : '.egnify.io';
+  systemRoles.forEach(role => {
+    _.forEach(read, roleName => {
+      if (!defaultLink && roleName.name === role) {
+        defaultLink = `/${role.toLowerCase()}`;
+        setCookie({ key: 'defaultLink', value: defaultLink, expires, domain });
+      }
+    });
+  });
+  return defaultLink;
+}
 /**
  *
  * @param {*} url redirection url
@@ -266,8 +282,10 @@ function getRoleBasedHost(url, read) {
   read.forEach(systemRole => {
     if (systemRole.name === routeModule) isAllowed = true;
   });
-  return isAllowed ? url : parsedUrl.origin;
+  const defaultLink = setDefaultLink(read);
+  return isAllowed ? url : parsedUrl.origin + defaultLink;
 }
+
 export {
   alphaNumericSort,
   arrayHasValues,
