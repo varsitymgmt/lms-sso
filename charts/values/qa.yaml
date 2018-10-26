@@ -24,6 +24,11 @@ projectEnv:
   hostNameForAccounts: "accounts.qa.sso.egnify.io"
   commonHost: ".egnify.io"
   QUEUE_NS: "sso-qa-mq"
+  emailService: "gmail"
+  emailHost: "smtp.gmail.com"
+  emailUser: "support@egnify.com"
+  emailPass: "$dew$008"
+
 
 service:
   name: sso
