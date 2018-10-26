@@ -17,6 +17,12 @@ const routes = {
       path: '/signout',
       load: () => import(/* webpackChunkName: 'SignOut' */ './sign-out'),
     },
+    {
+      path: '/resetPassword',
+      authenticate: false,
+      load: () =>
+        import(/* webpackChunkName: 'ResetPassword' */ './reset-password'),
+    },
     // Wildcard routes, e.g. { path: '*', ... } (must go last)
     {
       path: '*',

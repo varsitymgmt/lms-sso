@@ -465,7 +465,7 @@ class SignIn extends React.Component {
     });
   };
 
-  validateForgotPasswordEmail = async () => {
+  validateForgotPasswordEmail = () => {
     if (this.state.emailValidationCompleted) {
       this.resetForgotPasswordChanges();
     } else if (
