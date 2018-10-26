@@ -14,7 +14,6 @@ export function sendEmail(fromAddr, toAddr, emailSubject, bodyHtml) {
     },
     (err, json) => {
       if (err) {
-        console.info('error while sending email');
         console.error(err);
       } else {
         console.error(json);
