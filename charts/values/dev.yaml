@@ -24,6 +24,10 @@ projectEnv:
   hostNameForAccounts: "accounts.dev.hydra.egnify.io"
   commonHost: ".egnify.io"
   QUEUE_NS: 'sso-dev-mq'
+  emailService: "gmail"
+  emailHost: "smtp.gmail.com"
+  emailUser: "support@egnify.com"
+  emailPass: "$dew$008"
 
 service:
   name: hydra-sso
