@@ -307,7 +307,6 @@ export async function sendResetLink(req, res) {
   if (usrDetails.length === 0) {
     res.json({
       usersFound: false,
-      hash: null,
     });
   } else {
     // If a valid user exists with the given email.
@@ -331,7 +330,7 @@ export async function sendResetLink(req, res) {
         (err1, docs) => {
           if (docs) {
             sendEmail(usrDetails[0], hash, baseUrl);
-            return res.json({ usersFound: true, hash });
+            return res.json({ usersFound: true });
           }
           if (err1) console.error(err1);
         },

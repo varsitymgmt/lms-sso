@@ -1,4 +1,5 @@
 import CryptoJS from 'crypto-js';
+import _ from 'lodash';
 import { config } from '../../src/config/environment';
 
 function alphaNumericSort(a, b) {
@@ -251,6 +252,39 @@ function decriptedAccessToken(accessControlToken) {
   const parsedToken = parseJWT(accessControlToken);
   return parsedToken.access;
 }
+function setDefaultLink(read) {
+  const { systemRoles } = config;
+  let defaultLink = '';
+  const expires = 24 * 60 * 60 * 1000;
+  const domain = __DEV__ ? 'localhost' : config.commonHost;
+  systemRoles.forEach(role => {
+    _.forEach(read, roleName => {
+      if (!defaultLink && roleName.name === role) {
+        defaultLink = `/${role.toLowerCase()}`;
+        setCookie({ key: 'defaultLink', value: defaultLink, expires, domain });
+      }
+    });
+  });
+  return defaultLink;
+}
+/**
+ *
+ * @param {*} url redirection url
+ * @param {*} read read access array
+ * @author GAURAV CHAUHAN
+ * @description it checks the permission for newly created user, whether he can access this route or not,if not redirect him to default route,
+ * else redirect it to the redirection url
+ */
+function getRoleBasedHost(url, read) {
+  const parsedUrl = new URL(url);
+  const routeModule = parsedUrl.pathname.split('/')[1].toUpperCase();
+  let isAllowed = false;
+  read.forEach(systemRole => {
+    if (systemRole.name === routeModule) isAllowed = true;
+  });
+  const defaultLink = setDefaultLink(read);
+  return isAllowed ? url : parsedUrl.origin + defaultLink;
+}
 
 export {
   alphaNumericSort,
@@ -273,4 +307,5 @@ export {
   toggleLoader,
   updateURLParams,
   decriptedAccessToken,
+  getRoleBasedHost,
 };

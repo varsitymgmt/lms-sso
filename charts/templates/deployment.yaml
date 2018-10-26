@@ -47,6 +47,17 @@ spec:
               value: {{ .Values.projectEnv.QUEUE_NS }}
             - name: HOST_NAME_FOR_ACCOUNTS
               value: {{ .Values.projectEnv.hostNameForAccounts }}
+            - name: COMMON_HOST
+              value: {{ .Values.projectEnv.commonHost }}  
+            - name: EMAIL_SERVICE
+              value: {{ .Values.projectEnv.emailService }}  
+            - name: EMAIL_HOST
+              value: {{ .Values.projectEnv.emailHost }}  
+            - name: EMAIL_USER
+              value: {{ .Values.projectEnv.emailUser }}  
+            - name: EMAIL_PASS
+              value: {{ .Values.projectEnv.emailPass }}  
+
 
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:

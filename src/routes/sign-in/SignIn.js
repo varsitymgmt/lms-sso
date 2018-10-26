@@ -9,10 +9,12 @@ import {
   setCookie,
   getCookie,
   decriptedAccessToken,
+  getRoleBasedHost,
 } from 'utils/HelperMethods';
 import Loader from 'components/Loader';
 import welcomeImg from './welcome.svg';
 import s from './SignIn.scss';
+import { config } from '../../config/environment';
 
 class SignIn extends React.Component {
   static contextTypes = {
@@ -420,8 +422,8 @@ class SignIn extends React.Component {
   redirectBackToHost = (host, token, accessControlToken, email) => {
     if (host) {
       const expires = 24 * 60 * 60 * 1000;
-      const domain = __DEV__ ? 'localhost' : '.egnify.io';
-      const { roleName } = decriptedAccessToken(accessControlToken);
+      const domain = __DEV__ ? 'localhost' : config.commonHost;
+      const { roleName, read } = decriptedAccessToken(accessControlToken);
       setCookie({ key: 'token', value: token, expires, domain });
       setCookie({ key: 'email', value: email, expires, domain });
       setCookie({ key: 'roleName', value: roleName, expires, domain });
@@ -431,7 +433,8 @@ class SignIn extends React.Component {
         expires,
         domain,
       });
-      window.location = host.href;
+      const hostUrl = getRoleBasedHost(host.href, read);
+      window.location = hostUrl;
     }
   };
 
@@ -462,7 +465,7 @@ class SignIn extends React.Component {
     });
   };
 
-  validateForgotPasswordEmail = async () => {
+  validateForgotPasswordEmail = () => {
     if (this.state.emailValidationCompleted) {
       this.resetForgotPasswordChanges();
     } else if (

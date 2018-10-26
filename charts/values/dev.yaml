@@ -22,7 +22,12 @@ projectEnv:
   celeryBrokerUrl: "redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
   celeryResultBackend: "redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
   hostNameForAccounts: "accounts.dev.hydra.egnify.io"
+  commonHost: ".egnify.io"
   QUEUE_NS: 'sso-dev-mq'
+  emailService: "gmail"
+  emailHost: "smtp.gmail.com"
+  emailUser: "support@egnify.com"
+  emailPass: "$dew$008"
 
 service:
   name: hydra-sso
