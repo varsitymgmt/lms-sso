@@ -10,11 +10,11 @@ import {
   getCookie,
   decriptedAccessToken,
   getRoleBasedHost,
+  getCommonDomain,
 } from 'utils/HelperMethods';
 import Loader from 'components/Loader';
 import welcomeImg from './welcome.svg';
 import s from './SignIn.scss';
-import { config } from '../../config/environment';
 
 class SignIn extends React.Component {
   static contextTypes = {
@@ -422,7 +422,7 @@ class SignIn extends React.Component {
   redirectBackToHost = (host, token, accessControlToken, email) => {
     if (host) {
       const expires = 24 * 60 * 60 * 1000;
-      const domain = __DEV__ ? 'localhost' : config.commonHost;
+      const domain = getCommonDomain();
       const { roleName, read } = decriptedAccessToken(accessControlToken);
       setCookie({ key: 'token', value: token, expires, domain });
       setCookie({ key: 'email', value: email, expires, domain });
