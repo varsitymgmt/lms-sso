@@ -1,7 +1,11 @@
 import React from 'react';
-import { getURLParams, toggleLoader, deleteCookie } from 'utils/HelperMethods';
+import {
+  getURLParams,
+  toggleLoader,
+  deleteCookie,
+  getCommonDomain,
+} from 'utils/HelperMethods';
 import Loader from 'components/Loader';
-import { config } from '../../config/environment';
 
 class SignOut extends React.Component {
   componentDidMount() {
@@ -11,7 +15,7 @@ class SignOut extends React.Component {
   removeTokensAndRedirectToSignIn = () => {
     toggleLoader(true);
     let host = getURLParams('host');
-    const domain = __DEV__ ? 'localhost' : config.commonHost;
+    const domain = getCommonDomain();
     deleteCookie({ key: 'token', domain });
     deleteCookie({ key: 'accessControlToken', domain });
     deleteCookie({ key: 'email', domain });
