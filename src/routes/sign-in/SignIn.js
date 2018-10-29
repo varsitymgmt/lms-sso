@@ -435,7 +435,7 @@ class SignIn extends React.Component {
         expires,
         domain,
       });
-      const hostUrl = getRoleBasedHost(host.href, read);
+      const hostUrl = getRoleBasedHost(host.href, read, domain);
       window.location = hostUrl;
     }
   };
