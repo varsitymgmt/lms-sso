@@ -3,55 +3,51 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: registry.gitlab.com/lyra-egnify/hydra-ui/uat
+  repository: registry.gitlab.com/lyra-egnify/hydra-sso/uat
   tag: latest
   pullPolicy: Always
   pullSecrets: gitlab-registry-pull-secret
 
 projectEnv:
   nodeEnv: "production"
-  mongodbUri: "mongodb://localhost:27017/database"
+  mongodbUri: "mongodb://hydra:AkdjsAIYHjk87y23l1m2klRrtyhjnmrti92w33@35.200.234.132:27017/tenantregistry-uat"
+  svcSettings: "http://settings-uat-hydra.uat.svc.cluster.local"
+  svcTest: "http://test-management-uat-hydra.uat.svc.cluster.local"
   jwtSecret: "KAJDK656kllksklfmFGDFGS765ujh765T6GHAJDSjjjkjiursrda"
   mailjetApiKey: "a1fb4988b5a359099061d2cb8aebc80d"
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
-  apiEgnifyIoUrl: "https://api.uat.hydra.egnify.io"
+  apiEgnifyIoUrl: "https://accounts.uat.hydra.egnify.io"
   curxParserUrl: "https://crux-parser-v1.egnify.com"
-  celeryBrokerUrl: "redis://:rQsVPF2gbiHi@35.200.217.200:6379/0"
-  celeryResultBackend: "redis://:rQsVPF2gbiHi@35.200.217.200:6379/0"
-  hostNameForAccounts: "accounts.uat.sso.egnify.io"
+  celeryBrokerUrl: "redis://:vvqfBAUfPI@redis-master.uat.svc.cluster.local:6379/0"
+  celeryResultBackend: "redis://:vvqfBAUfPI@redis-master.uat.svc.cluster.local:6379/0"
+  hostNameForAccounts: "accounts.uat.hydra.egnify.io"
   commonHost: ".egnify.io"
-  QUEUE_NS: "sso-uat-mq"
+  QUEUE_NS: 'hydra-uat-mq'
   emailService: "gmail"
   emailHost: "smtp.gmail.com"
   emailUser: "support@egnify.com"
   emailPass: "$dew$008"
 
-
 service:
-  name: hydra-ui
+  name: sso-hydra-uat
+  tier: backend
   type: ClusterIP
-  tire: frontend
   externalPort: 80
   internalPort: 3000
 ingress:
   enabled: true
   # Used to create an Ingress record.
   hosts:
-    - luke.uat.hydra.egnify.io
-    - leia.uat.hydra.egnify.io
-    - solo.uat.hydra.egnify.io
+    - accounts.uat.hydra.egnify.io
   annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "40M"
     kubernetes.io/ingress.class: nginx
-    kubernetes.io/client-body-buffer-size: 40M
     kubernetes.io/tls-acme: "true"
   tls:
-    # Secrets must be manually created in the namespace.
-    - secretName: hydra-ui-tls-uat
+    - secretName: hydra-sso-tls-uat
       hosts:
-        - luke.uat.hydra.egnify.io
-        - leia.uat.hydra.egnify.io
-        - solo.uat.hydra.egnify.io
+        - accounts.uat.hydra.egnify.io
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
