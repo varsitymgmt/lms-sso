@@ -49,6 +49,8 @@ const context = {
   hostNameForDev: window.App.hostNameForDev,
   // googleTrackingId for google analytics
   googleTrackingId: window.App.googleTrackingId,
+  // common host
+  commonHost: window.App.commonHost,
   // institute details
   instituteDetails: {},
 };

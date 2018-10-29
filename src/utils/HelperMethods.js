@@ -254,20 +254,22 @@ function decriptedAccessToken(accessControlToken) {
 }
 
 function getCommonDomain() {
-  const host = window.location.host;
-  const hostArray = host.split('.');
-  if (hostArray.length < 2) {
-    return 'localhost';
-  }
-  console.info(`.${hostArray.splice(-2).join('.')}`);
-  return `.${hostArray.splice(-2).join('.')}`;
+  return config.commonHost;
+  // const host = window.location.host;
+  // const hostArray = host.split('.');
+  // if (hostArray.length < 2) {
+  //   return 'localhost';
+  // }
+  // console.info(`.${hostArray.splice(-2).join('.')}`);
+  // return `.${hostArray.splice(-2).join('.')}`;
 }
 
 function setDefaultLink(read) {
   const { systemRoles } = config;
   let defaultLink = '';
   const expires = 24 * 60 * 60 * 1000;
-  const domain = __DEV__ ? 'localhost' : getCommonDomain();
+  const domain = config.commonHost;
+  console.info('setting default link ', domain);
   systemRoles.forEach(role => {
     _.forEach(read, roleName => {
       if (!defaultLink && roleName.name === role) {

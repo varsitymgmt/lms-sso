@@ -10,7 +10,6 @@ import {
   getCookie,
   decriptedAccessToken,
   getRoleBasedHost,
-  getCommonDomain,
 } from 'utils/HelperMethods';
 import Loader from 'components/Loader';
 import welcomeImg from './welcome.svg';
@@ -23,6 +22,8 @@ class SignIn extends React.Component {
     API_EGNIFY_IO_URL: PropTypes.string.isRequired,
     // hostName for dev environment
     hostNameForDev: PropTypes.string.isRequired,
+    // common host
+    commonHost: PropTypes.string.isRequired,
   };
 
   constructor(props) {
@@ -422,7 +423,8 @@ class SignIn extends React.Component {
   redirectBackToHost = (host, token, accessControlToken, email) => {
     if (host) {
       const expires = 24 * 60 * 60 * 1000;
-      const domain = getCommonDomain();
+      const domain = this.context.commonHost;
+      console.info('domain ', domain);
       const { roleName, read } = decriptedAccessToken(accessControlToken);
       setCookie({ key: 'token', value: token, expires, domain });
       setCookie({ key: 'email', value: email, expires, domain });
