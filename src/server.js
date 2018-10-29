@@ -170,8 +170,8 @@ app.get('*', async (req, res, next) => {
       curxParserUrl: config.api.curxParserUrl,
       hostNameForDev: config.api.hostNameForDev,
       googleTrackingId: config.analytics.googleTrackingId,
+      commonHost: config.commonHost,
     };
-
     const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
     res.status(route.status || 200);
     res.send(`<!doctype html>${html}`);
