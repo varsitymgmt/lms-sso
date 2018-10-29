@@ -19,8 +19,8 @@ projectEnv:
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
   apiEgnifyIoUrl: "https://accounts.uat.hydra.egnify.io"
   curxParserUrl: "https://crux-parser-v1.egnify.com"
-  celeryBrokerUrl: "redis://:vvqfBAUfPI@redis-master.uat.svc.cluster.local:6379/0"
-  celeryResultBackend: "redis://:vvqfBAUfPI@redis-master.uat.svc.cluster.local:6379/0"
+  celeryBrokerUrl: "redis://:rQsVPF2gbiHi@35.200.217.200:6379/0"
+  celeryResultBackend: "redis://:rQsVPF2gbiHi@35.200.217.200:6379/0"
   hostNameForAccounts: "accounts.uat.hydra.egnify.io"
   commonHost: ".egnify.io"
   QUEUE_NS: 'hydra-uat-mq'
