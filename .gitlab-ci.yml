@@ -41,6 +41,8 @@ lint:
     - development
     - qa
     - uat
+    - sso/development
+    - sso/qa
 
 build:
   stage: build
@@ -56,6 +58,8 @@ build:
     - development
     - qa
     - uat
+    - sso/development
+    - sso/qa
 
 release:
   stage: release
@@ -77,6 +81,8 @@ release:
     - development
     - qa
     - uat
+    - sso/development
+    - sso/qa
     # - /^f-.*$/
 
 deploy-dev:
