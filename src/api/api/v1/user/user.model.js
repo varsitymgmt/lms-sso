@@ -131,8 +131,9 @@ UserSchema.path('role').validate(async function roleValidation(role) {
 
 // Validate email is not taken
 UserSchema.path('email').validate(function(value) {
+  const hostname = this.hostname
   return this.constructor
-    .findOne({ email: value,active:true })
+    .findOne({ email: value,active:true,hostname })
     .exec()
     .then(user => {
       if (user) {
@@ -151,8 +152,9 @@ UserSchema.path('email').validate(function(value) {
 
 // Validate userName is not taken
 UserSchema.path('username').validate(function(value) {
+  const hostname = this.hostname
   return this.constructor
-    .findOne({ username: value,active:true })
+    .findOne({ username: value,active:true ,hostname})
     .exec()
     .then(user => {
       if (user) {
