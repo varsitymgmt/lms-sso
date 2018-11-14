@@ -43,6 +43,8 @@ lint:
     - uat
     - sso/development
     - sso/qa
+    - spica/development
+    - spica/qa
 
 build:
   stage: build
@@ -60,6 +62,8 @@ build:
     - uat
     - sso/development
     - sso/qa
+    - spica/development
+    - spica/qa
 
 release:
   stage: release
@@ -83,6 +87,9 @@ release:
     - uat
     - sso/development
     - sso/qa
+    - spica/development
+    - spica/qa
+
     # - /^f-.*$/
 
 deploy-dev:
@@ -217,6 +224,60 @@ deploy-uat:
     # url: https://qa.hydra.egnify.io
   only:
     - uat
+
+deploy-spica-dev:
+  stage: deploy
+  image: arbaz7/gcloud-kubectl-helm:latest
+  services:
+    - docker:dind
+  before_script:
+    - mkdir -p /etc/deploy
+    - echo ${kube_config} > kube_config
+    - base64 -d kube_config > ${KUBECONFIG}
+    - echo ${gcloud_auth} > gcloud_auth.base64
+    - base64 -d gcloud_auth.base64 > gcloud_auth.json
+    # - kubectl config use-context gke_egnify-product_us-central1-a_hydra-federation
+    - helm init --client-only
+    - gcloud auth activate-service-account --key-file=gcloud_auth.json
+    - helm repo update
+    - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
+  script:
+    - export NAMESPACE=dev;
+    - export RELEASE_NAME=sso-${NAMESPACE}-spica
+    - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
+    - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/spica/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/spica/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
+  environment:
+    name: spica-dev
+    # url: https://qa.hydra.egnify.io
+  only:
+    - spica/development
+
+deploy-spica-qa:
+  stage: deploy
+  image: arbaz7/gcloud-kubectl-helm:latest
+  services:
+    - docker:dind
+  before_script:
+    - mkdir -p /etc/deploy
+    - echo ${kube_config} > kube_config
+    - base64 -d kube_config > ${KUBECONFIG}
+    - echo ${gcloud_auth} > gcloud_auth.base64
+    - base64 -d gcloud_auth.base64 > gcloud_auth.json
+    # - kubectl config use-context gke_egnify-product_us-central1-a_hydra-federation
+    - helm init --client-only
+    - gcloud auth activate-service-account --key-file=gcloud_auth.json
+    - helm repo update
+    - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
+  script:
+    - export NAMESPACE=qa;
+    - export RELEASE_NAME=sso-${NAMESPACE}-spica
+    - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
+    - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/spica/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/spica/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
+  environment:
+    name: spica-qa
+    # url: https://qa.hydra.egnify.io
+  only:
+    - spica/qa
 
 # pre-production:
 #   stage: deploy

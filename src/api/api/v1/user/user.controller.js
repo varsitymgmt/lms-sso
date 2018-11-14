@@ -357,8 +357,9 @@ export function index(req, res) {
  */
 function addUser(req, res) {
   const query = {
-    email: req.email,
+    email: req.body.email,
     instituteId: req.body.instituteId,
+    hostname: req.body.hostname,
     active: true,
   };
   User.find(query).then(docs => {
