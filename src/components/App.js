@@ -27,6 +27,8 @@ const ContextType = {
   googleTrackingId: PropTypes.string.isRequired,
   // institute details
   instituteDetails: PropTypes.object.isRequired,
+  // institute details
+  commonHost: PropTypes.object.isRequired,
 };
 
 /**

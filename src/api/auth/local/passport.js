@@ -8,6 +8,7 @@ AU01 - EMail mismatch
 AU02 - Password mismatch
 */
 function localAuthenticate(req, User, login, password, done) {
+  const hostnameForQuery = req.body.hostname ? req.body.hostname : '';
   // can login through both username and emailId
   User.findOne({
     $or: [
@@ -19,6 +20,7 @@ function localAuthenticate(req, User, login, password, done) {
       },
     ],
     active: true,
+    hostname: hostnameForQuery,
   })
     .exec()
     .then(user => {

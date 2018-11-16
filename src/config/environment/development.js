@@ -5,7 +5,7 @@
 module.exports = {
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost:27017/tenantregistry-sso-qa',
+    uri: 'mongodb://localhost:27017/tenantregistry-spica',
   },
   // Seed database on startup
   seedDB: true,
@@ -24,4 +24,6 @@ module.exports = {
       process.env.CELERY_RESULT_BACKEND || 'redis://localhost:6379/0',
     QUEUE_NS: process.env.QUEUE_NS || 'sso-dev-mq',
   },
+  // COMMON HOST USED TO SET COOKIE
+  commonHost: 'localhost',
 };

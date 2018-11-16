@@ -252,11 +252,11 @@ function decriptedAccessToken(accessControlToken) {
   const parsedToken = parseJWT(accessControlToken);
   return parsedToken.access;
 }
-function setDefaultLink(read) {
+
+function setDefaultLink(read, domain) {
   const { systemRoles } = config;
   let defaultLink = '';
   const expires = 24 * 60 * 60 * 1000;
-  const domain = __DEV__ ? 'localhost' : config.commonHost;
   systemRoles.forEach(role => {
     _.forEach(read, roleName => {
       if (!defaultLink && roleName.name === role) {
@@ -275,14 +275,14 @@ function setDefaultLink(read) {
  * @description it checks the permission for newly created user, whether he can access this route or not,if not redirect him to default route,
  * else redirect it to the redirection url
  */
-function getRoleBasedHost(url, read) {
+function getRoleBasedHost(url, read, domain) {
   const parsedUrl = new URL(url);
   const routeModule = parsedUrl.pathname.split('/')[1].toUpperCase();
   let isAllowed = false;
   read.forEach(systemRole => {
     if (systemRole.name === routeModule) isAllowed = true;
   });
-  const defaultLink = setDefaultLink(read);
+  const defaultLink = setDefaultLink(read, domain);
   return isAllowed ? url : parsedUrl.origin + defaultLink;
 }
 

@@ -10,9 +10,9 @@ image:
 
 projectEnv:
   nodeEnv: "production"
-  mongodbUri: "mongodb://hydra:AkdjsAIYHjk87y23l1m2klRrtyhjnmrti92w33@35.200.234.132:27017/tenantregistry-sso"
-  svcSettings: "http://settings-dev-sso.dev.svc.cluster.local"
-  svcTest: "http://test-management-dev-sso.dev.svc.cluster.local"
+  mongodbUri: "mongodb://hydra:AkdjsAIYHjk87y23l1m2klRrtyhjnmrti92w33@35.200.234.132:27017/tenantregistry"
+  svcSettings: "http://settings-dev-hydra.dev.svc.cluster.local"
+  svcTest: "http://test-management-dev-hydra.dev.svc.cluster.local"
   jwtSecret: "KAJDK656kllksklfmFGDFGS765ujh765T6GHAJDSjjjkjiursrda"
   mailjetApiKey: "a1fb4988b5a359099061d2cb8aebc80d"
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
@@ -23,14 +23,14 @@ projectEnv:
   celeryResultBackend: "redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
   hostNameForAccounts: "accounts.dev.hydra.egnify.io"
   commonHost: ".egnify.io"
-  QUEUE_NS: 'sso-dev-mq'
+  QUEUE_NS: 'hydra-dev-mq'
   emailService: "gmail"
   emailHost: "smtp.gmail.com"
   emailUser: "support@egnify.com"
   emailPass: "$dew$008"
 
 service:
-  name: hydra-sso
+  name: sso-hydra-dev
   tier: backend
   type: ClusterIP
   externalPort: 80
@@ -45,7 +45,6 @@ ingress:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   tls:
-    # Secrets must be manually created in the namespace.
     - secretName: hydra-sso-tls-dev
       hosts:
         - accounts.dev.hydra.egnify.io

@@ -1,9 +1,13 @@
 import React from 'react';
 import { getURLParams, toggleLoader, deleteCookie } from 'utils/HelperMethods';
+import PropTypes from 'prop-types';
 import Loader from 'components/Loader';
-import { config } from '../../config/environment';
 
 class SignOut extends React.Component {
+  static contextTypes = {
+    // common host
+    commonHost: PropTypes.string.isRequired,
+  };
   componentDidMount() {
     this.removeTokensAndRedirectToSignIn();
   }
@@ -11,7 +15,7 @@ class SignOut extends React.Component {
   removeTokensAndRedirectToSignIn = () => {
     toggleLoader(true);
     let host = getURLParams('host');
-    const domain = __DEV__ ? 'localhost' : config.commonHost;
+    const domain = this.context.commonHost;
     deleteCookie({ key: 'token', domain });
     deleteCookie({ key: 'accessControlToken', domain });
     deleteCookie({ key: 'email', domain });

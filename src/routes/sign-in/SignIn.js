@@ -14,7 +14,6 @@ import {
 import Loader from 'components/Loader';
 import welcomeImg from './welcome.svg';
 import s from './SignIn.scss';
-import { config } from '../../config/environment';
 
 class SignIn extends React.Component {
   static contextTypes = {
@@ -23,6 +22,8 @@ class SignIn extends React.Component {
     API_EGNIFY_IO_URL: PropTypes.string.isRequired,
     // hostName for dev environment
     hostNameForDev: PropTypes.string.isRequired,
+    // common host
+    commonHost: PropTypes.string.isRequired,
   };
 
   constructor(props) {
@@ -422,7 +423,8 @@ class SignIn extends React.Component {
   redirectBackToHost = (host, token, accessControlToken, email) => {
     if (host) {
       const expires = 24 * 60 * 60 * 1000;
-      const domain = __DEV__ ? 'localhost' : config.commonHost;
+      const domain = this.context.commonHost;
+      console.info('domain ', domain);
       const { roleName, read } = decriptedAccessToken(accessControlToken);
       setCookie({ key: 'token', value: token, expires, domain });
       setCookie({ key: 'email', value: email, expires, domain });
@@ -433,7 +435,7 @@ class SignIn extends React.Component {
         expires,
         domain,
       });
-      const hostUrl = getRoleBasedHost(host.href, read);
+      const hostUrl = getRoleBasedHost(host.href, read, domain);
       window.location = hostUrl;
     }
   };
