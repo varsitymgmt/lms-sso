@@ -1,4 +1,4 @@
-# Default values for helm-charts.
+hydra# Default values for helm-charts.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
@@ -17,13 +17,13 @@ projectEnv:
   mailjetApiKey: "a1fb4988b5a359099061d2cb8aebc80d"
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
-  apiEgnifyIoUrl: "https://accounts.qa.sso.egnify.io"
+  apiEgnifyIoUrl: "https://accounts.qa.hydra.egnify.io"
   curxParserUrl: "https://crux-parser-v1.egnify.com"
   celeryBrokerUrl: "redis://:4C00Z1MZXO@redis-qa-master.qa.svc.cluster.local:6379/0"
   celeryResultBackend: "redis://:4C00Z1MZXO@redis-qa-master.qa.svc.cluster.local:6379/0"
-  hostNameForAccounts: "accounts.qa.sso.egnify.io"
+  hostNameForAccounts: "accounts.qa.hydra.egnify.io"
   commonHost: ".egnify.io"
-  QUEUE_NS: "sso-qa-mq"
+  QUEUE_NS: "hydra-qa-mq"
   emailService: "gmail"
   emailHost: "smtp.gmail.com"
   emailUser: "support@egnify.com"
@@ -48,7 +48,7 @@ ingress:
   tls:
     - secretName: hydra-sso-tls-qa
       hosts:
-        - accounts.qa.sso.egnify.io
+        - accounts.qa.hydra.egnify.io
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
