@@ -1,4 +1,4 @@
-hydra# Default values for helm-charts.
+# Default values for helm-charts.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
