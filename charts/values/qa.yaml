@@ -46,7 +46,7 @@ ingress:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   tls:
-    - secretName: hydra-sso-tls-qa
+    - secretName: hydra-accounts-tls-qa
       hosts:
         - accounts.qa.hydra.egnify.io
 resources: {}
