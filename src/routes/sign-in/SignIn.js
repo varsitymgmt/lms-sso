@@ -9,7 +9,7 @@ import {
   setCookie,
   getCookie,
   decriptedAccessToken,
-  getRoleBasedHost,
+  // getRoleBasedHost,
 } from 'utils/HelperMethods';
 import Loader from 'components/Loader';
 import welcomeImg from './welcome.svg';
@@ -425,7 +425,7 @@ class SignIn extends React.Component {
       const expires = 24 * 60 * 60 * 1000;
       const domain = this.context.commonHost;
       console.info('domain ', domain);
-      const { roleName, read } = decriptedAccessToken(accessControlToken);
+      const { roleName } = decriptedAccessToken(accessControlToken);
       setCookie({ key: 'token', value: token, expires, domain });
       setCookie({ key: 'email', value: email, expires, domain });
       setCookie({ key: 'roleName', value: roleName, expires, domain });
@@ -435,8 +435,7 @@ class SignIn extends React.Component {
         expires,
         domain,
       });
-      const hostUrl = getRoleBasedHost(host.href, read, domain);
-      window.location = hostUrl;
+      window.location = host.href;
     }
   };
 
