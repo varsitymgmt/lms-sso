@@ -1,0 +1,176 @@
+.header {
+  background: rgb(255, 255, 255);
+  height: 60px;
+  padding: 10px 24px;
+}
+
+.userImg {
+  border-radius: 50%;
+  float: right;
+}
+
+.dropDownCard {
+  width: 144px;
+  position: absolute;
+  float: right;
+  top: 47px;
+  right: 22px;
+  z-index: 9;
+  font-size: 12px;
+}
+
+.droplinks {
+  padding: 10px;
+  font-weight: normal;
+
+  .icons {
+    height: 25px;
+    width: 25px;
+    float: left;
+  }
+}
+
+.droplinks:hover {
+  background-color: rgb(52, 52, 86);
+  color: #fff;
+  cursor: pointer;
+}
+
+.accountIcon .icons {
+  background: url('/images/icons/profile.svg') no-repeat scroll;
+}
+
+.logoutIcon .icons {
+  margin-top: 2px;
+  background: url('/images/icons/logout.svg') no-repeat scroll;
+}
+
+.logoutIcon:hover .icons {
+  background: url('/images/icons/lagout_hover.svg') no-repeat scroll;
+}
+
+.hidden {
+  display: none;
+}
+
+.showUp {
+  display: block;
+}
+
+.logoContainer {
+  float: left;
+  padding-top: 4px;
+}
+
+.navContainer {
+  float: left;
+  text-align: center;
+  padding: 0;
+  height: 50px;
+}
+
+.searchAndProfile {
+  float: right;
+  height: 40px;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+/*
+.userName {
+  float: right;
+  font-size: 14px;
+  text-align: left;
+  font-weight: 400;
+  color: rgb(52, 52, 73);
+  margin-top: 9px;
+  width: 60px;
+  margin-left: 29px;
+  margin-right: 10px;
+}
+
+.profileDivder {
+  width: 2px;
+  height: 24px;
+  opacity: 0.5;
+  border-radius: 100px;
+  border: solid 0.5px #86899d;
+  float: left;
+  margin: 5px 10px 0 11px;
+}
+*/
+
+.testAndSettingsIcon {
+  height: 40px;
+  margin-top: 2px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+
+  a {
+    margin-top: 6px;
+    cursor: pointer;
+  }
+}
+
+.studentSearchContainer {
+  width: calc(100% - 160px);
+  position: relative;
+}
+
+.settingsIcon {
+  height: 36px;
+  width: 36px;
+  margin-left: 24px;
+}
+
+@media only screen and (max-width: 1281px) {
+  .logoContainer {
+    width: 31%;
+  }
+
+  .navContainer {
+    width: 35%;
+  }
+
+  .searchAndProfile {
+    width: 30%;
+  }
+
+  .settingsIcon {
+    margin-left: 12px;
+  }
+
+  .testAndSettingsIcon {
+    padding: 0 12px;
+  }
+}
+
+@media only screen and (min-width: 1300px) {
+  .logoContainer {
+    width: 31%;
+  }
+
+  .navContainer {
+    width: 38%;
+  }
+
+  .searchAndProfile {
+    width: 31%;
+  }
+}
+
+@media only screen and (min-width: 1500px) {
+  .logoContainer {
+    width: 28%;
+  }
+
+  .navContainer {
+    width: 44%;
+  }
+
+  .searchAndProfile {
+    width: 28%;
+  }
+}

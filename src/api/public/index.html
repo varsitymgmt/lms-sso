@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>API</title>
+<!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript">
+// Check if the localStorage object exists
+if(localStorage){
+	$(document).ready(function(){
+		$(".save").click(function(){
+			// Get input name
+			var jwtToken = $("#jwtToken").val();
+			var accessToken = $("#accessToken").val();
+			// Store data
+			localStorage.setItem("login_token", jwtToken);
+			localStorage.setItem("access_token", accessToken);
+			alert("JWT is saved.");
+		});
+		$(".access").click(function(){
+			// Retrieve data
+    		alert("JWT: " + localStorage.getItem("login_token")+'\n\n'+"Access Token: "+localStorage.getItem("access_token"));
+		});
+		$
+	});
+} else{
+    alert("Sorry, your browser do not support local storage.");
+}
+
+
+</script>
+</head>
+<body>
+    <form>
+		<label>JWT: <input type="text" id="jwtToken" placeholder="Bearer TOKEN"></label>
+
+		<label>ACCESS TOKEN: <input type="text" id="accessToken" placeholder="TOKEN"></label>
+		<button type="button" class="save" >Save JWT</button>
+		<button type="button" class="access">Show JWT</button>
+    </form>
+</body>
+</html>

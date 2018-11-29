@@ -1,0 +1,744 @@
+html {
+  height: 100%;
+  width: 100%;
+  font-size: 16px;
+}
+
+body {
+  min-width: 1000px !important;
+  overflow-x: auto !important;
+  -webkit-font-smoothing: antialiased;
+  height: 100%;
+  font-weight: 400;
+  font-size: 0.875rem;
+  font-family: 'SF Pro Text' !important;
+  color: rgb(95, 99, 104);
+  background: rgb(247, 247, 247);
+}
+
+p {
+  margin-bottom: 1.3rem;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 1rem 0;
+  font-weight: 600;
+  color: rgb(48, 46, 70);
+}
+
+h1 {
+  font-size: 3.157rem;
+}
+
+h2 {
+  font-size: 2.369rem;
+}
+
+h3 {
+  font-size: 1.777rem;
+}
+
+h4 {
+  font-size: 1.333rem;
+}
+
+a {
+  color: rgb(0, 122, 206);
+  text-transform: capitalize;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.sub-heading {
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  color: rgb(48, 46, 70);
+}
+
+.caption {
+  font-size: 0.75rem;
+}
+
+/* text colors */
+.text-error {
+  color: rgb(208, 2, 27);
+}
+
+.text-icons {
+  color: rgb(255, 171, 0);
+}
+
+.text-links {
+  color: rgb(0, 122, 206);
+}
+
+.text-success {
+  color: rgb(54, 179, 126);
+}
+
+.text-warning {
+  color: rgb(255, 82, 48);
+}
+
+.text-heading {
+  color: rgb(48, 46, 70);
+}
+
+.bg-primary {
+  background: rgb(62, 62, 95);
+}
+
+.bg-primary-2 {
+  background: rgb(236, 76, 111);
+}
+
+ul {
+  margin: 0;
+}
+
+label {
+  font-size: 0.875rem;
+  text-align: left;
+  color: rgb(62, 62, 95);
+  text-transform: capitalize;
+}
+
+input[type=text],
+input[type=date],
+input[type=password] {
+  height: 36px;
+  border-radius: 2px;
+  border: 1px solid rgba(62, 62, 95, 0.2);
+  background-color: rgb(255, 255, 255);
+  padding: 8px;
+  clear: both;
+  display: block;
+  color: rgb(62, 62, 95);
+  width: 100%;
+  margin-top: 8px;
+}
+
+input[type=text]:focus,
+input[type=date]:focus {
+  outline: none;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px white inset;
+  border-color: #c9c9c9 !important;
+}
+
+textarea {
+  border-radius: 2px;
+  border: 1px solid rgba(62, 62, 95, 0.2);
+  background-color: rgb(255, 255, 255);
+  padding: 8px;
+  clear: both;
+  display: block;
+  color: rgb(62, 62, 95);
+  width: 100%;
+  resize: none;
+  height: 80px;
+  margin-top: 8px;
+  line-height: normal;
+}
+
+textarea:focus {
+  outline: none;
+}
+
+button {
+  height: 36px;
+  line-height: 36px;
+  padding: 0 20px;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 2px;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  background-color: #ec4c6f;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* Checkboxes
+   ========================================================================== */
+
+/* Remove default checkbox */
+[type='checkbox']:not(:checked),
+[type='checkbox']:checked {
+  opacity: 0;
+  position: absolute;
+}
+
+[type='checkbox']:checked + .checkbox {
+  background: #d3a0ff !important;
+  border-color: #d3a0ff;
+}
+
+[type='checkbox']:checked + .checkbox::before {
+  position: absolute;
+  content: '';
+  width: 2px;
+  height: 2px;
+  box-shadow: 2px 0 0 white, 4px 0 0 white, 4px -2px 0 white, 4px -4px 0 white, 4px -6px 0 white, 4px -8px 0 white;
+  transform: rotate(45deg);
+  color: white;
+  left: 2px;
+  top: 6px;
+}
+
+.checkbox {
+  position: relative;
+  cursor: pointer;
+  min-height: 16px;
+  min-width: 16px;
+  font-size: 1rem;
+  user-select: none;
+  background: white;
+  border: solid 1px #c4cdd5;
+  float: left;
+  border-radius: 3px;
+  margin-right: 8px;
+}
+
+/* Radio Buttons
+   ========================================================================== */
+
+[type='radio']:not(:checked),
+[type='radio']:checked {
+  opacity: 0;
+  position: absolute;
+  cursor: pointer;
+}
+
+[type='radio']:checked + .radio {
+  background: #fff !important;
+  border-color: #8b8bdf;
+}
+
+[type='radio']:checked + .radio::before {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  content: '';
+  min-width: 6.5px;
+  min-height: 6.5px;
+  border-radius: 50%;
+  background: #8b8bdf;
+}
+
+.radio {
+  min-height: 13px;
+  min-width: 13px;
+  font-size: 12px;
+  user-select: none;
+  background: transparent;
+  border: solid 1px #8b8bdf;
+  margin-right: 4px;
+  border-radius: 100%;
+  margin-top: 1px;
+  float: left;
+  position: relative;
+  cursor: pointer;
+}
+
+.row {
+  margin-bottom: 0;
+}
+
+hr {
+  margin: 0.5rem;
+}
+
+.body-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.4);
+  z-index: 2;
+  display: none;
+}
+
+.cover-full-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: auto;
+}
+
+.float-left {
+  float: left !important;
+}
+
+.float-right {
+  float: right !important;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.no-padding {
+  padding: 0 !important;
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.disabled * {
+  cursor: not-allowed !important;
+}
+
+.link {
+  cursor: pointer;
+}
+
+.button-as-text {
+  background: none !important;
+  color: inherit;
+  border: none;
+  padding: 0 !important;
+  font: inherit;
+  cursor: pointer;
+  width: 100%;
+}
+
+.border-box {
+  border: 1px solid rgba(62, 62, 95, 0.1);
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.filterOption label {
+  color: black !important;
+  font-size: 12px !important;
+  padding-left: 22px;
+}
+
+.filterOption div {
+  padding: 1px 0;
+}
+
+.filterOption input {
+  padding-top: 5px;
+}
+
+.select-wrapper span.caret {
+  font-size: 14px;
+}
+
+.select-wrapper i {
+  color: black;
+}
+
+.select-wrapper input.select-dropdown {
+  border-bottom: 1px solid #eee;
+  padding-left: 3px;
+}
+
+.number {
+  font-weight: 400;
+}
+
+/*
+#filters {
+  margin-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 0;
+}
+
+#reports {
+  margin-bottom: 5px;
+  margin-left: 0;
+  padding-left: 10px;
+}
+*/
+.custom-scrollbar {
+  overflow: auto;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: none;
+  border: 5px solid transparent;
+  background-clip: content-box;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 100px;
+  background-color: rgba(62, 62, 95, 0.2);
+  outline: 0;
+  width: 10px;
+  height: 134px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track:horizontal {
+  background: none;
+  border: 5px solid transparent;
+  background-clip: content-box;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:horizontal {
+  border-radius: 100px;
+  background-color: rgba(62, 62, 95, 0.2);
+  outline: 0;
+  width: 134px;
+  height: 10px;
+}
+
+.btn {
+  box-shadow: none;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+table {
+  border-collapse: collapse;
+  box-sizing: border-box;
+}
+
+.table-container {
+  display: inline-block;
+  max-width: 100%;
+  overflow: auto;
+}
+
+.overflow-ellipse {
+  width: 100px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+td.overflow-ellipse {
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.eg-table div.sortable {
+  cursor: pointer;
+}
+
+.eg-table tr div.sortable .fa {
+  padding-left: 5px;
+}
+
+.table-head::-webkit-scrollbar {
+  display: none;
+}
+
+.table-head {
+  overflow: auto;
+}
+
+#scroll-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+#scroll-wrapper {
+  overflow: hidden;
+}
+
+.table thead tr:last-child div:empty {
+  background: rgba(233, 235, 239, 1);
+}
+
+.table thead tr {
+  display: flex;
+  font-weight: 500;
+}
+
+.table thead tr:last-child {
+  background: rgba(233, 235, 239, 0.7);
+  text-align: center;
+}
+
+.table thead tr:first-child {
+  background: rgba(233, 235, 239, 1) !important;
+  text-transform: uppercase;
+}
+
+.table thead tr:last-child div {
+  padding: 11px 5px;
+}
+
+.table thead tr:first-child div {
+  padding: 11px 5px;
+}
+
+.table thead tr div {
+  float: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.table-default {
+  color: rgb(65, 65, 95);
+}
+
+.table-default thead th {
+  border-top: 1px solid #eee;
+  border-right: 1px solid #eee;
+  padding: 12px 4px;
+}
+
+.table-default td {
+  border-top: 1px solid #eee;
+  border-right: 1px solid #eee;
+  text-align: center;
+  padding: 9px 4px;
+}
+
+.table-default tr:last-child td {
+  border-bottom: 1px solid #eee;
+}
+
+.table-default tr td:first-child,
+.table-default tr th:first-child {
+  border-left: 1px solid #eee;
+}
+
+.table-default tr td:last-child,
+.table-default tr th:last-child {
+  border-right: 1px solid #eee;
+}
+
+.table-parent {
+  background-color: #fff;
+  border: solid 1px rgba(187, 190, 207, 0.38);
+  border-radius: 2px;
+}
+
+/*** Egnify Table Header Styling **/
+
+.eg-table thead {
+  position: initial;
+}
+
+.eg-table thead tr:last-child div:empty {
+  background: rgba(233, 235, 239, 1);
+}
+
+.eg-table thead tr {
+  display: flex;
+  font-weight: 500;
+}
+
+.eg-table thead tr:last-child {
+  background: rgba(233, 235, 239, 0.7);
+  text-align: center;
+}
+
+.eg-table thead tr:first-child {
+  background: rgba(233, 235, 239, 1) !important;
+  text-transform: uppercase;
+}
+
+.eg-table thead tr div {
+  padding: 0.75rem 0.25rem;
+  line-height: 1rem;
+}
+
+.eg-table thead tr div {
+  float: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/*** Egnify Table Body Styling **/
+
+.eg-table tbody tr div {
+  padding: 14px 5px;
+  float: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  text-align: center;
+}
+
+.eg-table tbody tr {
+  display: flex;
+}
+
+.eg-table tbody tr:nth-child(odd) div {
+  border-top: 0;
+  border-color: none;
+}
+
+.eg-table tbody tr:nth-child(even) div {
+  background-color: rgba(233, 235, 239, 0.25);
+}
+
+.eg-table tbody tr:nth-child(odd) div:first-child {
+  border-left: 0;
+}
+
+.eg-table tbody tr:nth-child(odd) div:last-child {
+  border-right: 0;
+}
+
+.eg-table tbody tr div a {
+  color: rgb(0, 122, 206);
+  text-transform: uppercase;
+}
+
+.eg-table tbody tr div a:hover {
+  text-decoration: underline;
+}
+
+/*** hovarable table styling **/
+
+.eg-table.eg-table-hoverable tbody tr:hover {
+  background: rgba(209, 222, 245, 0.16);
+}
+
+.eg-table.eg-table-hoverable tbody tr:nth-child(even):hover div {
+  background: rgba(209, 222, 245, 0.16);
+}
+
+.eg-table-hoverable tbody tr {
+  background-color: #fff;
+}
+
+.eg-table.eg-table-hoverable tbody tr:nth-child(even) div {
+  background-color: #fff;
+}
+
+.eg-table div.sortable {
+  cursor: pointer;
+}
+
+.eg-table tr div.sortable .fa {
+  padding-left: 5px;
+}
+
+.eg-table .group-end {
+  border-right: solid 1px rgba(118, 118, 154, 0.2);
+}
+
+.hide-overflow {
+  width: 98%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.normal-text {
+  font-weight: 400 !important;
+}
+
+.verticalDivider {
+  height: 100%;
+  width: 1px !important;
+  background: rgba(187, 190, 207, 0.38);
+}
+
+.horizontalDivider {
+  height: 1px !important;
+  width: 100%;
+  background: rgba(187, 190, 207, 0.38);
+}
+
+.ui.dropdown.spDropdown > .text {
+  color: #212b36 !important;
+  font-weight: normal !important;
+}
+
+.ui.selection.active.dropdown.spDropdown .menu {
+  width: 144px !important;
+  border-radius: 4px;
+  margin-top: 1px !important;
+  border: solid 1px rgba(62, 62, 95, 0.1);
+}
+
+.ui.selection.active.dropdown.spDropdown .menu:hover {
+  box-shadow: none;
+}
+
+.ui.selection.dropdown.spDropdown .menu > .item {
+  background-color: #fff;
+  font-size: 14px;
+  color: #3e3e5f;
+  font-weight: normal;
+}
+
+.ui.dropdown.spDropdown .menu .item:hover {
+  background-color: #3e3e5f;
+  color: #fff;
+  font-weight: 600;
+}
+
+.ui.selection.dropdown.spDropdown {
+  width: 104px !important;
+  height: 32px !important;
+  border: solid 1px rgba(62, 62, 95, 0.1);
+  line-height: 1.67;
+}
+
+.ui.selection.dropdown.spDropdown:hover {
+  border: solid 1px rgba(62, 62, 95, 0.1);
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.selcted-filters-link {
+  margin: 1rem 0;
+  color: #8b8bdf;
+  font-weight: 500;
+  line-height: 1.735rem;
+  cursor: pointer;
+  user-select: none;
+  text-align: left;
+  text-transform: none;
+}
+
+@media only screen and (max-width: 1366px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+/*
+@media only screen and (max-width: 1360px) {
+
+}
+
+@media only screen and (min-width: 1361px) {
+
+}
+
+@media only screen and (min-width: 1600px) {
+
+}
+*/
