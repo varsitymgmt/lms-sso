@@ -8,7 +8,7 @@ mongoose.Promise = require('bluebird');
 
 // import {registerEvents} from './user.events';
 
-function getRandomHash(){
+function getRandomHash() {
   const rand = Math.random().toString(36).slice(2);
   return Buffer.from(rand).toString('base64');
 }
@@ -46,7 +46,11 @@ const UserSchema = new Schema({
   forgotPassSecureHashExp: { type: Date },
   passwordChange: { type: Boolean, default: true },
   userId: { type: String },
-  username: { type: String, required: true },
+  username: {
+    type: String,
+    required: true,
+    uppercase: true
+  },
   imageUrl: { type: String },
   active: { type: Boolean, default: true },
   hierarchy: {
@@ -54,13 +58,13 @@ const UserSchema = new Schema({
     default: [],
     required: true,
   },
-  rawHierarchy:{
+  rawHierarchy: {
     type: JSON,
     default: [],
     required: true,
   },
-  loginHash:{
-    type:String,
+  loginHash: {
+    type: String,
     // default: getRandomHash,
   }
 });
@@ -130,10 +134,10 @@ UserSchema.path('role').validate(async function roleValidation(role) {
 }, 'Invalid Role name provided');
 
 // Validate email is not taken
-UserSchema.path('email').validate(function(value) {
+UserSchema.path('email').validate(function (value) {
   const hostname = this.hostname
   return this.constructor
-    .findOne({ email: value,active:true,hostname })
+    .findOne({ email: value, active: true, hostname })
     .exec()
     .then(user => {
       if (user) {
@@ -151,10 +155,10 @@ UserSchema.path('email').validate(function(value) {
 
 
 // Validate userName is not taken
-UserSchema.path('username').validate(function(value) {
+UserSchema.path('username').validate(function (value) {
   const hostname = this.hostname
   return this.constructor
-    .findOne({ username: value,active:true ,hostname})
+    .findOne({ username: value, active: true, hostname })
     .exec()
     .then(user => {
       if (user) {
@@ -170,14 +174,14 @@ UserSchema.path('username').validate(function(value) {
     });
 }, 'The specified username is already in use.');
 
-const validatePresenceOf = function(value) {
+const validatePresenceOf = function (value) {
   return value && value.length;
 };
 
 /**
  * Pre-save hook
  */
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function (next) {
   // Handle new/update passwords
 
   if (!this.isModified('password')) {

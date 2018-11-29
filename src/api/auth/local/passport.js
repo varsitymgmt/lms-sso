@@ -16,7 +16,7 @@ function localAuthenticate(req, User, login, password, done) {
         email: login.toLowerCase(),
       },
       {
-        username: login.toLowerCase(),
+        username: login.toUpperCase(),
       },
     ],
     active: true,
