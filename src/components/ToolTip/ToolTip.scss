@@ -1,0 +1,51 @@
+.root span:first-child {
+  height: 100% !important;
+
+  div:last-child {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    text-align: left;
+  }
+}
+
+.bodyContent {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  text-align: left;
+  text-transform: none;
+
+  span:first-child {
+    height: auto !important;
+
+    div:last-child {
+      height: auto !important;
+      display: flex;
+      align-items: left;
+      text-align: left;
+    }
+  }
+}
+
+.infoIcon {
+  width: 0.87rem;
+  height: 14px;
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+.textContent {
+  width: 12.5rem;
+  hyphens: auto;
+  font-weight: 400;
+  align-items: flex-start !important;
+  height: auto !important;
+  text-align: left !important;
+
+  div {
+    align-items: flex-start !important;
+    height: auto !important;
+    text-align: left !important;
+  }
+}
