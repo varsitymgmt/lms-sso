@@ -200,25 +200,19 @@ deploy-sso-qa:
 
 deploy-uat:
   stage: deploy
-  image: arbaz7/gcloud-kubectl-helm:latest
+  image: google/cloud-sdk:latest
   services:
     - docker:dind
   before_script:
     - mkdir -p /etc/deploy
-    - echo ${kube_config} > kube_config
-    - base64 -d kube_config > ${KUBECONFIG}
-    - echo ${gcloud_auth} > gcloud_auth.base64
+    - echo ${GLOUD_AUTH_DEV} > gcloud_auth.base64
     - base64 -d gcloud_auth.base64 > gcloud_auth.json
-    # - kubectl config use-context gke_egnify-product_us-central1-a_hydra-federation
-    - helm init --client-only
     - gcloud auth activate-service-account --key-file=gcloud_auth.json
-    - helm repo update
-    - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
   script:
     - export NAMESPACE=uat;
-    - export RELEASE_NAME=sso-${NAMESPACE}-hydra
-    - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
-    - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
+    - cd build/
+    - gsutil cp gs://hydra-config-dev/config/hydra-sso/app.yaml .
+    - gcloud app deploy --project egnify-product --stop-previous-version --promote -q
   environment:
     name: uat
     # url: https://qa.hydra.egnify.io
