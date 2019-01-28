@@ -84,7 +84,6 @@ release:
   only:
     - development
     - qa
-    - uat
     - sso/development
     - sso/qa
     - spica/development
@@ -211,7 +210,7 @@ deploy-uat:
   script:
     - export NAMESPACE=uat;
     - cd build/
-    - gsutil cp gs://hydra-config-dev/config/hydra-sso/app.yaml .
+    - gsutil cp gs://hydra-config-dev/config/${CI_PROJECT_NAME}/app.yaml .
     - gcloud app deploy --project egnify-product --stop-previous-version --promote -q
   environment:
     name: uat
