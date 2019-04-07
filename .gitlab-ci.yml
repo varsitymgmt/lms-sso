@@ -111,7 +111,7 @@ deploy-dev:
     - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
   script:
     - export NAMESPACE=dev;
-    - export RELEASE_NAME=sso-${NAMESPACE}-hydra
+    - export RELEASE_NAME=sso-${NAMESPACE}-lms
     - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
     - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
   environment:
