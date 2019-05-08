@@ -1,3 +1,5 @@
+git checkout development;
+git pull origin development;
 export CI_BUILD_REF=latest;
 export NAMESPACE=development;
 export RELEASE_NAME=sso-${NAMESPACE}-lms
