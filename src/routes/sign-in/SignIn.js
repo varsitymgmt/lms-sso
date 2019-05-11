@@ -94,22 +94,16 @@ class SignIn extends React.Component {
     const view = (
       <div className={s.signInSection}>
         <div className={`${s.headingRow}`} style={{ minHeight: '49px' }}>
-          <img src="/images/egnify-logo.svg" alt="logo" />
+          <img src="/images/rank-guru.svg" alt="logo" />
         </div>
         <div style={{ minHeight: '53px' }}>
-          <div className={`col m12 ${s.wishMessage}`}>{this.state.wlcmMsg}</div>
-          <div className={`col m12 ${s.signInMessage}`}>
-            Sign into your account
-          </div>
+          <div className={s.wishMessage}>Welcome</div>
+          <div className={s.signInMessage}>Sign into your account</div>
         </div>
         <form onSubmit={this.handleLogin} action="#">
           <div className={`row ${s.emailEntrySection}`}>
             <div className={`row ${s.email}`}>
-              <img
-                src={this.state.emailImgSrc}
-                alt="email"
-                className={`${s.emailImg}`}
-              />
+              <div className={s.inputText}>Admission ID</div>
               <input
                 placeholder="Username"
                 id="email"
@@ -124,11 +118,30 @@ class SignIn extends React.Component {
           </div>
           <div className={`row ${s.passwordEntrySection}`}>
             <div className={`row ${s.email}`}>
-              <img
-                src={this.state.passwordImgSrc}
-                alt="password"
-                className={`${s.emailImg}`}
-              />
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <div className={s.inputText}>Password</div>
+                <div
+                  className={`col m6 ${s.showPassword}`}
+                  onClick={() => {
+                    if (
+                      this.state.formData.password &&
+                      this.state.formData.password.length > 0
+                    ) {
+                      this.setState({
+                        showPassword: !this.state.showPassword,
+                      });
+                    }
+                  }}
+                  role="presentation"
+                >
+                  {this.state.showPassword ? 'Hide Password' : 'Show password'}
+                </div>
+              </div>
               <input
                 placeholder="Password"
                 id="password"
@@ -158,26 +171,10 @@ class SignIn extends React.Component {
                 Keep me signed in
               </label>
             </div>
-            <div
-              className={`col m6 ${s.showPassword}`}
-              onClick={() => {
-                if (
-                  this.state.formData.password &&
-                  this.state.formData.password.length > 0
-                ) {
-                  this.setState({
-                    showPassword: !this.state.showPassword,
-                  });
-                }
-              }}
-              role="presentation"
-            >
-              {this.state.showPassword ? 'Hide Password' : 'Show password'}
-            </div>
           </div>
           <div className={`row`}>
             <button className={`btn ${s.loginBtn}`} onClick={this.handleLogin}>
-              Get Started
+              SIGN IN
             </button>
           </div>
           <div className={`row`}>
@@ -208,10 +205,18 @@ class SignIn extends React.Component {
           height: '100%',
         }}
       >
-        <div style={{ fontSize: '30px', color: 'white', textAlign: 'center' }}>
-          Insightful Analysis is just a click away!
-        </div>
         <img src={welcomeImg} alt="welcome" />
+        <div
+          style={{
+            fontSize: '36px',
+            color: '#3e3e5f',
+            textAlign: 'center',
+            fontWeight: 300,
+            marginTop: '30px',
+          }}
+        >
+          Welcome to Rankguru!
+        </div>
       </div>
     );
     return view;

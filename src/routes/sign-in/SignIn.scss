@@ -15,13 +15,12 @@
 
 .welcomeContainer {
   height: 100%;
-  background-color: #3e3e5f;
+  background-color: rgba(236, 76, 111, 0.2);
   width: calc(100% - 500px);
 
   img {
     width: 55%;
     margin: 0 auto;
-    margin-top: 40px;
   }
 }
 
@@ -35,16 +34,14 @@
 }
 
 .wishMessage {
-  text-align: center;
   letter-spacing: 1px;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
 }
 
 .signInMessage {
-  text-align: center;
   letter-spacing: 1px;
-  font-size: 18px;
+  font-size: 16px;
   margin-top: 8px;
   font-weight: 300;
 }
@@ -56,7 +53,7 @@
 
 .passwordEntrySection {
   font-size: 14px;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .email {
@@ -66,10 +63,15 @@
   color: #eee;
 }
 
+.inputText {
+  font-size: 14px;
+  color: #5f6368;
+}
+
 .textbox {
   width: 100%;
   height: 48px !important;
-  padding-left: 40px !important;
+  padding-left: 20px !important;
   border: 1px solid rgba(62, 62, 95, 0.5) !important;
   border-radius: 4px;
   outline: none;
@@ -97,9 +99,9 @@
 }
 
 .loginBtn {
-  margin-top: 30px;
+  margin-top: 60px;
+  font-weight: 600;
   width: 100%;
-  font-weight: normal;
   height: 55px;
   border-radius: 50px;
   background-color: #ec4c6f;
@@ -153,14 +155,6 @@
   :active {
     outline: none;
   }
-}
-
-.emailImg {
-  margin-left: 12px;
-  margin-top: 15px;
-  position: absolute !important;
-  height: 19px;
-  width: 19px;
 }
 
 .postEntrySection {
@@ -285,7 +279,7 @@
 
   .welcomeContainer {
     img {
-      margin-top: 80px;
+      margin-top: 40px;
     }
   }
 }
