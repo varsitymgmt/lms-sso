@@ -23,6 +23,11 @@ const routes = {
       load: () =>
         import(/* webpackChunkName: 'ResetPassword' */ './reset-password'),
     },
+    {
+      path: '/forgotPassword',
+      authenticate: false,
+      load: () => import(/* webpackChunkName: 'forgot' */ './forgot-password'),
+    },
     // Wildcard routes, e.g. { path: '*', ... } (must go last)
     {
       path: '*',
