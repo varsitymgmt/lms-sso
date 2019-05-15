@@ -12,7 +12,6 @@ import {
   // getRoleBasedHost,
 } from 'utils/HelperMethods';
 import Loader from 'components/Loader';
-import welcomeImg from './welcome.svg';
 import s from './SignIn.scss';
 
 class SignIn extends React.Component {
@@ -94,7 +93,7 @@ class SignIn extends React.Component {
     const view = (
       <div className={s.signInSection}>
         <div className={`${s.headingRow}`} style={{ minHeight: '49px' }}>
-          <img src="/images/rank-guru.svg" alt="logo" />
+          <img src="/images/rankGuru.png" alt="logo" />
         </div>
         <div style={{ minHeight: '53px' }}>
           <div className={s.wishMessage}>Welcome</div>
@@ -182,7 +181,7 @@ class SignIn extends React.Component {
               <div
                 role="presentation"
                 onClick={() => {
-                  this.resetForgotPasswordChanges();
+                  window.open('/forgotPassword');
                 }}
               >
                 Forgot password?
@@ -205,7 +204,7 @@ class SignIn extends React.Component {
           height: '100%',
         }}
       >
-        <img src={welcomeImg} alt="welcome" />
+        <img src="/images/welcome.svg" alt="welcome" />
         <div
           style={{
             fontSize: '36px',
