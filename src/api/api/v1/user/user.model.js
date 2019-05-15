@@ -66,6 +66,9 @@ const UserSchema = new Schema({
   loginHash: {
     type: String,
     // default: getRandomHash,
+  },
+  contactNumber: {
+    type: String,
   }
 });
 

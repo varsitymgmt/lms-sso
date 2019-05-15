@@ -830,3 +830,125 @@ export async function resetStudentPassword(req,res){
     })
   }
 }
+export async function chaitanyaAPI(userDetails) {
+  //call chaitanya's API
+  return 1;
+}
+
+export async function sendOTP(req, res) {
+  const admissionNo = req.body.admissionNo.toUpperCase();
+  if (!admissionNo) {
+    return res.status(403).send('Please send admission no.');
+  }
+  const saltRounds = 10;
+
+  // Find if the given User email exists in the database.
+  const usrDetails = await User.findOne({username: admissionNo}, {userName: 1, contactNumber: 1});
+  // If No users have been found with give email.
+  if (usrDetails.length === 0) {
+    res.status(404).send({
+      usersFound: false,
+      message: 'Invalid User',
+    });
+  } else {
+    usrDetails.otp = Math.floor(1000 + Math.random() * 9000);
+    const exp = Date.now() + 1000 * 60 * 3; // expiry time in ms
+    const payload = {
+      username: admissionNo,
+      otp: usrDetails.otp,
+    };
+    // If a valid user exists with the given email.
+    // Generate a secure hash for a user to store in our db.
+    bcrypt.hash(JSON.stringify(payload), saltRounds, (err, hash) => {
+      User.update(
+        {
+          username: admissionNo,
+        },
+        {
+          $set: {
+            forgotPassSecureHash: hash,
+            forgotPassSecureHashExp: exp,
+          },
+        },
+        (err1, docs) => {
+          if (docs) {
+            chaitanyaAPI(admissionNo, usrDetails.otp).then(() => {
+              return userDetails.contactNumber;
+            });
+          }
+          if (err1) console.error(err1);
+        },
+      );
+    });
+  }
+}
+
+export async function verifyOTP(req, res) {
+  const { username, otp } = req.body;
+  if (!admissionNo) {
+    return res.status(403).send('Please send admission no.');
+  }
+  const saltRounds = 10;
+  const userEnteredData = {
+    username,
+    otp
+  };
+  // Find if the given User email exists in the database.
+  const usrDetails = await User.findOne({username: admissionNo}, {userName: 1, forgotPassSecureHash: 1});
+  // If No users have been found with give email.
+  if (usrDetails.length === 0) {
+    res.status(404).send({
+      usersFound: false,
+      message: 'Invalid User',
+    });
+  } else {
+    bcrypt.hash(JSON.stringify(userEnteredData), saltRounds, (err, hash) => {
+      bcrypt.compare(hash, userDetails.forgotPassSecureHash).then(match => {
+        if(match) {
+          res.status(200).send({
+            message: true,
+          });
+        } else {
+          res.status(404).send({
+            message: false,
+          });
+        }
+      });
+    });
+  }
+}
+
+export async function resetPassword(req, res) {
+  const { password } = req.body;
+  if (!password) {
+    return res.status(403).send('Please send password');
+  }
+  const saltRounds = 10;
+  const userEnteredData = {
+    username,
+    otp
+  };
+  // Find if the given User email exists in the database.
+  const usrDetails = await User.findOne({username: admissionNo}, {userName: 1, forgotPassSecureHash: 1});
+  // If No users have been found with give email.
+  if (usrDetails.length === 0) {
+    res.status(404).send({
+      usersFound: false,
+      message: 'Invalid User',
+    });
+  } else {
+    bcrypt.hash(JSON.stringify(userEnteredData), saltRounds, (err, hash) => {
+      bcrypt.compare(hash, userDetails.forgotPassSecureHash).then(match => {
+        if(match) {
+          res.status(200).send({
+            message: true,
+          });
+        } else {
+          res.status(404).send({
+            message: false,
+          });
+        }
+      });
+    });
+  }
+}
