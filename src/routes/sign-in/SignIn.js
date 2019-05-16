@@ -12,7 +12,6 @@ import {
   // getRoleBasedHost,
 } from 'utils/HelperMethods';
 import Loader from 'components/Loader';
-import welcomeImg from './welcome.svg';
 import s from './SignIn.scss';
 
 class SignIn extends React.Component {
@@ -45,7 +44,6 @@ class SignIn extends React.Component {
     };
     this.handleLogin = this.handleLogin.bind(this);
     this.setWelcomeMesage = this.setWelcomeMesage.bind(this);
-    this.validateEmail = this.validateEmail.bind(this);
   }
 
   componentDidMount() {
@@ -94,22 +92,16 @@ class SignIn extends React.Component {
     const view = (
       <div className={s.signInSection}>
         <div className={`${s.headingRow}`} style={{ minHeight: '49px' }}>
-          <img src="/images/egnify-logo.svg" alt="logo" />
+          <img src="/images/rankGuruLogo.png" alt="logo" />
         </div>
         <div style={{ minHeight: '53px' }}>
-          <div className={`col m12 ${s.wishMessage}`}>{this.state.wlcmMsg}</div>
-          <div className={`col m12 ${s.signInMessage}`}>
-            Sign into your account
-          </div>
+          <div className={s.wishMessage}>Welcome</div>
+          <div className={s.signInMessage}>Sign into your account</div>
         </div>
         <form onSubmit={this.handleLogin} action="#">
           <div className={`row ${s.emailEntrySection}`}>
             <div className={`row ${s.email}`}>
-              <img
-                src={this.state.emailImgSrc}
-                alt="email"
-                className={`${s.emailImg}`}
-              />
+              <div className={s.inputText}>Admission ID</div>
               <input
                 placeholder="Username"
                 id="email"
@@ -124,11 +116,30 @@ class SignIn extends React.Component {
           </div>
           <div className={`row ${s.passwordEntrySection}`}>
             <div className={`row ${s.email}`}>
-              <img
-                src={this.state.passwordImgSrc}
-                alt="password"
-                className={`${s.emailImg}`}
-              />
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <div className={s.inputText}>Password</div>
+                <div
+                  className={`col m6 ${s.showPassword}`}
+                  onClick={() => {
+                    if (
+                      this.state.formData.password &&
+                      this.state.formData.password.length > 0
+                    ) {
+                      this.setState({
+                        showPassword: !this.state.showPassword,
+                      });
+                    }
+                  }}
+                  role="presentation"
+                >
+                  {this.state.showPassword ? 'Hide Password' : 'Show password'}
+                </div>
+              </div>
               <input
                 placeholder="Password"
                 id="password"
@@ -158,34 +169,18 @@ class SignIn extends React.Component {
                 Keep me signed in
               </label>
             </div>
-            <div
-              className={`col m6 ${s.showPassword}`}
-              onClick={() => {
-                if (
-                  this.state.formData.password &&
-                  this.state.formData.password.length > 0
-                ) {
-                  this.setState({
-                    showPassword: !this.state.showPassword,
-                  });
-                }
-              }}
-              role="presentation"
-            >
-              {this.state.showPassword ? 'Hide Password' : 'Show password'}
-            </div>
           </div>
           <div className={`row`}>
             <button className={`btn ${s.loginBtn}`} onClick={this.handleLogin}>
-              Get Started
+              SIGN IN
             </button>
           </div>
-          <div className={`row`}>
+          <div className={`row hide`}>
             <div className={s.forgotPassword}>
               <div
                 role="presentation"
                 onClick={() => {
-                  this.resetForgotPasswordChanges();
+                  window.open('/forgotPassword');
                 }}
               >
                 Forgot password?
@@ -208,10 +203,18 @@ class SignIn extends React.Component {
           height: '100%',
         }}
       >
-        <div style={{ fontSize: '30px', color: 'white', textAlign: 'center' }}>
-          Insightful Analysis is just a click away!
+        <img src="/images/welcome.svg" alt="welcome" />
+        <div
+          style={{
+            fontSize: '36px',
+            color: '#3e3e5f',
+            textAlign: 'center',
+            fontWeight: 300,
+            marginTop: '30px',
+          }}
+        >
+          Welcome to Rankguru!
         </div>
-        <img src={welcomeImg} alt="welcome" />
       </div>
     );
     return view;
@@ -394,10 +397,10 @@ class SignIn extends React.Component {
   validateDetails() {
     let validity = true;
     const formFieldsError = {};
-    if (!this.validateEmail()) {
-      formFieldsError.email = 'Invalid Email';
-      validity = false;
-    }
+    // if (!this.validateEmail()) {
+    //   formFieldsError.email = 'Invalid Email';
+    //   validity = false;
+    // }
     if (this.state.formData.password.length === 0) {
       formFieldsError.password = 'Password cannot be empty';
       validity = false;
@@ -406,19 +409,19 @@ class SignIn extends React.Component {
     return validity;
   }
 
-  validateEmail() {
-    const email = this.state.formData.email;
-    const List = email.split('@');
-    if (List.length > 1) {
-      const tmpList = List[1].split('.');
-      if (tmpList.length === 1) {
-        return false;
-      }
-    } else {
-      return false;
-    }
-    return true;
-  }
+  // validateEmail() {
+  //   const email = this.state.formData.email;
+  //   const List = email.split('@');
+  //   if (List.length > 1) {
+  //     const tmpList = List[1].split('.');
+  //     if (tmpList.length === 1) {
+  //       return false;
+  //     }
+  //   } else {
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
   redirectBackToHost = (host, token, accessControlToken, email) => {
     if (host) {
