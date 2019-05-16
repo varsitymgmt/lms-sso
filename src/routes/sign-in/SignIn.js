@@ -44,7 +44,6 @@ class SignIn extends React.Component {
     };
     this.handleLogin = this.handleLogin.bind(this);
     this.setWelcomeMesage = this.setWelcomeMesage.bind(this);
-    this.validateEmail = this.validateEmail.bind(this);
   }
 
   componentDidMount() {
