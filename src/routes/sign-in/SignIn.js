@@ -398,10 +398,10 @@ class SignIn extends React.Component {
   validateDetails() {
     let validity = true;
     const formFieldsError = {};
-    if (!this.validateEmail()) {
-      formFieldsError.email = 'Invalid Email';
-      validity = false;
-    }
+    // if (!this.validateEmail()) {
+    //   formFieldsError.email = 'Invalid Email';
+    //   validity = false;
+    // }
     if (this.state.formData.password.length === 0) {
       formFieldsError.password = 'Password cannot be empty';
       validity = false;
@@ -410,19 +410,19 @@ class SignIn extends React.Component {
     return validity;
   }
 
-  validateEmail() {
-    const email = this.state.formData.email;
-    const List = email.split('@');
-    if (List.length > 1) {
-      const tmpList = List[1].split('.');
-      if (tmpList.length === 1) {
-        return false;
-      }
-    } else {
-      return false;
-    }
-    return true;
-  }
+  // validateEmail() {
+  //   const email = this.state.formData.email;
+  //   const List = email.split('@');
+  //   if (List.length > 1) {
+  //     const tmpList = List[1].split('.');
+  //     if (tmpList.length === 1) {
+  //       return false;
+  //     }
+  //   } else {
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
   redirectBackToHost = (host, token, accessControlToken, email) => {
     if (host) {
