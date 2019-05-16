@@ -92,7 +92,7 @@ class SignIn extends React.Component {
     const view = (
       <div className={s.signInSection}>
         <div className={`${s.headingRow}`} style={{ minHeight: '49px' }}>
-          <img src="/images/rankGuru.png" alt="logo" />
+          <img src="/images/rankGuruLogo.png" alt="logo" />
         </div>
         <div style={{ minHeight: '53px' }}>
           <div className={s.wishMessage}>Welcome</div>
@@ -175,7 +175,7 @@ class SignIn extends React.Component {
               SIGN IN
             </button>
           </div>
-          <div className={`row`}>
+          <div className={`row hide`}>
             <div className={s.forgotPassword}>
               <div
                 role="presentation"
