@@ -239,32 +239,32 @@ function validateEmail(email) {
 }
 
 // function to reset password using forgethashtoken and new password
-export async function resetpassword(req, res) {
-  const { hashToken } = req.body;
-  const newPassword = req.body.password;
-  if (hashToken && newPassword) {
-    return User.findOne({
-      forgotPassSecureHash: hashToken,
-    })
-      .then(user => {
-        if (Date.now() <= user.forgotPassSecureHashExp) {
-          user.password = newPassword;
-          user.forgotPassSecureHash = '';
-          return user
-            .save()
-            .then(() => {
-              res.status(200).end();
-            })
-            .catch(validationError(res));
-        }
-
-        return res.status(403).send('Link Expired');
-      })
-      .catch(() => res.status(403).end());
-  }
-
-  return res.status(403).send('Invalid Parameter');
-}
+// export async function resetpassword(req, res) {
+//   const { hashToken } = req.body;
+//   const newPassword = req.body.password;
+//   if (hashToken && newPassword) {
+//     return User.findOne({
+//       forgotPassSecureHash: hashToken,
+//     })
+//       .then(user => {
+//         if (Date.now() <= user.forgotPassSecureHashExp) {
+//           user.password = newPassword;
+//           user.forgotPassSecureHash = '';
+//           return user
+//             .save()
+//             .then(() => {
+//               res.status(200).end();
+//             })
+//             .catch(validationError(res));
+//         }
+//
+//         return res.status(403).send('Link Expired');
+//       })
+//       .catch(() => res.status(403).end());
+//   }
+//
+//   return res.status(403).send('Invalid Parameter');
+// }
 
 // function to validate forgethashtoken
 export async function validateForgotPassSecureHash(req, res) {
@@ -830,20 +830,23 @@ export async function resetStudentPassword(req,res){
     })
   }
 }
+
+
+
 export async function chaitanyaAPI(userDetails) {
   //call chaitanya's API
   return 1;
 }
 
 export async function sendOTP(req, res) {
-  const admissionNo = req.body.admissionNo.toUpperCase();
-  if (!admissionNo) {
-    return res.status(403).send('Please send admission no.');
+  const username = req.body.username.toUpperCase();
+  if (!username) {
+    return res.status(403).send('Please send username');
   }
   const saltRounds = 10;
 
   // Find if the given User email exists in the database.
-  const usrDetails = await User.findOne({username: admissionNo}, {userName: 1, contactNumber: 1});
+  const usrDetails = await User.findOne({username: username}, {userName: 1, contactNumber: 1});
   // If No users have been found with give email.
   if (usrDetails.length === 0) {
     res.status(404).send({
@@ -854,7 +857,7 @@ export async function sendOTP(req, res) {
     usrDetails.otp = Math.floor(1000 + Math.random() * 9000);
     const exp = Date.now() + 1000 * 60 * 3; // expiry time in ms
     const payload = {
-      username: admissionNo,
+      username: username,
       otp: usrDetails.otp,
     };
     // If a valid user exists with the given email.
@@ -862,7 +865,7 @@ export async function sendOTP(req, res) {
     bcrypt.hash(JSON.stringify(payload), saltRounds, (err, hash) => {
       User.update(
         {
-          username: admissionNo,
+          username: username,
         },
         {
           $set: {
@@ -872,7 +875,7 @@ export async function sendOTP(req, res) {
         },
         (err1, docs) => {
           if (docs) {
-            chaitanyaAPI(admissionNo, usrDetails.otp).then(() => {
+            chaitanyaAPI(username, usrDetails.otp).then(() => {
               return userDetails.contactNumber;
             });
           }
@@ -885,8 +888,8 @@ export async function sendOTP(req, res) {
 
 export async function verifyOTP(req, res) {
   const { username, otp } = req.body;
-  if (!admissionNo) {
-    return res.status(403).send('Please send admission no.');
+  if (!username) {
+    return res.status(403).send('Please send username');
   }
   const saltRounds = 10;
   const userEnteredData = {
@@ -894,7 +897,7 @@ export async function verifyOTP(req, res) {
     otp
   };
   // Find if the given User email exists in the database.
-  const usrDetails = await User.findOne({username: admissionNo}, {userName: 1, forgotPassSecureHash: 1});
+  const usrDetails = await User.findOne({username: username}, {userName: 1, forgotPassSecureHash: 1});
   // If No users have been found with give email.
   if (usrDetails.length === 0) {
     res.status(404).send({
@@ -918,37 +921,24 @@ export async function verifyOTP(req, res) {
   }
 }
 
-export async function resetPassword(req, res) {
-  const { password } = req.body;
-  if (!password) {
-    return res.status(403).send('Please send password');
+export async function resetpassword(req, res) {
+  const { username } = req.body;
+  const newPassword = req.body.password;
+  if (hashToken && newPassword) {
+    return User.findOne({
+      username: username,
+    })
+      .then(user => {
+          user.password = newPassword;
+          return user
+            .save()
+            .then(() => {
+              res.status(200).end();
+            })
+            .catch(validationError(res));
+      })
+      .catch(() => res.status(403).end());
   }
-  const saltRounds = 10;
-  const userEnteredData = {
-    username,
-    otp
-  };
-  // Find if the given User email exists in the database.
-  const usrDetails = await User.findOne({username: admissionNo}, {userName: 1, forgotPassSecureHash: 1});
-  // If No users have been found with give email.
-  if (usrDetails.length === 0) {
-    res.status(404).send({
-      usersFound: false,
-      message: 'Invalid User',
-    });
-  } else {
-    bcrypt.hash(JSON.stringify(userEnteredData), saltRounds, (err, hash) => {
-      bcrypt.compare(hash, userDetails.forgotPassSecureHash).then(match => {
-        if(match) {
-          res.status(200).send({
-            message: true,
-          });
-        } else {
-          res.status(404).send({
-            message: false,
-          });
-        }
-      });
-    });
-  }
+
+  return res.status(403).send('Invalid Parameter');
 }
