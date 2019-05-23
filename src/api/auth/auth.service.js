@@ -282,17 +282,22 @@ export async function verifyUsername(req, res) {
     .then(userObj => {
       if (userObj && userObj.password) {
         return res.send({
+          message: 'Success',
           authorized: true,
           firstTimeLogin: false,
         });
       }
       if (userObj && !userObj.password) {
         return res.send({
+          message: 'Success',
           authorized: true,
           firstTimeLogin: true,
         });
       }
-      return res.status(401).send({ Authorized: false });
+      return res.status(401).send({ message: 'Success', authorized: false });
     })
-    .catch(err => res.send({ status: 'FAILED', message: err }));
+    .catch(err => {
+      console.error(err);
+      res.status(500).send({ message: 'Something went wrong' });
+    });
 }
