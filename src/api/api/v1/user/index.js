@@ -49,5 +49,4 @@ router.post(
   can(config.accessType.write),
   controller.resetStudentPassword,
 );
-
 export default router;
