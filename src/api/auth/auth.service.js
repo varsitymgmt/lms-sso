@@ -265,9 +265,9 @@ export function hasRole(systemRole, readOnlyRole = []) {
 // function to delete Student users
 export async function verifyUsername(req, res) {
   // console.log("req", req.body);
-  const username = req.body.username.toUpperCase().trim();
+  const email = req.body.email.toUpperCase().trim();
   const hostname = req.body.hostname;
-  if (!username) {
+  if (!email) {
     res.status(404).send({
       status: 'Error',
       message: 'please provide username',
@@ -279,7 +279,7 @@ export async function verifyUsername(req, res) {
       message: 'please provide hostname',
     });
   }
-  return User.findOne({ studentId: username, hostname, active: true })
+  return User.findOne({ studentId: email, hostname, active: true })
     .then(userObj => {
       if (userObj && userObj.password) {
         return res.send({
