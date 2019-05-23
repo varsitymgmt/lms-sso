@@ -261,3 +261,44 @@ export function hasRole(systemRole, readOnlyRole = []) {
     });
   };
 }
+
+// function to delete Student users
+export async function verifyUsername(req, res) {
+  // console.log("req", req.body);
+  const email = req.body.email.toUpperCase().trim();
+  const hostname = req.body.hostname;
+  if (!email) {
+    res.status(404).send({
+      status: 'Error',
+      message: 'please provide username',
+    });
+  }
+  if (!hostname) {
+    res.status(404).send({
+      status: 'Error',
+      message: 'please provide hostname',
+    });
+  }
+  return User.findOne({ studentId: email, hostname, active: true })
+    .then(userObj => {
+      if (userObj && userObj.password) {
+        return res.send({
+          message: 'Success',
+          authorized: true,
+          firstTimeLogin: false,
+        });
+      }
+      if (userObj && !userObj.password) {
+        return res.send({
+          message: 'Success',
+          authorized: true,
+          firstTimeLogin: true,
+        });
+      }
+      return res.status(401).send({ message: 'failed', authorized: false });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send({ message: 'Something went wrong' });
+    });
+}
