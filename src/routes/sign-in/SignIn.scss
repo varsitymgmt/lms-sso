@@ -25,13 +25,12 @@
   }
 }
 
-.headingRow {
-  margin-bottom: 48px;
-  text-align: center;
-
-  img {
-    width: 80px;
-  }
+.rankGuruLogo {
+  height: 180px;
+  width: 180px;
+  margin-bottom: 40px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .wishMessage {
@@ -292,10 +291,6 @@
 
   .signInSection {
     margin-top: -72px;
-  }
-
-  .headingRow {
-    margin-bottom: 96px;
   }
 
   .welcomeContainer {

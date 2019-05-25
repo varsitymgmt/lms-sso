@@ -91,9 +91,12 @@ class SignIn extends React.Component {
   displaySignIn = () => {
     const view = (
       <div className={s.signInSection}>
-        <div className={`${s.headingRow}`} style={{ minHeight: '49px' }}>
-          <img src="/images/rankGuruLogo.png" alt="logo" />
-        </div>
+        <img
+          className={s.rankGuruLogo}
+          src="/images/rankGuruLogo.png"
+          alt="logo"
+        />
+
         <div style={{ minHeight: '53px' }}>
           <div className={s.wishMessage}>Welcome</div>
           <div className={s.signInMessage}>Sign into your account</div>
