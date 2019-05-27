@@ -5,7 +5,7 @@
    @version 1.0.0.0
 */
 
-require('newrelic');
+require('newrelic'); /* eslint-disable import/first */
 
 /* eslint consistent-return: 0 */
 import path from 'path';
