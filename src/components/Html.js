@@ -95,7 +95,7 @@ class Html extends React.Component {
   }
 }
 Html.defaultProps = {
-  title: 'Rank Guru',
+  title: 'Rankguru eVidya',
 };
 
 export default Html;

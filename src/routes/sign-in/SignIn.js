@@ -91,12 +91,16 @@ class SignIn extends React.Component {
   displaySignIn = () => {
     const view = (
       <div className={s.signInSection}>
-        <div className={`${s.headingRow}`} style={{ minHeight: '49px' }}>
-          <img src="/images/rankGuruLogo.png" alt="logo" />
+        <div className={`${s.headingRow}`}>
+          <img
+            className={`${s.rankGuruLogo}`}
+            src="/images/rankguru-evidya-logo.png"
+            alt="logo"
+          />
         </div>
         <div style={{ minHeight: '53px' }}>
           <div className={s.wishMessage}>Welcome</div>
-          <div className={s.signInMessage}>Sign into your account</div>
+          <div className={s.signInMessage}>Sign in to your account</div>
         </div>
         <form onSubmit={this.handleLogin} action="#">
           <div className={`row ${s.emailEntrySection}`}>
@@ -206,14 +210,14 @@ class SignIn extends React.Component {
         <img src="/images/welcome.svg" alt="welcome" />
         <div
           style={{
-            fontSize: '36px',
+            fontSize: '32px',
             color: '#3e3e5f',
             textAlign: 'center',
             fontWeight: 300,
             marginTop: '30px',
           }}
         >
-          Welcome to Rankguru!
+          Welcome to Rankguru eVidya!
         </div>
       </div>
     );
