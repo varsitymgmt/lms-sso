@@ -830,3 +830,27 @@ export async function resetStudentPassword(req,res){
     })
   }
 }
+
+export async function createStudentUser(req, res) {
+  const obj = req.body && req.body.studentData ? req.body.studentData : {}
+  const { user } = req;
+  const userObj = {
+    studenId: obj.studentId,
+    username: obj.studentId,
+    hierarchy: obj.hierarchy,
+    rawHierarchy: obj.hierarchy,
+    instituteId: user.instituteId,
+    hostname: user.hostname,
+    defaultHostname: user.hostname,
+    role: config.studentRole,
+    email: obj.studentId.toLowerCase(),
+    passwordChange: true,
+    active: obj.active,
+  }
+  return User.updateOne({ email: userObj.email }, {$set: userObj},{upsert: true }).then(() => {
+    return res.send({ status: true })
+  }).catch(err => {
+    console.error(err);
+    return res.send({ status: false })
+  })
+}

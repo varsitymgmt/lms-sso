@@ -49,4 +49,11 @@ router.post(
   can(config.accessType.write),
   controller.resetStudentPassword,
 );
+
+router.post(
+  '/create/studentUser',
+  auth.isAuthenticated(),
+  controller.createStudentUser,
+);
+
 export default router;
