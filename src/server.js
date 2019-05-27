@@ -5,6 +5,8 @@
    @version 1.0.0.0
 */
 
+require('newrelic');
+
 /* eslint consistent-return: 0 */
 import path from 'path';
 import express from 'express';
@@ -33,8 +35,6 @@ import assets from './assets.json'; // eslint-disable-line import/no-unresolved
 import { config } from './config/environment';
 import schema from './api/graphql/schema';
 import { isAuthenticated, isAdmin } from './api/auth/auth.service';
-
-require('newrelic');
 
 const app = express();
 
