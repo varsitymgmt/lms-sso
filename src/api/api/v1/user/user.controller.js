@@ -845,6 +845,7 @@ export async function createStudentUser(req, res) {
     role: config.studentRole,
     email: obj.studentId.toLowerCase(),
     passwordChange: true,
+    contactNumber: obj.phone,
     active: obj.active,
   }
   return User.updateOne({ email: userObj.email }, {$set: userObj},{upsert: true }).then(() => {
