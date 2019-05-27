@@ -34,6 +34,8 @@ import { config } from './config/environment';
 import schema from './api/graphql/schema';
 import { isAuthenticated, isAdmin } from './api/auth/auth.service';
 
+require('newrelic');
+
 const app = express();
 
 // enable compression
