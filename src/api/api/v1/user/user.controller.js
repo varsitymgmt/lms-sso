@@ -10,6 +10,7 @@ import _ from 'lodash';
 
 const bcrypt = require('bcrypt');
 const celery = require('celery-client');
+const fetch = require('node-fetch');
 
 const emailCtrl = require('../emailTransporter/emailTransporter.controller');
 
