@@ -114,11 +114,12 @@ const all = {
       user: process.env.EMAIL_USER ||'support@egnify.com',
       pass: process.env.EMAIL_PASS ||'$dew$008',
     },
-  }
+  },
   // emailAuth: {
   //   user: process.env.MAILJET_API_KEY || 'email-api-key',
   //   pass: process.env.MAILJET_API_SECRETKEY || 'email-api-secretKey',
   // },
+  smsApiUrl: 'http://124.124.124.60/varna_api/sendotpsms_api.php?token=chaitanya',
 };
 
 // Export the config object based on the NODE_ENV

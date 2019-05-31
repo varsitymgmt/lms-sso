@@ -9,6 +9,7 @@ import { getRandomHash } from '../../../utils/index'
 import _ from 'lodash';
 
 const bcrypt = require('bcrypt');
+const fetch = require('node-fetch');
 const celery = require('celery-client');
 
 const emailCtrl = require('../emailTransporter/emailTransporter.controller');
@@ -833,39 +834,42 @@ export async function resetStudentPassword(req,res){
 
 
 
-export async function chaitanyaAPI(userDetails) {
-  //call chaitanya's API
-  return 1;
+export async function chaitanyaAPI(payload) {
+  const admission_no = payload.email.toUpperCase();
+  const url = `${config.smsApiUrl}&admission_no=${admission_no}&otp=${payload.otp}`
+  return fetch(url)
+  .then(res => res.json())
 }
 
 export async function sendOTP(req, res) {
-  const username = req.body.username.toUpperCase();
-  if (!username) {
-    return res.status(403).send('Please send username');
+  let email = req.body.email
+  if (!email) {
+    return res.status(403).send('Please send email');
   }
+  email = email.toLowerCase();
   const saltRounds = 10;
 
   // Find if the given User email exists in the database.
-  const usrDetails = await User.findOne({username: username}, {userName: 1, contactNumber: 1});
+  const usrDetails = await User.findOne({email, active: true }, {email: 1, contactNumber: 1});
   // If No users have been found with give email.
-  if (usrDetails.length === 0) {
-    res.status(404).send({
+  if (!usrDetails) {
+    return res.status(404).send({
       usersFound: false,
       message: 'Invalid User',
     });
   } else {
-    usrDetails.otp = Math.floor(1000 + Math.random() * 9000);
+    usrDetails.otp = ""+Math.floor(1000 + Math.random() * 9000);
     const exp = Date.now() + 1000 * 60 * 3; // expiry time in ms
     const payload = {
-      username: username,
+      email,
       otp: usrDetails.otp,
     };
     // If a valid user exists with the given email.
     // Generate a secure hash for a user to store in our db.
-    bcrypt.hash(JSON.stringify(payload), saltRounds, (err, hash) => {
+    bcrypt.hash(usrDetails.otp, saltRounds, (err, hash) => {
       User.update(
         {
-          username: username,
+          email: email,
         },
         {
           $set: {
@@ -875,11 +879,11 @@ export async function sendOTP(req, res) {
         },
         (err1, docs) => {
           if (docs) {
-            chaitanyaAPI(username, usrDetails.otp).then(() => {
-              return userDetails.contactNumber;
+            return chaitanyaAPI(payload).then((obj) => {
+              return res.send(obj);
             });
           }
-          if (err1) console.error(err1);
+          return res.status(404).end('Something went wrong')
         },
       );
     });
@@ -887,36 +891,33 @@ export async function sendOTP(req, res) {
 }
 
 export async function verifyOTP(req, res) {
-  const { username, otp } = req.body;
-  if (!username) {
-    return res.status(403).send('Please send username');
+  let { email, otp } = req.body;
+  if (!email) {
+    return res.status(403).send('Please send email');
   }
-  const saltRounds = 10;
-  const userEnteredData = {
-    username,
-    otp
-  };
+  if (!otp) {
+    return res.status(403).send('Please send otp');
+  }
+  email = email.toLowerCase();
   // Find if the given User email exists in the database.
-  const usrDetails = await User.findOne({username: username}, {userName: 1, forgotPassSecureHash: 1});
+  const userDetails = await User.findOne({email, active: true }, {email: 1, forgotPassSecureHash: 1,  forgotPassSecureHashExp: 1
+  });
   // If No users have been found with give email.
-  if (usrDetails.length === 0) {
+  if (!userDetails) {
     res.status(404).send({
       usersFound: false,
       message: 'Invalid User',
     });
   } else {
-    bcrypt.hash(JSON.stringify(userEnteredData), saltRounds, (err, hash) => {
-      bcrypt.compare(hash, userDetails.forgotPassSecureHash).then(match => {
-        if(match) {
-          res.status(200).send({
-            message: true,
-          });
-        } else {
-          res.status(404).send({
-            message: false,
-          });
-        }
-      });
+    bcrypt.compare(otp, userDetails.forgotPassSecureHash).then(match => {
+      if(match) {
+        res.status(200).send({
+          success: true,
+          hashToken: userDetails.forgotPassSecureHash,
+        });
+      } else {
+        res.status(404).send('invalid');
+      }
     });
   }
 }
