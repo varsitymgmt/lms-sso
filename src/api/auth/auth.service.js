@@ -265,21 +265,22 @@ export function hasRole(systemRole, readOnlyRole = []) {
 // function to delete Student users
 export async function verifyUsername(req, res) {
   // console.log("req", req.body);
-  const email = req.body.email.toUpperCase().trim();
-  const hostname = req.body.hostname;
+  // eslint-disable-next-line prefer-const
+  let { email, hostname } = req.body;
   if (!email) {
-    res.status(404).send({
+    return res.status(404).send({
       status: 'Error',
-      message: 'please provide username',
+      message: 'please provide email',
     });
   }
   if (!hostname) {
-    res.status(404).send({
+    return res.status(404).send({
       status: 'Error',
       message: 'please provide hostname',
     });
   }
-  return User.findOne({ studentId: email, hostname, active: true })
+  email = email.toLowerCase().trim();
+  return User.findOne({ email, hostname, active: true })
     .then(userObj => {
       if (userObj && userObj.password) {
         return res.send({
@@ -303,6 +304,6 @@ export async function verifyUsername(req, res) {
     })
     .catch(err => {
       console.error(err);
-      res.status(500).send({ message: 'Something went wrong' });
+      return res.status(500).send({ message: 'Something went wrong' });
     });
 }
