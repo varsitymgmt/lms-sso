@@ -13,6 +13,7 @@ const celery = require('celery-client');
 const fetch = require('node-fetch');
 
 const emailCtrl = require('../emailTransporter/emailTransporter.controller');
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
 export async function updateAdminHierarchy(req,res) {
     const {hierarchy} = req.body;
