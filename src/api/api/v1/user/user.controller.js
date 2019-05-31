@@ -860,7 +860,6 @@ export async function sendOTP(req, res) {
       email,
       otp: userDetails.otp,
     };
-    console.log(payload)
     const toHash = email + userDetails.otp;
     // If a valid user exists with the given email.
     // Generate a secure hash for a user to store in our db.
