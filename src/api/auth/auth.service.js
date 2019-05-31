@@ -295,7 +295,11 @@ export async function verifyUsername(req, res) {
           firstTimeLogin: true,
         });
       }
-      return res.status(401).send({ message: 'failed', authorized: false });
+      return res.status(401).send({
+        message: 'User not registered',
+        authorized: false,
+        firstTimeLogin: false,
+      });
     })
     .catch(err => {
       console.error(err);
