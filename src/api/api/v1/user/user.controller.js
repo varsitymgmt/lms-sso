@@ -239,34 +239,6 @@ function validateEmail(email) {
   return emailRegex.test(email);
 }
 
-// function to reset password using forgethashtoken and new password
-export async function resetpassword(req, res) {
-  const { hashToken } = req.body;
-  const newPassword = req.body.password;
-  if (hashToken && newPassword) {
-    return User.findOne({
-      forgotPassSecureHash: hashToken,
-    })
-      .then(user => {
-        if (Date.now() <= user.forgotPassSecureHashExp) {
-          user.password = newPassword;
-          user.forgotPassSecureHash = '';
-          return user
-            .save()
-            .then(() => {
-              res.status(200).end();
-            })
-            .catch(validationError(res));
-        }
-
-        return res.status(403).send('Link Expired');
-      })
-      .catch(() => res.status(403).end());
-  }
-
-  return res.status(403).send('Invalid Parameter');
-}
-
 // function to validate forgethashtoken
 export async function validateForgotPassSecureHash(req, res) {
   const { hashToken } = req.body;
@@ -862,7 +834,7 @@ export async function chaitanyaAPI(payload) {
   const url = `${config.smsApiUrl}&admission_no=${admission_no}&otp=${payload.otp}`
   return fetch(url)
   .then(res => res.json())
-  // return {"status":"success","message":"","mobileno":"XXXXXX2060"};
+  // return payload;
 }
 
 export async function sendOTP(req, res) {
@@ -883,7 +855,7 @@ export async function sendOTP(req, res) {
     });
   } else {
     userDetails.otp = ""+Math.floor(1000 + Math.random() * 9000);
-    const exp = Date.now() + 1000 * 60 * 3; // expiry time in ms
+    const exp = Date.now() + 1000 * 60 * 15; // expiry time in ms
     const payload = {
       email,
       otp: userDetails.otp,
@@ -908,9 +880,11 @@ export async function sendOTP(req, res) {
             return chaitanyaAPI(payload).then((obj) => {
               return res.send(obj);
             }).catch(err => {
+              console.error(err);
               return res.status(404).end('Something went wrong')
             })
           }
+          console.error(err1)
           return res.status(404).end('Something went wrong')
         },
       );
@@ -960,4 +934,39 @@ export async function verifyOTP(req, res) {
     });
   }
 }
+// function to reset password using forgethashtoken and new password
+export async function resetpassword(req, res) {
+  const { hashToken, newPassword } = req.body;
+  if (hashToken && newPassword) {
+    if (newPassword.length !== 4 || !/[0-9]{4}/.test(newPassword)) {
+      return res.status(403).send('Password must be 4 digits only');
+    }
+    return User.findOne({
+      forgotPassSecureHash: hashToken,
+      active: true
+    })
+      .then(user => {
+        if(!user) return res.status(403).end('invalid hashToken')
+        if (Date.now() <= user.forgotPassSecureHashExp) {
+          user.password = newPassword;
+          user.forgotPassSecureHash = '';
+          return user
+            .save()
+            .then(() => {
+              res.status(200).end('Password changed successfully!');
+            })
+            .catch(validationError(res));
+        }
+
+        return res.status(403).send('Link Expired');
+      })
+      .catch((err) => {
+        console.log(err)
+        res.status(403).end()
+      });
+  }
+
+  return res.status(403).send(' hashToken, newPassword required');
+}
+
 
