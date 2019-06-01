@@ -1,19 +1,25 @@
 import React from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-// import Link from 'components/Link/Link';
 import {
   getURLParams,
-  toggleLoader,
-  setCookie,
   getCookie,
+  setCookie,
+  toggleLoader,
   decriptedAccessToken,
-  // getRoleBasedHost,
 } from 'utils/HelperMethods';
 import Loader from 'components/Loader';
 import s from './SignIn.scss';
 
+// const steps = {
+//   SignIn: { label: this.displayMainPage() },
+//   SignUp: { label: this.displayOtpVerification() },
+//   Otp: {},
+//   SetPassword: {},
+// };
+const inputString = ['*', '*', '*', '*'];
+const confirmPasswordString = ['*', '*', '*', '*'];
 class SignIn extends React.Component {
   static contextTypes = {
     // GRAPHQL_API_URL: PropTypes.string.isRequired,
@@ -28,30 +34,33 @@ class SignIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      formData: { email: '', password: '', rememberMe: false },
+      formData: { hostName: 'luke.dev.lms.egnify.io', email: '', password: '' },
       emailImgSrc: '/images/icons/username.svg',
       emailValidationCompleted: false,
       doneSrc: '/images/institute-setup/done.svg',
       emailSrc: '/images/icons/mail.png',
       passwordImgSrc: '/images/icons/password.svg',
       showPassword: false,
-      wlcmMsg: '',
+      page: 'SignIn',
+      mainPage: 'SignIn',
       formFieldsError: {},
-      forgotPasswordEmaiID: '',
-      forgotPasswordError: null,
-      isForgotPasswordLoading: false,
-      showForgotPassword: false,
+      admissionId: '',
+      otp: '',
+      hashToken: '',
+      showEmptyIdError: false,
+      showIvalidIdError: false,
+      showUnregisteredUserError: false,
+      showAlreadyRegisteredUserError: false,
+      showInvalidPasswordError: false,
+      showOtpSendError: false,
+      showInvalidOtpError: false,
+      showCombinationError: false,
+      otpSent: false,
+      mobileNumber: null,
     };
-    this.handleLogin = this.handleLogin.bind(this);
-    this.setWelcomeMesage = this.setWelcomeMesage.bind(this);
   }
 
-  componentDidMount() {
-    this.setWelcomeMesage();
-    this.setInitialFormFields();
-  }
-
-  setInitialFormFields = () => {
+  setPassword = () => {
     let host = getURLParams('host');
     if (host) {
       // if the login source is different host then validate user exits
@@ -65,367 +74,431 @@ class SignIn extends React.Component {
         window.location = host.href;
       }
     }
-    this.setState({
-      formData: {
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value,
-        rememberMe: false,
-        hostname: __DEV__ ? this.context.hostNameForDev : host.hostname,
-      },
-      host,
-    });
+    axios
+      .post(`${this.context.API_EGNIFY_IO_URL}/api/v1/users/resetpassword`, {
+        hashToken: this.state.hashToken,
+        newPassword: confirmPasswordString.toString().replace(/,/g, ''),
+      })
+      .then(() => {
+        this.setState(
+          {
+            formData: {
+              hostname: __DEV__ ? this.context.hostNameForDev : host.hostname,
+              email: this.state.admissionId,
+              password: confirmPasswordString.toString().replace(/,/g, ''),
+            },
+          },
+          () => this.handleSignIn(),
+        );
+      })
+      .catch(err => {
+        console.error('handleVerifyUser', err.response);
+      });
+
+    // navigation.navigate(ROUTE_NAMES.setPassword, { activeTab });
   };
 
-  setWelcomeMesage() {
-    const hrs = new Date().getHours();
-    let wlcmMsg = 'Good Evening!';
-    // Set the Welcome Message based on the timing.
-    if (hrs < 12) {
-      wlcmMsg = 'Good Morning!';
-    } else if (hrs >= 12 && hrs <= 17) {
-      wlcmMsg = 'Good Afternoon!';
-    }
-    this.setState({ wlcmMsg });
-  }
-
-  displaySignIn = () => {
-    const view = (
-      <div className={s.signInSection}>
-        <div className={`${s.headingRow}`}>
-          <img
-            className={`${s.rankGuruLogo}`}
-            src="/images/rankguru-evidya-logo.png"
-            alt="logo"
+  displaySetPasswordPage = () => (
+    <div>
+      <div className={s.welcomeSetPassword}>Set Password</div>
+      <div>
+        <div className={s.enterPwd}>Enter Password</div>
+        <div className={s.textInputOtpContainer}>
+          <input
+            type="text"
+            name="sign"
+            maxLength="1"
+            id="box1"
+            onChange={e => {
+              const pattern = /[0-9]/g;
+              if (e.target.value.match(pattern)) {
+                document.getElementById('box1').value = e.target.value;
+                inputString[0] = e.target.value;
+                document.getElementById('box2').focus();
+              } else {
+                document.getElementById('box1').value = '';
+                inputString[0] = '*';
+              }
+            }}
+            className={s.textInputOtp}
+          />
+          <input
+            type="text"
+            name="sign"
+            maxLength="1"
+            id="box2"
+            onChange={e => {
+              const pattern = /[0-9]/g;
+              if (e.target.value.match(pattern)) {
+                inputString[1] = e.target.value;
+                document.getElementById('box2').value = e.target.value;
+                document.getElementById('box3').focus();
+              } else {
+                document.getElementById('box2').value = '';
+                inputString[1] = '*';
+              }
+            }}
+            className={s.textInputOtp}
+          />
+          <input
+            type="text"
+            name="sign"
+            maxLength="1"
+            id="box3"
+            onChange={e => {
+              const pattern = /[0-9]/g;
+              if (e.target.value.match(pattern)) {
+                inputString[2] = e.target.value;
+                document.getElementById('box3').value = e.target.value;
+                document.getElementById('box4').focus();
+              } else {
+                document.getElementById('box3').value = '';
+                inputString[2] = '*';
+              }
+            }}
+            className={s.textInputOtp}
+          />
+          <input
+            type="text"
+            name="sign"
+            maxLength="1"
+            id="box4"
+            onChange={e => {
+              const pattern = /[0-9]/g;
+              if (e.target.value.match(pattern)) {
+                inputString[3] = e.target.value;
+                document.getElementById('Cbox1').focus();
+              } else {
+                document.getElementById('box4').value = '';
+                inputString[3] = '*';
+              }
+            }}
+            className={s.textInputOtp}
           />
         </div>
-        <div style={{ minHeight: '53px' }}>
-          <div className={s.wishMessage}>Welcome</div>
-          <div className={s.signInMessage}>Sign in to your account</div>
+        <div className={s.enterPwd}>Confirm Password</div>
+        <div className={s.textInputOtpContainer}>
+          <input
+            type="text"
+            name="sign"
+            maxLength="1"
+            id="Cbox1"
+            onChange={e => {
+              const pattern = /[0-9]/g;
+              if (e.target.value.match(pattern)) {
+                document.getElementById('Cbox1').value = e.target.value;
+                confirmPasswordString[0] = e.target.value;
+                document.getElementById('Cbox2').focus();
+              } else {
+                document.getElementById('Cbox1').value = '';
+                confirmPasswordString[0] = '*';
+              }
+            }}
+            className={s.textInputOtp}
+          />
+          <input
+            type="text"
+            name="sign"
+            maxLength="1"
+            id="Cbox2"
+            onChange={e => {
+              const pattern = /[0-9]/g;
+              if (e.target.value.match(pattern)) {
+                confirmPasswordString[1] = e.target.value;
+                document.getElementById('Cbox2').value = e.target.value;
+                document.getElementById('Cbox3').focus();
+              } else {
+                document.getElementById('Cbox2').value = '';
+                confirmPasswordString[1] = '*';
+              }
+            }}
+            className={s.textInputOtp}
+          />
+          <input
+            type="text"
+            name="sign"
+            maxLength="1"
+            id="Cbox3"
+            onChange={e => {
+              const pattern = /[0-9]/g;
+              if (e.target.value.match(pattern)) {
+                confirmPasswordString[2] = e.target.value;
+                document.getElementById('Cbox3').value = e.target.value;
+                document.getElementById('Cbox4').focus();
+              } else {
+                document.getElementById('Cbox3').value = '';
+                confirmPasswordString[2] = '*';
+              }
+            }}
+            className={s.textInputOtp}
+          />
+          <input
+            type="text"
+            name="sign"
+            maxLength="1"
+            id="Cbox4"
+            onChange={e => {
+              const pattern = /[0-9]/g;
+              if (e.target.value.match(pattern)) {
+                confirmPasswordString[3] = e.target.value;
+              } else {
+                document.getElementById('Cbox4').value = '';
+                confirmPasswordString[3] = '*';
+              }
+            }}
+            className={s.textInputOtp}
+          />
         </div>
-        <form onSubmit={this.handleLogin} action="#">
-          <div className={`row ${s.emailEntrySection}`}>
-            <div className={`row ${s.email}`}>
-              <div className={s.inputText}>Admission ID</div>
-              <input
-                placeholder="Username"
-                id="email"
-                type="text"
-                className={`${s.textbox}
-                  ${this.state.formFieldsError.email ? s.invalidTextBox : ''}`}
-                value={this.state.formData.email || ''}
-                onChange={e => this.handleFormFieldChanges(e, 'email')}
-              />
-              {this.displayFormFieldError('email')}
-            </div>
-          </div>
-          <div className={`row ${s.passwordEntrySection}`}>
-            <div className={`row ${s.email}`}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <div className={s.inputText}>Password</div>
-                <div
-                  className={`col m6 ${s.showPassword}`}
-                  onClick={() => {
-                    if (
-                      this.state.formData.password &&
-                      this.state.formData.password.length > 0
-                    ) {
-                      this.setState({
-                        showPassword: !this.state.showPassword,
-                      });
-                    }
-                  }}
-                  role="presentation"
-                >
-                  {this.state.showPassword ? 'Hide Password' : 'Show password'}
-                </div>
-              </div>
-              <input
-                placeholder="Password"
-                id="password"
-                type={this.state.showPassword ? `text` : `password`}
-                className={`${s.textbox} ${
-                  this.state.formFieldsError.password ? s.invalidTextBox : ''
-                }`}
-                value={this.state.formData.password || ''}
-                onChange={e => this.handleFormFieldChanges(e, 'password')}
-              />
-              {this.displayFormFieldError('password')}
-            </div>
-          </div>
-          <div className={`row ${s.postEntrySection}`}>
-            <div className={`col m6 ${s.keepSignedIn}`}>
-              <label htmlFor="indeterminate-checkbox">
-                <input
-                  type="checkbox"
-                  id="indeterminate-checkbox"
-                  onClick={() => {
-                    this.setState({
-                      rememberMe: !this.state.rememberMe,
-                    });
-                  }}
-                />
-                <div className={`checkbox ${s.checkbox}`} />
-                Keep me signed in
-              </label>
-            </div>
-          </div>
-          <div className={`row`}>
-            <button className={`btn ${s.loginBtn}`} onClick={this.handleLogin}>
-              SIGN IN
-            </button>
-          </div>
-          <div className={`row hide`}>
-            <div className={s.forgotPassword}>
-              <div
-                role="presentation"
-                onClick={() => {
-                  window.open('/forgotPassword');
-                }}
-              >
-                Forgot password?
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    );
-    return view;
-  };
-
-  displayWelcome = () => {
-    const view = (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          flexDirection: 'column',
-          height: '100%',
-        }}
-      >
-        <img src="/images/welcome.svg" alt="welcome" />
+        <div className={s.error}>
+          {this.state.showCombinationError ? 'Password did not match' : null}
+        </div>
         <div
-          style={{
-            fontSize: '32px',
-            color: '#3e3e5f',
-            textAlign: 'center',
-            fontWeight: 300,
-            marginTop: '30px',
+          className={s.btn}
+          role="presentation"
+          onClick={() => {
+            if (
+              JSON.stringify(inputString) ===
+              JSON.stringify(confirmPasswordString)
+            ) {
+              this.setState(
+                {
+                  showCombinationError: false,
+                },
+                () => this.setPassword(),
+              );
+            } else this.setState({ showCombinationError: true });
           }}
         >
-          Welcome to Rankguru eVidya!
+          <div className={s.btnText}>SIGN UP</div>
         </div>
       </div>
-    );
-    return view;
-  };
+    </div>
+  );
 
-  displayFormFieldError = field => {
-    const div = (
-      <div className={s.errorMessage}>{this.state.formFieldsError[field]}</div>
-    );
-    return div;
-  };
-
-  displayForgotPassowrd = () => {
-    const view = (
-      <div
-        className={`body-overlay ${s.bodyOverlay}`}
-        role="presentation"
-        onKeyDown={this.handleKeyDonwEvent}
-        tabIndex="-1"
-        ref={ref => {
-          this.modalOverlay = ref;
-        }}
-      >
-        <div className={s.marksModal}>
-          {!this.state.emailValidationCompleted ? (
-            <div className={s.closeContianer}>
-              <img
-                className={s.closeIcon}
-                src="/images/icons/testNametestName.svg"
-                alt="password-lock"
-                role="presentation"
-                onClick={() => {
-                  this.resetForgotPasswordChanges();
-                }}
-              />
-            </div>
-          ) : (
-            <div className={s.closeContianer} />
-          )}
-          <div className={`${s.modalContent}`}>
-            <div>
-              <img
-                className={s.emailIcon}
-                src={
-                  this.state.emailValidationCompleted
-                    ? this.state.doneSrc
-                    : this.state.emailSrc
-                }
-                alt="password-lock"
-                title="password-lock"
-                role="presentation"
-              />
-              {this.state.emailValidationCompleted ? (
-                <div className={s.doneText}>
-                  The password change link has been sent to your emailId.
-                </div>
-              ) : (
-                <div>
-                  <div className={s.emailText}>Enter Registered Email Id</div>
-                  <div
-                    style={{
-                      display: 'inline-block',
-                    }}
-                  >
-                    <input
-                      id="email"
-                      type="text"
-                      autoFocus //eslint-disable-line
-                      onKeyDown={this.keyUp}
-                      onChange={this.handleFortgotPasswordEmailID}
-                      onFocus={this.handleFocus}
-                      value={this.state.forgotPasswordEmaiID}
-                    />
-                    {this.state.forgotPasswordError
-                      ? this.displayForgotPassowrdError()
-                      : null}
-                  </div>
-                </div>
-              )}
-            </div>
-            <div
-              style={{
-                margin: '40px 0 20px 0',
-              }}
-            >
-              <button
-                id="passcheck"
-                onClick={this.validateForgotPasswordEmail}
-                className={`btn ${s.emailBtn}`}
-              >
-                {this.state.emailValidationCompleted ? (
-                  <span>Done</span>
-                ) : (
-                  <span>
-                    Submit
-                    {this.state.isForgotPasswordLoading ? (
-                      <i className="fa fa-circle-o-notch fa-spin" />
-                    ) : null}
-                  </span>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-    return view;
-  };
-
-  displayForgotPassowrdError = () => {
-    const view = (
-      <div id="error" className={s.error}>
-        <img
-          className={s.errorIcon}
-          src="/images/icons/error.svg"
-          alt="error"
-          title="error"
-          role="presentation"
-        />
-        <p id="name_error" className={s.errorMessage}>
-          {this.state.forgotPasswordError}
-        </p>
-      </div>
-    );
-    return view;
-  };
-
-  handleFormFieldChanges = (event, field) => {
-    const formData = this.state.formData;
-    const formFieldsError = this.state.formFieldsError;
-
-    formData[field] = event.target.value;
-    formFieldsError[field] = null;
-    this.setState({ formData, formFieldsError });
-  };
-
-  handleLogin = event => {
-    event.preventDefault();
-    // Validation before sending Credentials
-    if (!this.validateDetails()) {
-      return;
+  validateOtp = otp => {
+    let validOtp = true;
+    if (otp.length !== 4) {
+      validOtp = false;
+      this.setState({
+        formFieldsError: { password: 'Invalid OTP' },
+      });
     }
-    toggleLoader(true);
-    axios
-      .post(`${this.context.API_EGNIFY_IO_URL}/auth/local`, this.state.formData)
-      .then(response => {
-        toggleLoader(false);
-        if (response.data) {
-          const token = response.data.token;
-          const accessControlToken = response.data.accessControlToken;
-          if (token && accessControlToken) {
-            this.redirectBackToHost(
-              this.state.host,
-              token,
-              accessControlToken,
-              this.state.formData.email,
-            );
+    return validOtp;
+  };
+
+  handleVerifyOTP = () => {
+    if (this.validateOtp(this.state.otp)) {
+      axios
+        .post(`${this.context.API_EGNIFY_IO_URL}/api/v1/users/verifyOTP`, {
+          email: this.state.admissionId,
+          otp: this.state.otp,
+        })
+        .then(async response => {
+          const data = response.data;
+          if (data && data.success) {
+            // localStorage.setItem('hashToken', data.hashToken);
+            this.setState({
+              page: 'SetPassword',
+              hashToken: data.hashToken,
+              showInvalidOtpError: false,
+            });
+          } else if (data && !data.success) {
+            this.setState({
+              formFieldsError: data.message,
+              showInvalidOtpError: true,
+            });
           }
+          // this.handleVerifyUserResponse(response);
+        })
+        .catch(err => {
+          // this.setState({ showLoader: false });
+          if (err.response && err.response.data) {
+            this.setState({
+              formFieldsError: err.response.data.message,
+              showInvalidOtpError: false,
+            });
+          }
+          console.error('handleVerifyUser', err.response);
+        });
+    }
+    // navigation.navigate(ROUTE_NAMES.setPassword, { activeTab });
+  };
+
+  receiveOtp = () => {
+    this.setState({ otpSent: false });
+    axios
+      .post(`${this.context.API_EGNIFY_IO_URL}/api/v1/users/sendOTP`, {
+        email: this.state.admissionId.toUpperCase(),
+      })
+      .then(response => {
+        if (response.data && response.data.status === 'success') {
+          this.setState({
+            otpSent: true,
+            mobileNumber: response.data.mobileno,
+          });
         }
       })
       .catch(err => {
-        toggleLoader(false);
-        if (err.response && err.response.data) {
-          const data = err.response.data;
-          if (data && data.code) {
-            const formFieldsError = this.state.formFieldsError;
-            if (data.code === 'AU01') {
-              formFieldsError.email = data.message;
-            } else if (data.code === 'AU02') {
-              formFieldsError.password = data.message;
-            }
-            this.setState({ formFieldsError });
-          }
-        } else {
-          console.error(err);
-        }
+        this.setState({
+          showOtpSendError: true,
+        });
+        console.error('verifyUser', err.response);
       });
   };
 
-  validateDetails() {
-    let validity = true;
-    const formFieldsError = {};
-    // if (!this.validateEmail()) {
-    //   formFieldsError.email = 'Invalid Email';
-    //   validity = false;
-    // }
-    if (this.state.formData.password.length === 0) {
-      formFieldsError.password = 'Password cannot be empty';
-      validity = false;
+  displayOtpVerification = () => {
+    let host = getURLParams('host');
+    if (host) {
+      // if the login source is different host then validate user exits
+      host = new URL(host);
+      if (
+        getCookie(`token`) &&
+        getCookie(`email`) &&
+        getCookie('hostID') === host.hostname.split('.')[0]
+      ) {
+        // redirect back to host if valid
+        window.location = host.href;
+      }
     }
-    this.setState({ formFieldsError });
-    return validity;
-  }
-
-  // validateEmail() {
-  //   const email = this.state.formData.email;
-  //   const List = email.split('@');
-  //   if (List.length > 1) {
-  //     const tmpList = List[1].split('.');
-  //     if (tmpList.length === 1) {
-  //       return false;
-  //     }
-  //   } else {
-  //     return false;
-  //   }
-  //   return true;
-  // }
+    return (
+      <div className={s.lowerBox}>
+        <div>
+          <div className={s.otpVerification}>OTP Verification</div>
+          <div className={s.otpText}>
+            {this.state.showOtpSendError
+              ? 'Something went wrong, please try resend otp option'
+              : null}
+            {!this.state.showOtpSendError && this.state.mobileNumber
+              ? `Enter the 4-digit OTP we’ve just sent to ${
+                  this.state.mobileNumber
+                }`
+              : null}
+          </div>
+        </div>
+        <div className={s.textInputOtpContainer}>
+          <input
+            type="text"
+            name="sign"
+            maxLength="1"
+            id="box1"
+            onChange={e => {
+              const pattern = /[0-9]/g;
+              if (e.target.value.match(pattern)) {
+                document.getElementById('box1').value = e.target.value;
+                inputString[0] = e.target.value;
+                document.getElementById('box2').focus();
+              } else {
+                document.getElementById('box1').value = '';
+                inputString[0] = '*';
+              }
+            }}
+            className={s.textInputOtp}
+          />
+          <input
+            type="text"
+            name="sign"
+            maxLength="1"
+            id="box2"
+            onChange={e => {
+              const pattern = /[0-9]/g;
+              if (e.target.value.match(pattern)) {
+                inputString[1] = e.target.value;
+                document.getElementById('box2').value = e.target.value;
+                document.getElementById('box3').focus();
+              } else {
+                document.getElementById('box2').value = '';
+                inputString[1] = '*';
+              }
+            }}
+            className={s.textInputOtp}
+          />
+          <input
+            type="text"
+            name="sign"
+            maxLength="1"
+            id="box3"
+            onChange={e => {
+              const pattern = /[0-9]/g;
+              if (e.target.value.match(pattern)) {
+                inputString[2] = e.target.value;
+                document.getElementById('box3').value = e.target.value;
+                document.getElementById('box4').focus();
+              } else {
+                document.getElementById('box3').value = '';
+                inputString[2] = '*';
+              }
+            }}
+            className={s.textInputOtp}
+          />
+          <input
+            type="text"
+            name="sign"
+            maxLength="1"
+            id="box4"
+            onChange={e => {
+              const pattern = /[0-9]/g;
+              if (e.target.value.match(pattern)) {
+                inputString[3] = e.target.value;
+              } else {
+                document.getElementById('box4').value = '';
+                inputString[3] = '*';
+              }
+            }}
+            className={s.textInputOtp}
+          />
+        </div>
+        <div className={s.errorOtp}>
+          {this.state.showInvalidOtpError ? this.state.formFieldsError : null}
+        </div>
+        <div
+          className={s.resend}
+          onClick={() => {
+            this.setState(
+              {
+                formData: {
+                  hostname: __DEV__
+                    ? this.context.hostNameForDev
+                    : host.hostname,
+                  email: this.state.admissionId,
+                },
+              },
+              () => this.validateSignInID(),
+            );
+          }}
+          role="presentation"
+        >
+          Resend OTP
+        </div>
+        <div
+          className={s.btn}
+          role="presentation"
+          onClick={() =>
+            this.setState(
+              {
+                otp: inputString.toString().replace(/,/g, ''),
+              },
+              () => this.handleVerifyOTP(),
+            )
+          }
+        >
+          <div
+            className={s.btnText}
+            onClick={() =>
+              this.setState(
+                {
+                  otp: inputString.toString().replace(/,/g, ''),
+                },
+                () => this.handleVerifyOTP(),
+              )
+            }
+            role="presentation"
+          >
+            CONFIRM OTP
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   redirectBackToHost = (host, token, accessControlToken, email) => {
     if (host) {
@@ -446,97 +519,418 @@ class SignIn extends React.Component {
     }
   };
 
-  /**
-    @description
-     This method called when text changes in passowrd feild
-    @return [void]
-    @author janardhan
-  */
-  handleFortgotPasswordEmailID = event => {
-    if (event.target.value) {
-      this.setState({
-        forgotPasswordEmaiID: event.target.value,
-        forgotPasswordError: null,
+  handleSignIn = () => {
+    toggleLoader(true);
+    axios
+      .post(`${this.context.API_EGNIFY_IO_URL}/auth/local`, this.state.formData)
+      .then(response => {
+        toggleLoader(false);
+        if (response.data) {
+          const token = response.data.token;
+          const accessControlToken = response.data.accessControlToken;
+          if (token && accessControlToken) {
+            this.redirectBackToHost(
+              this.state.host,
+              token,
+              accessControlToken,
+              this.state.formData.email,
+            );
+          }
+          this.setState({ showInvalidPasswordError: false });
+        }
+      })
+      .catch(err => {
+        toggleLoader(false);
+        if (err.response && err.response.data) {
+          const data = err.response.data;
+          const formFieldsError = this.state.formFieldsError;
+          if (data.code === 'AU02') {
+            formFieldsError.password = data.message;
+          }
+          this.setState({ formFieldsError, showInvalidPasswordError: true });
+        } else {
+          console.error(err);
+        }
       });
-    } else {
-      this.setState({
-        forgotPasswordEmaiID: '',
-        forgotPasswordError: null,
-      });
+  };
+
+  displayFormFieldError = () => {
+    const div = <div>{this.state.formFieldsError.password}</div>;
+    return div;
+  };
+
+  displayEnterPasswordPage = () => {
+    let host = getURLParams('host');
+    if (host) {
+      // if the login source is different host then validate user exits
+      host = new URL(host);
+      if (
+        getCookie(`token`) &&
+        getCookie(`email`) &&
+        getCookie('hostID') === host.hostname.split('.')[0]
+      ) {
+        // redirect back to host if valid
+        window.location = host.href;
+      }
     }
-  };
-
-  resetForgotPasswordChanges = () => {
-    this.setState({
-      showForgotPassword: !this.state.showForgotPassword,
-      emailValidationCompleted: false,
-    });
-  };
-
-  validateForgotPasswordEmail = () => {
-    if (this.state.emailValidationCompleted) {
-      this.resetForgotPasswordChanges();
-    } else if (
-      this.state.forgotPasswordEmaiID &&
-      this.state.forgotPasswordEmaiID.length > 0
-    ) {
-      this.setState(
-        {
-          forgotPasswordError: null,
-          isForgotPasswordLoading: true,
-        },
-        () => {
-          // console.log(this.state.forgotPasswordEmaiID);
-          // const forgotPasswordFormData = new FormData();
-          // forgotPasswordFormData.email = this.state.forgotPasswordEmaiID;
-          axios
-            .post(`${this.context.API_URL}/api/v1/users/sendResetLink`, {
-              email: this.state.forgotPasswordEmaiID,
-              hostname: window.location.hostname,
-            })
-            .then(response => {
-              this.setState({ isForgotPasswordLoading: false });
-              if (response.data) {
-                const usersFound = response.data.usersFound;
-                if (usersFound) {
-                  this.setState({ emailValidationCompleted: true });
+    return (
+      <div>
+        <div className={s.welcomeSetPassword}>Password</div>
+        <div>
+          <div className={s.enterPwdSignInPage}>Enter your password</div>
+          <div className={s.textInputOtpContainer}>
+            <input
+              type="text"
+              name="sign"
+              maxLength="1"
+              id="box1"
+              onChange={e => {
+                const pattern = /[0-9]/g;
+                if (e.target.value.match(pattern)) {
+                  document.getElementById('box1').value = e.target.value;
+                  inputString[0] = e.target.value;
+                  document.getElementById('box2').focus();
                 } else {
-                  this.setState({
-                    forgotPasswordError: 'Something went wrong',
-                  });
+                  document.getElementById('box1').value = '';
+                  inputString[0] = '*';
                 }
+              }}
+              className={s.textInputOtp}
+            />
+            <input
+              type="text"
+              name="sign"
+              maxLength="1"
+              id="box2"
+              onChange={e => {
+                const pattern = /[0-9]/g;
+                if (e.target.value.match(pattern)) {
+                  inputString[1] = e.target.value;
+                  document.getElementById('box2').value = e.target.value;
+                  document.getElementById('box3').focus();
+                } else {
+                  document.getElementById('box2').value = '';
+                  inputString[1] = '*';
+                }
+              }}
+              className={s.textInputOtp}
+            />
+            <input
+              type="text"
+              name="sign"
+              maxLength="1"
+              id="box3"
+              onChange={e => {
+                const pattern = /[0-9]/g;
+                if (e.target.value.match(pattern)) {
+                  inputString[2] = e.target.value;
+                  document.getElementById('box3').value = e.target.value;
+                  document.getElementById('box4').focus();
+                } else {
+                  document.getElementById('box3').value = '';
+                  inputString[2] = '*';
+                }
+              }}
+              className={s.textInputOtp}
+            />
+            <input
+              type="text"
+              name="sign"
+              maxLength="1"
+              id="box4"
+              onChange={e => {
+                const pattern = /[0-9]/g;
+                if (e.target.value.match(pattern)) {
+                  inputString[3] = e.target.value;
+                } else {
+                  document.getElementById('box4').value = '';
+                  inputString[3] = '*';
+                }
+              }}
+              className={s.textInputOtp}
+            />
+          </div>
+          <div className={s.error}>
+            {this.state.showInvalidPasswordError
+              ? this.displayFormFieldError()
+              : null}
+          </div>
+          <div className={s.lowerBox}>
+            <div
+              className={s.btn}
+              role="presentation"
+              onClick={() =>
+                this.setState(
+                  {
+                    formData: {
+                      hostname: __DEV__
+                        ? this.context.hostNameForDev
+                        : host.hostname,
+                      email: this.state.admissionId,
+                      password: inputString.toString().replace(/,/g, ''),
+                    },
+                  },
+                  () => this.handleSignIn(),
+                )
               }
-            })
-            .catch(err => {
-              console.error(err);
-              this.setState({
-                isForgotPasswordLoading: false,
-                forgotPasswordError: 'Something went wrong',
-              });
-            });
-        },
-      );
-    } else {
-      this.setState({ forgotPasswordError: 'EmailId is empty' });
-    }
+            >
+              <div className={s.btnText} role="presentation">
+                SIGN IN
+              </div>
+            </div>
+          </div>
+          <div
+            className={s.forgotPassword}
+            onClick={() => {
+              this.setState(
+                {
+                  page: 'Otp',
+                  showEmptyIdError: false,
+                  showIvalidIdError: false,
+                  showUnregisteredUserError: false,
+                  showAlreadyRegisteredUserError: false,
+                },
+                () => this.receiveOtp(),
+              );
+            }}
+            role="presentation"
+          >
+            Forgot password?
+          </div>
+        </div>
+      </div>
+    );
   };
 
-  handleKeyDonwEvent = e => {
-    if (e.which === 27) {
-      this.resetForgotPasswordChanges();
+  validateSignInID = () => {
+    axios
+      .post(
+        `${this.context.API_EGNIFY_IO_URL}/auth/verifyUser`,
+        this.state.formData,
+      )
+      .then(response => {
+        if (this.state.admissionId.length !== 0) {
+          if (this.state.page === 'SignIn' && response.data.firstTimeLogin)
+            this.setState({
+              showEmptyIdError: false,
+              showIvalidIdError: false,
+              showUnregisteredUserError: true,
+              showAlreadyRegisteredUserError: false,
+            });
+          else if (
+            this.state.page === 'SignUp' &&
+            !response.data.firstTimeLogin
+          ) {
+            // this.setState({
+            //   showEmptyIdError: false,
+            //   showIvalidIdError: false,
+            //   showUnregisteredUserError: false,
+            //   showAlreadyRegisteredUserError: true,
+            // });
+            this.setState(
+              {
+                page: 'Otp',
+                showEmptyIdError: false,
+                showIvalidIdError: false,
+                showUnregisteredUserError: false,
+                showAlreadyRegisteredUserError: false,
+              },
+              () => this.receiveOtp(),
+            );
+          } else if (this.state.page === 'SignIn') {
+            this.setState({
+              page: 'EnterPassword',
+              showEmptyIdError: false,
+              showIvalidIdError: false,
+              showUnregisteredUserError: false,
+              showAlreadyRegisteredUserError: false,
+            });
+          } else {
+            this.setState(
+              {
+                page: 'Otp',
+                showEmptyIdError: false,
+                showIvalidIdError: false,
+                showUnregisteredUserError: false,
+                showAlreadyRegisteredUserError: false,
+              },
+              () => this.receiveOtp(),
+            );
+          }
+        }
+      })
+      .catch(err => {
+        if (this.state.admissionId.length !== 0) {
+          this.setState({
+            showEmptyIdError: false,
+            showIvalidIdError: true,
+            showUnregisteredUserError: false,
+            showAlreadyRegisteredUserError: false,
+          });
+        } else
+          this.setState({
+            showEmptyIdError: true,
+            showIvalidIdError: false,
+            showUnregisteredUserError: false,
+            showAlreadyRegisteredUserError: false,
+          });
+        console.error(err);
+      });
+  };
+
+  displaySignInPage = () => {
+    let host = getURLParams('host');
+    if (host) {
+      // if the login source is different host then validate user exits
+      host = new URL(host);
+      if (
+        getCookie(`token`) &&
+        getCookie(`email`) &&
+        getCookie('hostID') === host.hostname.split('.')[0]
+      ) {
+        // redirect back to host if valid
+        window.location = host.href;
+      }
     }
+    return (
+      <div>
+        <div>
+          <div className={s.welcome}>
+            {this.state.page === 'SignIn' ? 'Sign In' : 'Sign Up'}
+          </div>
+          <div className={s.signInText}>Enter your Admission ID</div>
+        </div>
+
+        <div className={s.admissionId}>Admission ID</div>
+        <input
+          className={s.textInput}
+          type="text"
+          name="sign"
+          id="admissionId"
+        />
+        <div className={s.error}>
+          {this.state.showEmptyIdError ? 'Admission Id cannot be empty.' : null}
+          {this.state.showIvalidIdError ? 'Admission Id is invalid.' : null}
+          {this.state.showUnregisteredUserError
+            ? 'Admission Id is unregistered.'
+            : null}
+          {this.state.showAlreadyRegisteredUserError
+            ? 'Admission Id is already registered.'
+            : null}
+        </div>
+        <div className={s.lowerBox}>
+          <div
+            className={s.btn}
+            role="presentation"
+            onClick={() => {
+              this.setState(
+                {
+                  formData: {
+                    hostname: __DEV__
+                      ? this.context.hostNameForDev
+                      : host.hostname,
+                    email: document.getElementById('admissionId').value,
+                  },
+                  admissionId: document.getElementById('admissionId').value,
+                },
+                () => this.validateSignInID(),
+              );
+            }}
+          >
+            <div className={s.btnText}>NEXT</div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  displayLogInPage = () => (
+    <div>
+      <img
+        src="/images/guru.png"
+        alt=""
+        className={s.logo}
+        width="50px"
+        height="60px"
+      />
+      <div className={s.mainContainer}>
+        {/* <div className={s.mainContainer}>{this.displayOtpVerification()}</div> */}
+        {this.state.page === 'SignIn' || this.state.page === 'SignUp'
+          ? this.displaySignInPage()
+          : null}
+        {this.state.page === 'Otp' ? this.displayOtpVerification() : null}
+        {this.state.page === 'SetPassword'
+          ? this.displaySetPasswordPage()
+          : null}
+        {this.state.page === 'EnterPassword'
+          ? this.displayEnterPasswordPage()
+          : null}
+      </div>
+
+      <div className={s.bottom}>
+        <div className={s.bottomText}>
+          {this.state.mainPage === 'SignIn'
+            ? 'Don’t have an account?'
+            : 'Already have an account?'}
+        </div>
+        <div
+          className={s.bottomSignUpBtn}
+          role="presentation"
+          onClick={() => {
+            this.setState({
+              page: this.state.mainPage === 'SignUp' ? 'SignIn' : 'SignUp',
+              mainPage: this.state.mainPage === 'SignUp' ? 'SignIn' : 'SignUp',
+              showEmptyIdError: false,
+              showIvalidIdError: false,
+              showUnregisteredUserError: false,
+              showAlreadyRegisteredUserError: false,
+            });
+          }}
+        >
+          <div className={s.signUpBtnText}>
+            {this.state.mainPage === 'SignUp' ? 'SIGN IN' : 'SIGN UP'}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  displayWelcome = () => {
+    const view = (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          height: '100%',
+        }}
+      >
+        <img src="/images/welcome.svg" alt="welcome" />
+        <div
+          style={{
+            fontSize: '36px',
+            color: '#3e3e5f',
+            textAlign: 'center',
+            fontWeight: 300,
+            marginTop: '30px',
+          }}
+        >
+          Welcome to Rankguru!
+        </div>
+      </div>
+    );
+    return view;
   };
 
   render() {
     return (
       <div className="cover-full-container">
-        <div className={`col no-padding ${s.signInContainer}`}>
-          {this.displaySignIn()}
+        <div className={`col no-padding ${s.logInContainer}`}>
+          {this.displayLogInPage()}
         </div>
         <div className={`col no-padding ${s.welcomeContainer}`}>
           {this.displayWelcome()}
         </div>
-        {this.state.showForgotPassword ? this.displayForgotPassowrd() : null}
         <Loader />
       </div>
     );
