@@ -56,4 +56,7 @@ router.post(
   controller.createStudentUser,
 );
 
+router.post('/sendOTP', controller.sendOTP);
+router.post('/verifyOTP', controller.verifyOTP);
+
 export default router;
