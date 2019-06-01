@@ -124,9 +124,7 @@ async function onLocationChange(location, action) {
         location.pathname,
       )
     ) {
-      const path = `/signin?redirectTo=${encodeURIComponent(
-        location.pathname + location.search,
-      )}`;
+      const path = `/signin`;
       location.pathname = path;
       history.replace(path);
     }

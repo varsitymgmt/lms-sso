@@ -34,7 +34,7 @@ class SignIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      formData: { hostName: 'luke.dev.lms.egnify.io', email: '', password: '' },
+      formData: { hostName: 'luke.dev.lms.egnify.io', email: '' },
       emailImgSrc: '/images/icons/username.svg',
       emailValidationCompleted: false,
       doneSrc: '/images/institute-setup/done.svg',
@@ -60,6 +60,58 @@ class SignIn extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.setInitialFormFields();
+  }
+
+  setInitialFormFields = () => {
+    let host = getURLParams('host');
+    if (host) {
+      // if the login source is different host then validate user exits
+      host = new URL(host);
+      if (
+        getCookie(`token`) &&
+        getCookie(`email`) &&
+        getCookie('hostID') === host.hostname.split('.')[0]
+      ) {
+        // redirect back to host if valid
+        window.location = host.href;
+      }
+    }
+    this.setState({
+      formData: {
+        email: document.getElementById('admissionId').value,
+        rememberMe: false,
+        hostname: __DEV__ ? this.context.hostNameForDev : host.hostname,
+      },
+      host,
+    });
+  };
+
+  setPassword = () => {
+    let host = getURLParams('host');
+    if (host) {
+      // if the login source is different host then validate user exits
+      host = new URL(host);
+      if (
+        getCookie(`token`) &&
+        getCookie(`email`) &&
+        getCookie('hostID') === host.hostname.split('.')[0]
+      ) {
+        // redirect back to host if valid
+        window.location = host.href;
+      }
+    }
+    this.setState({
+      formData: {
+        email: document.getElementById('admissionId').value,
+        rememberMe: false,
+        hostname: __DEV__ ? this.context.hostNameForDev : host.hostname,
+      },
+      host,
+    });
+  };
+
   setPassword = () => {
     let host = getURLParams('host');
     if (host) {
@@ -80,16 +132,9 @@ class SignIn extends React.Component {
         newPassword: confirmPasswordString.toString().replace(/,/g, ''),
       })
       .then(() => {
-        this.setState(
-          {
-            formData: {
-              hostname: __DEV__ ? this.context.hostNameForDev : host.hostname,
-              email: this.state.admissionId,
-              password: confirmPasswordString.toString().replace(/,/g, ''),
-            },
-          },
-          () => this.handleSignIn(),
-        );
+        const formData = this.state.formData;
+        formData.password = confirmPasswordString.toString().replace(/,/g, '');
+        this.setState({ formData }, () => this.handleSignIn());
       })
       .catch(err => {
         console.error('handleVerifyUser', err.response);
@@ -452,18 +497,10 @@ class SignIn extends React.Component {
         </div>
         <div
           className={s.resend}
-          onClick={() => {
-            this.setState(
-              {
-                formData: {
-                  hostname: __DEV__
-                    ? this.context.hostNameForDev
-                    : host.hostname,
-                  email: this.state.admissionId,
-                },
-              },
-              () => this.validateSignInID(),
-            );
+          onClick={() => () => {
+            const formData = this.state.formData;
+            formData.email = this.state.admissionId;
+            this.setState({ formData }, () => this.handleSignIn());
           }}
           role="presentation"
         >
@@ -659,20 +696,11 @@ class SignIn extends React.Component {
             <div
               className={s.btn}
               role="presentation"
-              onClick={() =>
-                this.setState(
-                  {
-                    formData: {
-                      hostname: __DEV__
-                        ? this.context.hostNameForDev
-                        : host.hostname,
-                      email: this.state.admissionId,
-                      password: inputString.toString().replace(/,/g, ''),
-                    },
-                  },
-                  () => this.handleSignIn(),
-                )
-              }
+              onClick={() => {
+                const formData = this.state.formData;
+                formData.password = inputString.toString().replace(/,/g, '');
+                this.setState({ formData }, () => this.handleSignIn());
+              }}
             >
               <div className={s.btnText} role="presentation">
                 SIGN IN
@@ -823,14 +851,11 @@ class SignIn extends React.Component {
             className={s.btn}
             role="presentation"
             onClick={() => {
+              const formData = this.state.formData;
+              formData.email = document.getElementById('admissionId').value;
               this.setState(
                 {
-                  formData: {
-                    hostname: __DEV__
-                      ? this.context.hostNameForDev
-                      : host.hostname,
-                    email: document.getElementById('admissionId').value,
-                  },
+                  formData,
                   admissionId: document.getElementById('admissionId').value,
                 },
                 () => this.validateSignInID(),
