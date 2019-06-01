@@ -46,6 +46,7 @@ lint:
     - sso/qa
     - spica/development
     - spica/qa
+    - lt
 
 build:
   stage: build
@@ -81,6 +82,7 @@ release:
   only:
     - development
     - qa
+    - lt
     - master
 
     # - /^f-.*$/
