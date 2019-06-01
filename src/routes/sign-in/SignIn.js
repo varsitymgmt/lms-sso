@@ -749,22 +749,12 @@ class SignIn extends React.Component {
             this.state.page === 'SignUp' &&
             !response.data.firstTimeLogin
           ) {
-            // this.setState({
-            //   showEmptyIdError: false,
-            //   showIvalidIdError: false,
-            //   showUnregisteredUserError: false,
-            //   showAlreadyRegisteredUserError: true,
-            // });
-            this.setState(
-              {
-                page: 'Otp',
-                showEmptyIdError: false,
-                showIvalidIdError: false,
-                showUnregisteredUserError: false,
-                showAlreadyRegisteredUserError: false,
-              },
-              () => this.receiveOtp(),
-            );
+            this.setState({
+              showEmptyIdError: false,
+              showIvalidIdError: false,
+              showUnregisteredUserError: false,
+              showAlreadyRegisteredUserError: true,
+            });
           } else if (this.state.page === 'SignIn') {
             this.setState({
               page: 'EnterPassword',
@@ -872,10 +862,10 @@ class SignIn extends React.Component {
   displayLogInPage = () => (
     <div>
       <img
-        src="/images/guru.png"
+        src="/images/rankguru-evidya-logo.png"
         alt=""
         className={s.logo}
-        width="50px"
+        width="120px"
         height="60px"
       />
       <div className={s.mainContainer}>
