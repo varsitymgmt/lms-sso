@@ -102,30 +102,6 @@ class SignIn extends React.Component {
         window.location = host.href;
       }
     }
-    this.setState({
-      formData: {
-        email: document.getElementById('admissionId').value,
-        rememberMe: false,
-        hostname: __DEV__ ? this.context.hostNameForDev : host.hostname,
-      },
-      host,
-    });
-  };
-
-  setPassword = () => {
-    let host = getURLParams('host');
-    if (host) {
-      // if the login source is different host then validate user exits
-      host = new URL(host);
-      if (
-        getCookie(`token`) &&
-        getCookie(`email`) &&
-        getCookie('hostID') === host.hostname.split('.')[0]
-      ) {
-        // redirect back to host if valid
-        window.location = host.href;
-      }
-    }
     axios
       .post(`${this.context.API_EGNIFY_IO_URL}/api/v1/users/resetpassword`, {
         hashToken: this.state.hashToken,
@@ -143,157 +119,107 @@ class SignIn extends React.Component {
     // navigation.navigate(ROUTE_NAMES.setPassword, { activeTab });
   };
 
+  displayConfirmPasswordHolder = () => (
+    <div className={s.textInputOtpContainer}>
+      <input
+        type="text"
+        name="sign"
+        maxLength="1"
+        id="Cbox1"
+        onChange={e => {
+          const pattern = /[0-9]/g;
+          if (e.target.value.match(pattern)) {
+            document.getElementById('Cbox1').value = e.target.value;
+            confirmPasswordString[0] = e.target.value;
+            document.getElementById('Cbox2').focus();
+          } else {
+            document.getElementById('Cbox1').value = '';
+            confirmPasswordString[0] = '*';
+          }
+        }}
+        className={s.textInputOtp}
+      />
+      <input
+        type="text"
+        name="sign"
+        maxLength="1"
+        id="Cbox2"
+        onKeyDown={e => {
+          const pattern = /[0-9]/g;
+          if (e.keyCode === 8 && !e.target.value.match(pattern)) {
+            document.getElementById('Cbox1').focus();
+          }
+        }}
+        onChange={e => {
+          const pattern = /[0-9]/g;
+          if (e.target.value.match(pattern)) {
+            confirmPasswordString[1] = e.target.value;
+            document.getElementById('Cbox2').value = e.target.value;
+            document.getElementById('Cbox3').focus();
+          } else {
+            document.getElementById('Cbox2').value = '';
+            confirmPasswordString[1] = '*';
+          }
+        }}
+        className={s.textInputOtp}
+      />
+      <input
+        type="text"
+        name="sign"
+        maxLength="1"
+        id="Cbox3"
+        onKeyDown={e => {
+          const pattern = /[0-9]/g;
+          if (e.keyCode === 8 && !e.target.value.match(pattern)) {
+            document.getElementById('Cbox2').focus();
+          }
+        }}
+        onChange={e => {
+          const pattern = /[0-9]/g;
+          if (e.target.value.match(pattern)) {
+            confirmPasswordString[2] = e.target.value;
+            document.getElementById('Cbox3').value = e.target.value;
+            document.getElementById('Cbox4').focus();
+          } else {
+            document.getElementById('Cbox3').value = '';
+            confirmPasswordString[2] = '*';
+          }
+        }}
+        className={s.textInputOtp}
+      />
+      <input
+        type="text"
+        name="sign"
+        maxLength="1"
+        id="Cbox4"
+        onKeyDown={e => {
+          const pattern = /[0-9]/g;
+          if (e.keyCode === 8 && !e.target.value.match(pattern)) {
+            document.getElementById('Cbox3').focus();
+          }
+        }}
+        onChange={e => {
+          const pattern = /[0-9]/g;
+          if (e.target.value.match(pattern)) {
+            confirmPasswordString[3] = e.target.value;
+          } else {
+            document.getElementById('Cbox4').value = '';
+            confirmPasswordString[3] = '*';
+          }
+        }}
+        className={s.textInputOtp}
+      />
+    </div>
+  );
+
   displaySetPasswordPage = () => (
     <div>
       <div className={s.welcomeSetPassword}>Set Password</div>
       <div>
         <div className={s.enterPwd}>Enter Password</div>
-        <div className={s.textInputOtpContainer}>
-          <input
-            type="text"
-            name="sign"
-            maxLength="1"
-            id="box1"
-            onChange={e => {
-              const pattern = /[0-9]/g;
-              if (e.target.value.match(pattern)) {
-                document.getElementById('box1').value = e.target.value;
-                inputString[0] = e.target.value;
-                document.getElementById('box2').focus();
-              } else {
-                document.getElementById('box1').value = '';
-                inputString[0] = '*';
-              }
-            }}
-            className={s.textInputOtp}
-          />
-          <input
-            type="text"
-            name="sign"
-            maxLength="1"
-            id="box2"
-            onChange={e => {
-              const pattern = /[0-9]/g;
-              if (e.target.value.match(pattern)) {
-                inputString[1] = e.target.value;
-                document.getElementById('box2').value = e.target.value;
-                document.getElementById('box3').focus();
-              } else {
-                document.getElementById('box2').value = '';
-                inputString[1] = '*';
-              }
-            }}
-            className={s.textInputOtp}
-          />
-          <input
-            type="text"
-            name="sign"
-            maxLength="1"
-            id="box3"
-            onChange={e => {
-              const pattern = /[0-9]/g;
-              if (e.target.value.match(pattern)) {
-                inputString[2] = e.target.value;
-                document.getElementById('box3').value = e.target.value;
-                document.getElementById('box4').focus();
-              } else {
-                document.getElementById('box3').value = '';
-                inputString[2] = '*';
-              }
-            }}
-            className={s.textInputOtp}
-          />
-          <input
-            type="text"
-            name="sign"
-            maxLength="1"
-            id="box4"
-            onChange={e => {
-              const pattern = /[0-9]/g;
-              if (e.target.value.match(pattern)) {
-                inputString[3] = e.target.value;
-                document.getElementById('Cbox1').focus();
-              } else {
-                document.getElementById('box4').value = '';
-                inputString[3] = '*';
-              }
-            }}
-            className={s.textInputOtp}
-          />
-        </div>
+        {this.displayPasswordHolder()}
         <div className={s.enterPwd}>Confirm Password</div>
-        <div className={s.textInputOtpContainer}>
-          <input
-            type="text"
-            name="sign"
-            maxLength="1"
-            id="Cbox1"
-            onChange={e => {
-              const pattern = /[0-9]/g;
-              if (e.target.value.match(pattern)) {
-                document.getElementById('Cbox1').value = e.target.value;
-                confirmPasswordString[0] = e.target.value;
-                document.getElementById('Cbox2').focus();
-              } else {
-                document.getElementById('Cbox1').value = '';
-                confirmPasswordString[0] = '*';
-              }
-            }}
-            className={s.textInputOtp}
-          />
-          <input
-            type="text"
-            name="sign"
-            maxLength="1"
-            id="Cbox2"
-            onChange={e => {
-              const pattern = /[0-9]/g;
-              if (e.target.value.match(pattern)) {
-                confirmPasswordString[1] = e.target.value;
-                document.getElementById('Cbox2').value = e.target.value;
-                document.getElementById('Cbox3').focus();
-              } else {
-                document.getElementById('Cbox2').value = '';
-                confirmPasswordString[1] = '*';
-              }
-            }}
-            className={s.textInputOtp}
-          />
-          <input
-            type="text"
-            name="sign"
-            maxLength="1"
-            id="Cbox3"
-            onChange={e => {
-              const pattern = /[0-9]/g;
-              if (e.target.value.match(pattern)) {
-                confirmPasswordString[2] = e.target.value;
-                document.getElementById('Cbox3').value = e.target.value;
-                document.getElementById('Cbox4').focus();
-              } else {
-                document.getElementById('Cbox3').value = '';
-                confirmPasswordString[2] = '*';
-              }
-            }}
-            className={s.textInputOtp}
-          />
-          <input
-            type="text"
-            name="sign"
-            maxLength="1"
-            id="Cbox4"
-            onChange={e => {
-              const pattern = /[0-9]/g;
-              if (e.target.value.match(pattern)) {
-                confirmPasswordString[3] = e.target.value;
-              } else {
-                document.getElementById('Cbox4').value = '';
-                confirmPasswordString[3] = '*';
-              }
-            }}
-            className={s.textInputOtp}
-          />
-        </div>
+        {this.displayConfirmPasswordHolder()}
         <div className={s.error}>
           {this.state.showCombinationError ? 'Password did not match' : null}
         </div>
@@ -420,78 +346,7 @@ class SignIn extends React.Component {
               : null}
           </div>
         </div>
-        <div className={s.textInputOtpContainer}>
-          <input
-            type="text"
-            name="sign"
-            maxLength="1"
-            id="box1"
-            onChange={e => {
-              const pattern = /[0-9]/g;
-              if (e.target.value.match(pattern)) {
-                document.getElementById('box1').value = e.target.value;
-                inputString[0] = e.target.value;
-                document.getElementById('box2').focus();
-              } else {
-                document.getElementById('box1').value = '';
-                inputString[0] = '*';
-              }
-            }}
-            className={s.textInputOtp}
-          />
-          <input
-            type="text"
-            name="sign"
-            maxLength="1"
-            id="box2"
-            onChange={e => {
-              const pattern = /[0-9]/g;
-              if (e.target.value.match(pattern)) {
-                inputString[1] = e.target.value;
-                document.getElementById('box2').value = e.target.value;
-                document.getElementById('box3').focus();
-              } else {
-                document.getElementById('box2').value = '';
-                inputString[1] = '*';
-              }
-            }}
-            className={s.textInputOtp}
-          />
-          <input
-            type="text"
-            name="sign"
-            maxLength="1"
-            id="box3"
-            onChange={e => {
-              const pattern = /[0-9]/g;
-              if (e.target.value.match(pattern)) {
-                inputString[2] = e.target.value;
-                document.getElementById('box3').value = e.target.value;
-                document.getElementById('box4').focus();
-              } else {
-                document.getElementById('box3').value = '';
-                inputString[2] = '*';
-              }
-            }}
-            className={s.textInputOtp}
-          />
-          <input
-            type="text"
-            name="sign"
-            maxLength="1"
-            id="box4"
-            onChange={e => {
-              const pattern = /[0-9]/g;
-              if (e.target.value.match(pattern)) {
-                inputString[3] = e.target.value;
-              } else {
-                document.getElementById('box4').value = '';
-                inputString[3] = '*';
-              }
-            }}
-            className={s.textInputOtp}
-          />
-        </div>
+        {this.displayPasswordHolder()}
         <div className={s.errorOtp}>
           {this.state.showInvalidOtpError ? this.state.formFieldsError : null}
         </div>
@@ -596,6 +451,99 @@ class SignIn extends React.Component {
     return div;
   };
 
+  displayPasswordHolder = () => (
+    <div className={s.textInputOtpContainer}>
+      <input
+        type="text"
+        name="sign"
+        maxLength="1"
+        id="box1"
+        onChange={e => {
+          const pattern = /[0-9]/g;
+          if (e.target.value.match(pattern)) {
+            document.getElementById('box1').value = e.target.value;
+            inputString[0] = e.target.value;
+            document.getElementById('box2').focus();
+          } else {
+            document.getElementById('box1').value = '';
+            inputString[0] = '*';
+          }
+        }}
+        className={s.textInputOtp}
+      />
+      <input
+        type="text"
+        name="sign"
+        maxLength="1"
+        id="box2"
+        onKeyDown={e => {
+          const pattern = /[0-9]/g;
+          if (e.keyCode === 8 && !e.target.value.match(pattern)) {
+            document.getElementById('box1').focus();
+          }
+        }}
+        onChange={e => {
+          const pattern = /[0-9]/g;
+          if (e.target.value.match(pattern)) {
+            inputString[1] = e.target.value;
+            document.getElementById('box2').value = e.target.value;
+            document.getElementById('box3').focus();
+          } else {
+            document.getElementById('box2').value = '';
+            inputString[1] = '*';
+          }
+        }}
+        className={s.textInputOtp}
+      />
+      <input
+        type="text"
+        name="sign"
+        maxLength="1"
+        id="box3"
+        onKeyDown={e => {
+          const pattern = /[0-9]/g;
+          if (e.keyCode === 8 && !e.target.value.match(pattern)) {
+            document.getElementById('box2').focus();
+          }
+        }}
+        onChange={e => {
+          const pattern = /[0-9]/g;
+          if (e.target.value.match(pattern)) {
+            inputString[2] = e.target.value;
+            document.getElementById('box3').value = e.target.value;
+            document.getElementById('box4').focus();
+          } else {
+            document.getElementById('box3').value = '';
+            inputString[2] = '*';
+          }
+        }}
+        className={s.textInputOtp}
+      />
+      <input
+        type="text"
+        name="sign"
+        maxLength="1"
+        id="box4"
+        onKeyDown={e => {
+          const pattern = /[0-9]/g;
+          if (e.keyCode === 8 && !e.target.value.match(pattern)) {
+            document.getElementById('box3').focus();
+          }
+        }}
+        onChange={e => {
+          const pattern = /[0-9]/g;
+          if (e.target.value.match(pattern)) {
+            inputString[3] = e.target.value;
+          } else {
+            document.getElementById('box4').value = '';
+            inputString[3] = '*';
+          }
+        }}
+        className={s.textInputOtp}
+      />
+    </div>
+  );
+
   displayEnterPasswordPage = () => {
     let host = getURLParams('host');
     if (host) {
@@ -615,78 +563,7 @@ class SignIn extends React.Component {
         <div className={s.welcomeSetPassword}>Password</div>
         <div>
           <div className={s.enterPwdSignInPage}>Enter your password</div>
-          <div className={s.textInputOtpContainer}>
-            <input
-              type="text"
-              name="sign"
-              maxLength="1"
-              id="box1"
-              onChange={e => {
-                const pattern = /[0-9]/g;
-                if (e.target.value.match(pattern)) {
-                  document.getElementById('box1').value = e.target.value;
-                  inputString[0] = e.target.value;
-                  document.getElementById('box2').focus();
-                } else {
-                  document.getElementById('box1').value = '';
-                  inputString[0] = '*';
-                }
-              }}
-              className={s.textInputOtp}
-            />
-            <input
-              type="text"
-              name="sign"
-              maxLength="1"
-              id="box2"
-              onChange={e => {
-                const pattern = /[0-9]/g;
-                if (e.target.value.match(pattern)) {
-                  inputString[1] = e.target.value;
-                  document.getElementById('box2').value = e.target.value;
-                  document.getElementById('box3').focus();
-                } else {
-                  document.getElementById('box2').value = '';
-                  inputString[1] = '*';
-                }
-              }}
-              className={s.textInputOtp}
-            />
-            <input
-              type="text"
-              name="sign"
-              maxLength="1"
-              id="box3"
-              onChange={e => {
-                const pattern = /[0-9]/g;
-                if (e.target.value.match(pattern)) {
-                  inputString[2] = e.target.value;
-                  document.getElementById('box3').value = e.target.value;
-                  document.getElementById('box4').focus();
-                } else {
-                  document.getElementById('box3').value = '';
-                  inputString[2] = '*';
-                }
-              }}
-              className={s.textInputOtp}
-            />
-            <input
-              type="text"
-              name="sign"
-              maxLength="1"
-              id="box4"
-              onChange={e => {
-                const pattern = /[0-9]/g;
-                if (e.target.value.match(pattern)) {
-                  inputString[3] = e.target.value;
-                } else {
-                  document.getElementById('box4').value = '';
-                  inputString[3] = '*';
-                }
-              }}
-              className={s.textInputOtp}
-            />
-          </div>
+          {this.displayPasswordHolder()}
           <div className={s.error}>
             {this.state.showInvalidPasswordError
               ? this.displayFormFieldError()
@@ -818,7 +695,6 @@ class SignIn extends React.Component {
           </div>
           <div className={s.signInText}>Enter your Admission ID</div>
         </div>
-
         <div className={s.admissionId}>Admission ID</div>
         <input
           className={s.textInput}
@@ -861,15 +737,14 @@ class SignIn extends React.Component {
 
   displayLogInPage = () => (
     <div>
-      <img
-        src="/images/rankguru-evidya-logo.png"
-        alt=""
-        className={s.logo}
-        width="120px"
-        height="60px"
-      />
       <div className={s.mainContainer}>
-        {/* <div className={s.mainContainer}>{this.displayOtpVerification()}</div> */}
+        <div className={s.logoContainer}>
+          <img
+            src="/images/rankguru-evidya-logo.png"
+            alt=""
+            className={s.logo}
+          />
+        </div>
         {this.state.page === 'SignIn' || this.state.page === 'SignUp'
           ? this.displaySignInPage()
           : null}
