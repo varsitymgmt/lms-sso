@@ -36,11 +36,9 @@ class SignIn extends React.Component {
     this.state = {
       formData: { hostName: 'luke.dev.lms.egnify.io', email: '' },
       emailImgSrc: '/images/icons/username.svg',
-      emailValidationCompleted: false,
       doneSrc: '/images/institute-setup/done.svg',
       emailSrc: '/images/icons/mail.png',
       passwordImgSrc: '/images/icons/password.svg',
-      showPassword: false,
       page: 'SignIn',
       mainPage: 'SignIn',
       formFieldsError: {},
@@ -64,6 +62,11 @@ class SignIn extends React.Component {
     this.setInitialFormFields();
   }
 
+  /**
+    @description
+      This function sets the initial form fields
+    @author Shounak, Divya
+  */
   setInitialFormFields = () => {
     let host = getURLParams('host');
     if (host) {
@@ -88,6 +91,11 @@ class SignIn extends React.Component {
     });
   };
 
+  /**
+    @description
+      This function sets new password and then redirects user
+    @author Shounak, Divya
+  */
   setPassword = () => {
     let host = getURLParams('host');
     if (host) {
@@ -119,6 +127,11 @@ class SignIn extends React.Component {
     // navigation.navigate(ROUTE_NAMES.setPassword, { activeTab });
   };
 
+  /**
+    @description
+      This function displays confirm password holder part of sign in/up page
+    @author Shounak, Divya
+  */
   displayConfirmPasswordHolder = () => (
     <div className={s.textInputOtpContainer}>
       <input
@@ -212,6 +225,11 @@ class SignIn extends React.Component {
     </div>
   );
 
+  /**
+    @description
+      This function displays the set password part of sign in/up page
+    @author Shounak, Divya
+  */
   displaySetPasswordPage = () => (
     <div>
       <div className={s.welcomeSetPassword}>Set Password</div>
@@ -246,6 +264,11 @@ class SignIn extends React.Component {
     </div>
   );
 
+  /**
+    @description
+      This function returns error if otp entered is incorrect
+    @author Shounak, Divya
+  */
   validateOtp = otp => {
     let validOtp = true;
     if (otp.length !== 4) {
@@ -257,6 +280,11 @@ class SignIn extends React.Component {
     return validOtp;
   };
 
+  /**
+    @description
+      This function checks if otp entered is correct or not
+    @author Shounak, Divya
+  */
   handleVerifyOTP = () => {
     if (this.validateOtp(this.state.otp)) {
       axios
@@ -295,6 +323,11 @@ class SignIn extends React.Component {
     // navigation.navigate(ROUTE_NAMES.setPassword, { activeTab });
   };
 
+  /**
+    @description
+      This function checks if otp is received or not
+    @author Shounak, Divya
+  */
   receiveOtp = () => {
     this.setState({ otpSent: false });
     axios
@@ -317,6 +350,11 @@ class SignIn extends React.Component {
       });
   };
 
+  /**
+    @description
+      This function displays otp part of sign in/up page
+    @author Shounak, Divya
+  */
   displayOtpVerification = () => {
     let host = getURLParams('host');
     if (host) {
@@ -333,19 +371,21 @@ class SignIn extends React.Component {
     }
     return (
       <div className={s.lowerBox}>
-        <div>
-          <div className={s.otpVerification}>OTP Verification</div>
-          <div className={s.otpText}>
-            {this.state.showOtpSendError
-              ? 'Something went wrong, please try resend otp option'
-              : null}
-            {!this.state.showOtpSendError && this.state.mobileNumber
-              ? `Enter the 4-digit OTP we’ve just sent to ${
-                  this.state.mobileNumber
-                }`
-              : null}
+        {this.state.mobileNumber ? (
+          <div>
+            <div className={s.otpVerification}>OTP Verification</div>
+            <div className={s.otpText}>
+              {this.state.showOtpSendError
+                ? 'Something went wrong, please try resend otp option'
+                : null}
+              {!this.state.showOtpSendError
+                ? `Enter the 4-digit OTP we’ve just sent to ${
+                    this.state.mobileNumber
+                  }`
+                : null}
+            </div>
           </div>
-        </div>
+        ) : null}
         {this.displayPasswordHolder()}
         <div className={s.errorOtp}>
           {this.state.showInvalidOtpError ? this.state.formFieldsError : null}
@@ -392,6 +432,11 @@ class SignIn extends React.Component {
     );
   };
 
+  /**
+    @description
+      This function redirects user if password is correct
+    @author Shounak, Divya
+  */
   redirectBackToHost = (host, token, accessControlToken, email) => {
     if (host) {
       const expires = 24 * 60 * 60 * 1000;
@@ -411,6 +456,11 @@ class SignIn extends React.Component {
     }
   };
 
+  /**
+    @description
+      This function checks if password is correct or not for sign in page
+    @author Shounak, Divya
+  */
   handleSignIn = () => {
     toggleLoader(true);
     axios
@@ -446,11 +496,21 @@ class SignIn extends React.Component {
       });
   };
 
+  /**
+    @description
+      This function returns the errors if sign in fails
+    @author Shounak, Divya
+  */
   displayFormFieldError = () => {
     const div = <div>{this.state.formFieldsError.password}</div>;
     return div;
   };
 
+  /**
+    @description
+      This function displays the password holder part of sign in/up page
+    @author Shounak, Divya
+  */
   displayPasswordHolder = () => (
     <div className={s.textInputOtpContainer}>
       <input
@@ -544,6 +604,11 @@ class SignIn extends React.Component {
     </div>
   );
 
+  /**
+    @description
+      This function displays the enter password part of sign in/up page
+    @author Shounak, Divya
+  */
   displayEnterPasswordPage = () => {
     let host = getURLParams('host');
     if (host) {
@@ -607,6 +672,11 @@ class SignIn extends React.Component {
     );
   };
 
+  /**
+    @description
+      This function validates the admission id entered by the user
+    @author Shounak, Divya
+  */
   validateSignInID = () => {
     axios
       .post(
@@ -673,6 +743,11 @@ class SignIn extends React.Component {
       });
   };
 
+  /**
+    @description
+      This function displays the enter admission id part of sign in/up page
+    @author Shounak, Divya
+  */
   displaySignInPage = () => {
     let host = getURLParams('host');
     if (host) {
@@ -735,27 +810,24 @@ class SignIn extends React.Component {
     );
   };
 
+  /**
+    @description
+      This function displays the left side view in sign in/up page
+    @author Shounak, Divya
+  */
   displayLogInPage = () => (
-    <div>
-      <div className={s.mainContainer}>
-        <div className={s.logoContainer}>
-          <img
-            src="/images/rankguru-evidya-logo.png"
-            alt=""
-            className={s.logo}
-          />
-        </div>
-        {this.state.page === 'SignIn' || this.state.page === 'SignUp'
-          ? this.displaySignInPage()
-          : null}
-        {this.state.page === 'Otp' ? this.displayOtpVerification() : null}
-        {this.state.page === 'SetPassword'
-          ? this.displaySetPasswordPage()
-          : null}
-        {this.state.page === 'EnterPassword'
-          ? this.displayEnterPasswordPage()
-          : null}
+    <div className={s.mainContainer}>
+      <div className={s.logoContainer}>
+        <img src="/images/rankguru-evidya-logo.png" alt="" className={s.logo} />
       </div>
+      {this.state.page === 'SignIn' || this.state.page === 'SignUp'
+        ? this.displaySignInPage()
+        : null}
+      {this.state.page === 'EnterPassword'
+        ? this.displayEnterPasswordPage()
+        : null}
+      {this.state.page === 'Otp' ? this.displayOtpVerification() : null}
+      {this.state.page === 'SetPassword' ? this.displaySetPasswordPage() : null}
       <div className={s.bottom}>
         <div className={s.bottomText}>
           {this.state.mainPage === 'SignIn'
@@ -784,6 +856,11 @@ class SignIn extends React.Component {
     </div>
   );
 
+  /**
+    @description
+      This function displays the right side view in sign in/up page
+    @author Shounak, Divya
+  */
   displayWelcome = () => {
     const view = (
       <div
@@ -804,7 +881,7 @@ class SignIn extends React.Component {
             marginTop: '30px',
           }}
         >
-          Welcome to Rankguru!
+          Welcome to Rankguru eVidya!
         </div>
       </div>
     );
