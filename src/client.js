@@ -122,7 +122,7 @@ async function onLocationChange(location, action) {
       !localStorage.getItem('token') &&
       ![
         '/signin',
-        '/admin/signin',
+        '/admin-signin',
         '/signout',
         '/resetPassword',
         '/forgotPassword',

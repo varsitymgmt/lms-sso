@@ -14,7 +14,7 @@ const routes = {
       load: () => import(/* webpackChunkName: 'SignIn' */ './sign-in'),
     },
     {
-      path: '/admin/signin',
+      path: '/admin-signin',
       load: () =>
         import(/* webpackChunkName: 'AdminSignIn' */ './admin-sign-in'),
     },
