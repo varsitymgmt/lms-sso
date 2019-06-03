@@ -881,7 +881,6 @@ class SignIn extends React.Component {
           ? this.displayEnterPasswordPage()
           : null}
       </div>
-
       <div className={s.bottom}>
         <div className={s.bottomText}>
           {this.state.mainPage === 'SignIn'
