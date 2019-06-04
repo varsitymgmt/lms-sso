@@ -210,6 +210,19 @@ class SignIn extends React.Component {
           if (e.keyCode === 8 && !e.target.value.match(pattern)) {
             document.getElementById('Cbox3').focus();
           }
+          if (e.keyCode === 13) {
+            if (
+              JSON.stringify(inputString) ===
+              JSON.stringify(confirmPasswordString)
+            ) {
+              this.setState(
+                {
+                  showCombinationError: false,
+                },
+                () => this.setPassword(),
+              );
+            } else this.setState({ showCombinationError: true });
+          }
         }}
         onChange={e => {
           const pattern = /[0-9]/g;
@@ -589,6 +602,24 @@ class SignIn extends React.Component {
           if (e.keyCode === 8 && !e.target.value.match(pattern)) {
             document.getElementById('box3').focus();
           }
+          if (e.keyCode === 13) {
+            if (this.state.page === 'EnterPassword') {
+              const formData = this.state.formData;
+              formData.password = inputString.toString().replace(/,/g, '');
+              this.setState({ formData }, () => this.handleSignIn());
+            }
+            if (this.state.page === 'Otp') {
+              this.setState(
+                {
+                  otp: inputString.toString().replace(/,/g, ''),
+                },
+                () => this.handleVerifyOTP(),
+              );
+            }
+            if (this.state.page === 'SetPassword') {
+              document.getElementById('Cbox1').focus();
+            }
+          }
         }}
         onChange={e => {
           const pattern = /[0-9]/g;
@@ -776,6 +807,19 @@ class SignIn extends React.Component {
           type="text"
           name="sign"
           id="admissionId"
+          onKeyDown={e => {
+            if (e.keyCode === 13) {
+              const formData = this.state.formData;
+              formData.email = document.getElementById('admissionId').value;
+              this.setState(
+                {
+                  formData,
+                  admissionId: document.getElementById('admissionId').value,
+                },
+                () => this.validateSignInID(),
+              );
+            }
+          }}
         />
         <div className={s.error}>
           {this.state.showEmptyIdError ? 'Admission Id cannot be empty.' : null}
