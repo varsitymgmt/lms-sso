@@ -210,7 +210,43 @@
   text-align: center;
 }
 
+@media only screen and (max-width: 1024px) {
+  .mainContainer {
+    margin-top: 10%;
+  }
+
+  .welcomeContainer {
+    img {
+      margin-top: 10px;
+    }
+  }
+
+  .bottom {
+    top: 80%;
+  }
+}
+
+@media only screen and (max-width: 1280px) {
+  .mainContainer {
+    margin-top: 15%;
+  }
+
+  .welcomeContainer {
+    img {
+      margin-top: 10px;
+    }
+  }
+
+  .bottom {
+    top: 60%;
+  }
+}
+
 @media only screen and (min-width: 1360px) {
+  .mainContainer {
+    margin-top: 15%;
+  }
+
   .welcomeContainer {
     img {
       margin-top: 40px;
