@@ -14,7 +14,7 @@ import _ from 'lodash';
 // ============================================
 const all = {
   env: process.env.NODE_ENV,
-  
+
   // Storage
   GCLOUD_STORAGE_BUCKET: process.env.GCLOUD_STORAGE_BUCKET || 'vega-demo-cdn',
 
@@ -31,7 +31,7 @@ const all = {
   port: process.env.PORT || 3000,
 
   //Host Name for Accounts service
-  hostNameForAccounts : process.env.HOST_NAME_FOR_ACCOUNTS||'accounts.dev.hydra.egnify.io',
+  hostNameForAccounts : process.env.HOST_NAME_FOR_ACCOUNTS || 'accounts.dev.lms.egnify.io',
 
   // API Gateway
   api: {
@@ -39,11 +39,10 @@ const all = {
     clientUrl: process.env.API_CLIENT_URL || '',
 
     // apiEgnifyIoUrl to be used in the client-side code
-    apiEgnifyIoUrl: process.env.API_EGNIFY_IO_URL || 'https://accounts.dev.hydra.egnify.io',
+    apiEgnifyIoUrl: process.env.API_EGNIFY_IO_URL || 'https://accounts.dev.lms.egnify.io',
 
     // hostNameForDev to be used login details where hostname is attached
-    hostNameForDev: 'luke.qa.sso.egnify.io',
-
+    hostNameForDev: 'luke.dev.lms.egnify.io',
 
     // curxParserUrl to be used in the client-side code
     curxParserUrl: process.env.CRUX_PARSER_URL || 'https://crux-parser-v1.egnify.com',
