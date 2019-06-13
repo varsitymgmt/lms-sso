@@ -27,7 +27,7 @@ const UserSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
+    // required: true,
   },
   provider: String,
   salt: String,
@@ -66,6 +66,9 @@ const UserSchema = new Schema({
   loginHash: {
     type: String,
     // default: getRandomHash,
+  },
+  contactNumber: {
+    type: String,
   }
 });
 

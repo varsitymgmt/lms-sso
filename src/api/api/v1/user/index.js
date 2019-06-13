@@ -50,4 +50,13 @@ router.post(
   controller.resetStudentPassword,
 );
 
+router.post(
+  '/create/studentUser',
+  auth.isAuthenticated(),
+  controller.createStudentUser,
+);
+
+router.post('/sendOTP', controller.sendOTP);
+router.post('/verifyOTP', controller.verifyOTP);
+
 export default router;

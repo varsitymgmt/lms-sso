@@ -14,6 +14,11 @@ const routes = {
       load: () => import(/* webpackChunkName: 'SignIn' */ './sign-in'),
     },
     {
+      path: '/admin-signin',
+      load: () =>
+        import(/* webpackChunkName: 'AdminSignIn' */ './admin-sign-in'),
+    },
+    {
       path: '/signout',
       load: () => import(/* webpackChunkName: 'SignOut' */ './sign-out'),
     },
@@ -22,6 +27,11 @@ const routes = {
       authenticate: false,
       load: () =>
         import(/* webpackChunkName: 'ResetPassword' */ './reset-password'),
+    },
+    {
+      path: '/forgotPassword',
+      authenticate: false,
+      load: () => import(/* webpackChunkName: 'forgot' */ './forgot-password'),
     },
     // Wildcard routes, e.g. { path: '*', ... } (must go last)
     {

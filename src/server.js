@@ -5,6 +5,8 @@
    @version 1.0.0.0
 */
 
+// module.exports = require("newrelic"); /* eslint-disable import/first */
+
 /* eslint consistent-return: 0 */
 import path from 'path';
 import express from 'express';

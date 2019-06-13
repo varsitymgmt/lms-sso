@@ -28,6 +28,7 @@ async function copy() {
     ),
     copyFile('LICENSE.txt', 'build/LICENSE.txt'),
     copyFile('yarn.lock', 'build/yarn.lock'),
+    copyFile('newrelic.js', 'build/newrelic.js'),
     copyDir('public', 'build/public'),
     copyDir('gcp', 'build/gcp'),
   ]);

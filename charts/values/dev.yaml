@@ -3,34 +3,34 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: registry.gitlab.com/lyra-egnify/hydra-sso/development
+  repository: registry.gitlab.com/lyra-egnify/lms-sso/development
   tag: latest
   pullPolicy: Always
   pullSecrets: gitlab-registry-pull-secret
 
 projectEnv:
   nodeEnv: "production"
-  mongodbUri: "mongodb://hydra:AkdjsAIYHjk87y23l1m2klRrtyhjnmrti92w33@35.200.234.132:27017/tenantregistry"
-  svcSettings: "http://settings-dev-hydra.dev.svc.cluster.local"
-  svcTest: "http://test-management-dev-hydra.dev.svc.cluster.local"
+  mongodbUri: "mongodb://hydra:AkdjsAIYHjk87y23l1m2klRrtyhjnmrti92w33@35.200.234.132:27017/tenantregistry-lms-dev"
+  svcSettings: "http://settings-dev-lms.dev.svc.cluster.local"
+  svcTest: "http://test-management-dev-lms.dev.svc.cluster.local"
   jwtSecret: "KAJDK656kllksklfmFGDFGS765ujh765T6GHAJDSjjjkjiursrda"
   mailjetApiKey: "a1fb4988b5a359099061d2cb8aebc80d"
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
-  apiEgnifyIoUrl: "https://accounts.dev.hydra.egnify.io"
+  apiEgnifyIoUrl: "https://accounts.dev.lms.egnify.io"
   curxParserUrl: "https://crux-parser-v1.egnify.com"
   celeryBrokerUrl: "redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
   celeryResultBackend: "redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
-  hostNameForAccounts: "accounts.dev.hydra.egnify.io"
+  hostNameForAccounts: "accounts.dev.lms.egnify.io"
   commonHost: ".egnify.io"
-  QUEUE_NS: 'hydra-dev-mq'
+  QUEUE_NS: 'lms-dev-mq'
   emailService: "gmail"
   emailHost: "smtp.gmail.com"
   emailUser: "support@egnify.com"
   emailPass: "$dew$008"
 
 service:
-  name: sso-hydra-dev
+  name: sso-lms-dev
   tier: backend
   type: ClusterIP
   externalPort: 80
@@ -39,15 +39,15 @@ ingress:
   enabled: true
   # Used to create an Ingress record.
   hosts:
-    - accounts.dev.hydra.egnify.io
+    - accounts.dev.lms.egnify.io
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "40M"
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   tls:
-    - secretName: hydra-sso-tls-dev
+    - secretName: lms-sso-tls-dev
       hosts:
-        - accounts.dev.hydra.egnify.io
+        - accounts.dev.lms.egnify.io
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -59,3 +59,5 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+nodeSelector:
+  memtype: standard-mem

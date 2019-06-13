@@ -3,35 +3,34 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: registry.gitlab.com/lyra-egnify/hydra-sso/sso/qa
+  repository: registry.gitlab.com/lyra-egnify/lms-sso/lt
   tag: latest
   pullPolicy: Always
   pullSecrets: gitlab-registry-pull-secret
 
 projectEnv:
   nodeEnv: "production"
-  mongodbUri: "mongodb://hydra:AkdjsAIYHjk87y23l1m2klRrtyhjnmrti92w33@35.200.234.132:27017/tenantregistry-sso-qa"
-  svcSettings: "http://settings-qa-sso.qa.svc.cluster.local"
-  svcTest: "http://test-management-qa-sso.qa.svc.cluster.local"
-  jwtSecret: "KAJDK656kllksklfmFGDFGS765ujh765T6GHAJDSjjjkjiursrdaqa"
+  mongodbUri: "mongodb://lms:alphabetagamma@192.168.81.51:27017/tenantregistry-lms-lt"
+  svcSettings: "http://settings-lt-lms.lt.svc.cluster.local"
+  svcTest: "http://test-management-lt-lms.lt.svc.cluster.local"
+  jwtSecret: "KAJDK656kllksklfmFGDFGS765ujh765T6GHAJDSjjjkjiursrda"
   mailjetApiKey: "a1fb4988b5a359099061d2cb8aebc80d"
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
   mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
-  apiEgnifyIoUrl: "https://accounts.qa.sso.egnify.io"
+  apiEgnifyIoUrl: "https://accounts.lt.rankguru.com"
   curxParserUrl: "https://crux-parser-v1.egnify.com"
-  celeryBrokerUrl: "redis://:4C00Z1MZXO@redis-qa-master.qa.svc.cluster.local:6379/0"
-  celeryResultBackend: "redis://:4C00Z1MZXO@redis-qa-master.qa.svc.cluster.local:6379/0"
-  hostNameForAccounts: "accounts.qa.sso.egnify.io"
-  commonHost: ".egnify.io"
-  QUEUE_NS: "sso-qa-mq"
+  celeryBrokerUrl: "redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
+  celeryResultBackend: "redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
+  hostNameForAccounts: "accounts.lt.rankguru.com"
+  commonHost: ".rankguru.com"
+  QUEUE_NS: 'lms-lt-mq'
   emailService: "gmail"
   emailHost: "smtp.gmail.com"
   emailUser: "support@egnify.com"
   emailPass: "$dew$008"
 
-
 service:
-  name: sso
+  name: sso-lms-lt
   tier: backend
   type: ClusterIP
   externalPort: 80
@@ -40,24 +39,24 @@ ingress:
   enabled: true
   # Used to create an Ingress record.
   hosts:
-    - accounts.qa.sso.egnify.io
+    - accounts.lt.rankguru.com
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "40M"
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
+    nginx.org/keepalive: "100"
   tls:
-    # Secrets must be manually created in the namespace.
-    - secretName: hydra-sso-tls-qa
+    - secretName: lms-sso-tls-lt
       hosts:
-        - accounts.qa.sso.egnify.io
-resources: {}
+        - accounts.lt.rankguru.com
+resources: 
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+  limits:
+   cpu: 512m
+   memory: 1024Mi
+  requests:
+   cpu: 512m
+   memory: 1024Mi

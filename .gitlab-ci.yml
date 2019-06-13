@@ -58,15 +58,10 @@ build:
     - yarn install
     - yarn run build -- --release
   only:
-    - master
     - development
     - qa
-    - uat
-    - sso/development
-    - sso/qa
-    - spica/development
-    - spica/qa
-
+    - master
+    
 release:
   stage: release
   image: docker:latest
@@ -86,10 +81,7 @@ release:
   only:
     - development
     - qa
-    - sso/development
-    - sso/qa
-    - spica/development
-    - spica/qa
+    - master
 
     # - /^f-.*$/
 
@@ -111,7 +103,7 @@ deploy-dev:
     - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
   script:
     - export NAMESPACE=dev;
-    - export RELEASE_NAME=sso-${NAMESPACE}-hydra
+    - export RELEASE_NAME=sso-${NAMESPACE}-lms
     - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
     - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
   environment:
@@ -119,183 +111,7 @@ deploy-dev:
   only:
     - development
 
-deploy-sso-dev:
-  stage: deploy
-  image: arbaz7/gcloud-kubectl-helm:latest
-  services:
-    - docker:dind
-  before_script:
-    - mkdir -p /etc/deploy
-    - echo ${kube_config} > kube_config
-    - base64 -d kube_config > ${KUBECONFIG}
-    - echo ${gcloud_auth} > gcloud_auth.base64
-    - base64 -d gcloud_auth.base64 > gcloud_auth.json
-    # - kubectl config use-context gke_egnify-product_us-central1-a_hydra-federation
-    - helm init --client-only
-    - helm repo update
-    - gcloud auth activate-service-account --key-file=gcloud_auth.json
-    - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
-  script:
-    - export NAMESPACE=dev;
-    - export RELEASE_NAME=sso-${NAMESPACE}-sso
-    - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
-    - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/sso/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/sso/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
-  environment:
-    name: sso-dev
-  only:
-    - sso/development
-
-deploy-qa:
-  stage: deploy
-  image: arbaz7/gcloud-kubectl-helm:latest
-  services:
-    - docker:dind
-  before_script:
-    - mkdir -p /etc/deploy
-    - echo ${kube_config} > kube_config
-    - base64 -d kube_config > ${KUBECONFIG}
-    - echo ${gcloud_auth} > gcloud_auth.base64
-    - base64 -d gcloud_auth.base64 > gcloud_auth.json
-    # - kubectl config use-context gke_egnify-product_us-central1-a_hydra-federation
-    - helm init --client-only
-    - gcloud auth activate-service-account --key-file=gcloud_auth.json
-    - helm repo update
-    - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
-  script:
-    - export NAMESPACE=qa;
-    - export RELEASE_NAME=sso-${NAMESPACE}-hydra
-    - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
-    - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
-  environment:
-    name: qa
-    # url: https://qa.hydra.egnify.io
-  only:
-    - qa
-
-deploy-sso-qa:
-  stage: deploy
-  image: arbaz7/gcloud-kubectl-helm:latest
-  services:
-    - docker:dind
-  before_script:
-    - mkdir -p /etc/deploy
-    - echo ${kube_config} > kube_config
-    - base64 -d kube_config > ${KUBECONFIG}
-    - echo ${gcloud_auth} > gcloud_auth.base64
-    - base64 -d gcloud_auth.base64 > gcloud_auth.json
-    # - kubectl config use-context gke_egnify-product_us-central1-a_hydra-federation
-    - helm init --client-only
-    - gcloud auth activate-service-account --key-file=gcloud_auth.json
-    - helm repo update
-    - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
-  script:
-    - export NAMESPACE=qa;
-    - export RELEASE_NAME=sso-${NAMESPACE}-sso
-    - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
-    - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/sso/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/sso/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
-  environment:
-    name: sso-qa
-    # url: https://qa.hydra.egnify.io
-  only:
-    - sso/qa
-
-deploy-uat:
-  stage: deploy
-  image: google/cloud-sdk:latest
-  services:
-    - docker:dind
-  before_script:
-    - mkdir -p /etc/deploy
-    - echo ${GLOUD_AUTH_DEV} > gcloud_auth.base64
-    - base64 -d gcloud_auth.base64 > gcloud_auth.json
-    - gcloud auth activate-service-account --key-file=gcloud_auth.json
-  script:
-    - export NAMESPACE=uat;
-    - cd build/
-    - gsutil cp gs://hydra-config-dev/config/${CI_PROJECT_NAME}/app.yaml .
-    - gcloud app deploy --project egnify-product --stop-previous-version --promote -q
-  environment:
-    name: uat
-    # url: https://qa.hydra.egnify.io
-  only:
-    - uat
-
-deploy-prod:
-  stage: deploy
-  image: google/cloud-sdk:latest
-  services:
-    - docker:dind
-  before_script:
-    - mkdir -p /etc/deploy
-    - echo ${GLOUD_AUTH_PROD} > gcloud_auth.base64
-    - base64 -d gcloud_auth.base64 > gcloud_auth.json
-    - gcloud auth activate-service-account --key-file=gcloud_auth.json
-  script:
-    - export NAMESPACE=prod;
-    - cd build/
-    - gsutil cp gs://hydra-config-prod/config/${CI_PROJECT_NAME}/app.yaml .
-    - gcloud app deploy --project egnify-product-production --stop-previous-version --promote -q
-  environment:
-    name: production
-  when: manual
-  only:
-    - master
-
-deploy-spica-dev:
-  stage: deploy
-  image: arbaz7/gcloud-kubectl-helm:latest
-  services:
-    - docker:dind
-  before_script:
-    - mkdir -p /etc/deploy
-    - echo ${kube_config} > kube_config
-    - base64 -d kube_config > ${KUBECONFIG}
-    - echo ${gcloud_auth} > gcloud_auth.base64
-    - base64 -d gcloud_auth.base64 > gcloud_auth.json
-    # - kubectl config use-context gke_egnify-product_us-central1-a_hydra-federation
-    - helm init --client-only
-    - gcloud auth activate-service-account --key-file=gcloud_auth.json
-    - helm repo update
-    - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
-  script:
-    - export NAMESPACE=dev;
-    - export RELEASE_NAME=sso-${NAMESPACE}-spica
-    - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
-    - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/spica/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/spica/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
-  environment:
-    name: spica-dev
-    # url: https://qa.hydra.egnify.io
-  only:
-    - spica/development
-
-deploy-spica-qa:
-  stage: deploy
-  image: arbaz7/gcloud-kubectl-helm:latest
-  services:
-    - docker:dind
-  before_script:
-    - mkdir -p /etc/deploy
-    - echo ${kube_config} > kube_config
-    - base64 -d kube_config > ${KUBECONFIG}
-    - echo ${gcloud_auth} > gcloud_auth.base64
-    - base64 -d gcloud_auth.base64 > gcloud_auth.json
-    # - kubectl config use-context gke_egnify-product_us-central1-a_hydra-federation
-    - helm init --client-only
-    - gcloud auth activate-service-account --key-file=gcloud_auth.json
-    - helm repo update
-    - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
-  script:
-    - export NAMESPACE=qa;
-    - export RELEASE_NAME=sso-${NAMESPACE}-spica
-    - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
-    - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/spica/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/spica/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
-  environment:
-    name: spica-qa
-    # url: https://qa.hydra.egnify.io
-  only:
-    - spica/qa
-
-# pre-production:
+# deploy-qa:
 #   stage: deploy
 #   image: arbaz7/gcloud-kubectl-helm:latest
 #   services:
@@ -306,29 +122,40 @@ deploy-spica-qa:
 #     - base64 -d kube_config > ${KUBECONFIG}
 #     - echo ${gcloud_auth} > gcloud_auth.base64
 #     - base64 -d gcloud_auth.base64 > gcloud_auth.json
-#     - kubectl config use-context gke_egnify-product_us-central1-a_hydra-federation
+#     # - kubectl config use-context gke_egnify-product_us-central1-a_hydra-federation
 #     - helm init --client-only
-#     - helm repo update
 #     - gcloud auth activate-service-account --key-file=gcloud_auth.json
-#     - gcloud container clusters get-credentials hydra-federation --zone us-central1-a --project egnify-product
+#     - helm repo update
+#     - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
 #   script:
-#     - export API_EGNIFY_IO_URL=http://uat-api.hydra.egnify.io
-#     - export PORT=3000
-#     - export NODE_ENV=production
-#     - export MONGODB_URI=mongodb://chinaUser:AkdjsAIYHjk87y23l1m2klRrtyhjnmrti92w33@10.148.0.6:27017/china
-#     # - export JWT_SECRET=KAJDK656kllksklfmFGDFGS765ujh765T6GHAJDSjjjkjiursrda
-#     # - export MAILJET_API_KEY=a1fb4988b5a359099061d2cb8aebc80d
-#     # - export MAILJET_API_SECRETKEY=2fc962b7e3aae82acee17b355fb9de2d
-#     # - kubectl config view
-#     # - helm upgrade --namespace gitlab-managed-apps ${CI_BUILD_REF_NAME} helm-charts
-#     # - helm dep build
-#     # - export API_VERSION="$(grep "appVersion" Chart.yaml | cut -d" " -f2)"
-#     - export RELEASE_NAME=pre-production
+#     - export NAMESPACE=qa;
+#     - export RELEASE_NAME=sso-${NAMESPACE}-hydra
 #     - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
-#     - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} --set projectEnv.mongodbUri=${MONGODB_URI} --set projectEnv.apiEgnifyIoUrl=${API_EGNIFY_IO_URL} --set image.repository=${CONTAINER_IMAGE_UNTAGGED} --set image.tag=${CI_BUILD_REF} --set ingress.hosts[0]=uat.hydra.egnify.io helm-charts --namespace=uat; else helm upgrade --set projectEnv.mongodbUri=${MONGODB_URI} --set projectEnv.apiEgnifyIoUrl=${API_EGNIFY_IO_URL} --set image.repository=${CONTAINER_IMAGE_UNTAGGED} --set image.tag=${CI_BUILD_REF} --set ingress.hosts[0]=uat.hydra.egnify.io ${RELEASE_NAME} helm-charts --namespace=uat; fi
+#     - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
 #   environment:
-#     name: UAT
-#     url: http://uat.hydra.egnify.io
-#   when: manual
+#     name: qa
+#     # url: https://qa.hydra.egnify.io
 #   only:
 #     - qa
+
+# deploy-uat:
+#   stage: deploy
+#   image: google/cloud-sdk:latest
+#   services:
+#     - docker:dind
+#   before_script:
+#     - mkdir -p /etc/deploy
+#     - echo ${GLOUD_AUTH_DEV} > gcloud_auth.base64
+#     - base64 -d gcloud_auth.base64 > gcloud_auth.json
+#     - gcloud auth activate-service-account --key-file=gcloud_auth.json
+#   script:
+#     - export NAMESPACE=uat;
+#     - cd build/
+#     - gsutil cp gs://hydra-config-dev/config/${CI_PROJECT_NAME}/app.yaml .
+#     - gcloud app deploy --project egnify-product --stop-previous-version --promote -q
+#   environment:
+#     name: uat
+#     # url: https://qa.hydra.egnify.io
+#   only:
+#     - uat
+

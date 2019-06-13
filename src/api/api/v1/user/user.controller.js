@@ -10,8 +10,10 @@ import _ from 'lodash';
 
 const bcrypt = require('bcrypt');
 const celery = require('celery-client');
+const fetch = require('node-fetch');
 
 const emailCtrl = require('../emailTransporter/emailTransporter.controller');
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
 export async function updateAdminHierarchy(req,res) {
     const {hierarchy} = req.body;
@@ -236,34 +238,6 @@ function sendEmail(usrDetails, hashValue, baseUrl) {
 function validateEmail(email) {
   const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
   return emailRegex.test(email);
-}
-
-// function to reset password using forgethashtoken and new password
-export async function resetpassword(req, res) {
-  const { hashToken } = req.body;
-  const newPassword = req.body.password;
-  if (hashToken && newPassword) {
-    return User.findOne({
-      forgotPassSecureHash: hashToken,
-    })
-      .then(user => {
-        if (Date.now() <= user.forgotPassSecureHashExp) {
-          user.password = newPassword;
-          user.forgotPassSecureHash = '';
-          return user
-            .save()
-            .then(() => {
-              res.status(200).end();
-            })
-            .catch(validationError(res));
-        }
-
-        return res.status(403).send('Link Expired');
-      })
-      .catch(() => res.status(403).end());
-  }
-
-  return res.status(403).send('Invalid Parameter');
 }
 
 // function to validate forgethashtoken
@@ -830,3 +804,169 @@ export async function resetStudentPassword(req,res){
     })
   }
 }
+
+export async function createStudentUser(req, res) {
+  const obj = req.body && req.body.studentData ? req.body.studentData : {}
+  const { user } = req;
+  const userObj = {
+    studenId: obj.studentId,
+    username: obj.studentId,
+    hierarchy: obj.hierarchy,
+    rawHierarchy: obj.hierarchy,
+    instituteId: user.instituteId,
+    hostname: user.hostname,
+    defaultHostname: user.hostname,
+    role: config.studentRole,
+    email: obj.studentId.toLowerCase(),
+    passwordChange: true,
+    contactNumber: obj.phone,
+    active: obj.active,
+  }
+  return User.updateOne({ email: userObj.email }, {$set: userObj},{upsert: true }).then(() => {
+    return res.send({ status: true })
+  }).catch(err => {
+    console.error(err);
+    return res.send({ status: false })
+  })
+}
+
+export async function chaitanyaAPI(payload) {
+  const admission_no = payload.email.toUpperCase();
+  const url = `${config.smsApiUrl}&admission_no=${admission_no}&otp=${payload.otp}`
+  return fetch(url)
+  .then(res => res.json())
+  // return payload;
+}
+
+export async function sendOTP(req, res) {
+  let email = req.body.email
+  if (!email) {
+    return res.status(403).send('Please send email');
+  }
+  email = email.toLowerCase();
+  const saltRounds = 10;
+
+  // Find if the given User email exists in the database.
+  const userDetails = await User.findOne({email, active: true }, {email: 1, contactNumber: 1});
+  // If No users have been found with give email.
+  if (!userDetails) {
+    return res.status(404).send({
+      usersFound: false,
+      message: 'Invalid User',
+    });
+  } else {
+    userDetails.otp = ""+Math.floor(1000 + Math.random() * 9000);
+    const exp = Date.now() + 1000 * 60 * 15; // expiry time in ms
+    const payload = {
+      email,
+      otp: userDetails.otp,
+    };
+    const toHash = email + userDetails.otp;
+    // If a valid user exists with the given email.
+    // Generate a secure hash for a user to store in our db.
+    bcrypt.hash(toHash, saltRounds, (err, hash) => {
+      User.update(
+        {
+          email: email,
+        },
+        {
+          $set: {
+            forgotPassSecureHash: hash,
+            forgotPassSecureHashExp: exp,
+          },
+        },
+        (err1, docs) => {
+          if (docs) {
+            return chaitanyaAPI(payload).then((obj) => {
+              return res.send(obj);
+            }).catch(err => {
+              console.error(err);
+              return res.status(404).end('Something went wrong')
+            })
+          }
+          console.error(err1)
+          return res.status(404).end('Something went wrong')
+        },
+      );
+    });
+  }
+}
+
+export async function verifyOTP(req, res) {
+  let { email, otp } = req.body;
+  if (!email) {
+    return res.status(403).send('Please send email');
+  }
+  if (!otp) {
+    return res.status(403).send('Please send otp');
+  }
+  email = email.toLowerCase();
+  otp = ""+otp;
+  // Find if the given User email exists in the database.
+  const userDetails = await User.findOne({email, active: true }, {email: 1, forgotPassSecureHash: 1,  forgotPassSecureHashExp: 1
+  });
+  // If No users have been found with give email.
+  if (!userDetails) {
+    res.status(404).send({
+      success: false,
+      hashToken: null,
+      userFound: false,
+      message: "Invalid User"
+    });
+  } else {
+    const toHash = email + otp;
+    bcrypt.compare(toHash, userDetails.forgotPassSecureHash).then(match => {
+      if(match) {
+        return res.status(200).send({
+          success: true,
+          userFound: true,
+          hashToken: userDetails.forgotPassSecureHash,
+          message: "OTP matched"
+        });
+      } else {
+        return res.status(200).send({
+          success: false,
+          hashToken: null,
+          userFound: true,
+          message: "Invalid OTP"
+        });
+      }
+    });
+  }
+}
+// function to reset password using forgethashtoken and new password
+export async function resetpassword(req, res) {
+  const { hashToken, newPassword } = req.body;
+  if (hashToken && newPassword) {
+    if (newPassword.length !== 4 || !/[0-9]{4}/.test(newPassword)) {
+      return res.status(403).send('Password must be 4 digits only');
+    }
+    return User.findOne({
+      forgotPassSecureHash: hashToken,
+      active: true
+    })
+      .then(user => {
+        if(!user) return res.status(403).end('invalid hashToken')
+        if (Date.now() <= user.forgotPassSecureHashExp) {
+          user.password = newPassword;
+          user.forgotPassSecureHash = '';
+          return user
+            .save()
+            .then(() => {
+              res.status(200).end('Password changed successfully!');
+            })
+            .catch(validationError(res));
+        }
+
+        return res.status(403).send('Link Expired');
+      })
+      .catch((err) => {
+        console.log(err)
+        res.status(403).end()
+      });
+  }
+
+  return res.status(403).send(' hashToken, newPassword required');
+}
+
+

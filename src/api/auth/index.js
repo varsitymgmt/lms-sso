@@ -2,7 +2,7 @@ import express from 'express';
 import { config } from '../../config/environment';
 import User from '../api/v1/user/user.model';
 
-import { isAuthenticated } from './auth.service';
+import { isAuthenticated, verifyUsername } from './auth.service';
 // Passport Configuration
 require('./local/passport').setup(User, config);
 
@@ -16,5 +16,5 @@ router.post('/isAuthenticated', isAuthenticated(), (req, res) =>
 router.post('/token/health', isAuthenticated(false, true), (req, res) =>
   res.send(),
 );
-
+router.post('/verifyUser', verifyUsername);
 export default router;

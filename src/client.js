@@ -120,11 +120,15 @@ async function onLocationChange(location, action) {
     toggleLoader(true, 'client');
     if (
       !localStorage.getItem('token') &&
-      !['/signin', '/signout', '/resetPassword'].includes(location.pathname)
+      ![
+        '/signin',
+        '/admin-signin',
+        '/signout',
+        '/resetPassword',
+        '/forgotPassword',
+      ].includes(location.pathname)
     ) {
-      const path = `/signin?redirectTo=${encodeURIComponent(
-        location.pathname + location.search,
-      )}`;
+      const path = `/signin`;
       location.pathname = path;
       history.replace(path);
     }
