@@ -382,6 +382,12 @@ class SignIn extends React.Component {
         window.location = host.href;
       }
     }
+    if (!this.state.otpSent)
+      return (
+        <div id="loader" className={s.loader}>
+          <img src="/images/loader.svg" alt="loader" />
+        </div>
+      );
     return (
       <div className={s.lowerBox}>
         {this.state.mobileNumber ? (
@@ -531,6 +537,7 @@ class SignIn extends React.Component {
         name="sign"
         maxLength="1"
         id="box1"
+        autoFocus //eslint-disable-line
         onChange={e => {
           const pattern = /[0-9]/g;
           if (e.target.value.match(pattern)) {
@@ -807,6 +814,7 @@ class SignIn extends React.Component {
           type="text"
           name="sign"
           id="admissionId"
+          autoFocus //eslint-disable-line
           onKeyDown={e => {
             if (e.keyCode === 13) {
               const formData = this.state.formData;
