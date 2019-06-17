@@ -831,7 +831,7 @@ class SignIn extends React.Component {
         />
         <div className={s.error}>
           {this.state.showEmptyIdError ? 'Admission Id cannot be empty.' : null}
-          {this.state.showIvalidIdError ? 'Admission Id is invalid.' : null}
+          {this.state.showIvalidIdError ? 'User is not registered' : null}
           {this.state.showUnregisteredUserError
             ? 'Admission Id is unregistered.'
             : null}
