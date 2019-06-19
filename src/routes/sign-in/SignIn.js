@@ -9,7 +9,6 @@ import {
   toggleLoader,
   decriptedAccessToken,
 } from 'utils/HelperMethods';
-import Loader from 'components/Loader';
 import s from './SignIn.scss';
 
 // const steps = {
@@ -384,7 +383,7 @@ class SignIn extends React.Component {
     }
     if (!this.state.otpSent)
       return (
-        <div id="loader" className={s.loader}>
+        <div className={s.loader}>
           <img src="/images/loader.svg" alt="loader" />
         </div>
       );
@@ -905,6 +904,10 @@ class SignIn extends React.Component {
           </div>
         </div>
       </div>
+      <div className={s.query}>
+        For sign in/sign up queries, please contact us on
+      </div>
+      <div className={s.number}>040-71045045</div>
     </div>
   );
 
@@ -949,7 +952,6 @@ class SignIn extends React.Component {
         <div className={`col no-padding ${s.welcomeContainer}`}>
           {this.displayWelcome()}
         </div>
-        <Loader />
       </div>
     );
   }

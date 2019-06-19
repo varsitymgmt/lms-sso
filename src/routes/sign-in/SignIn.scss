@@ -38,8 +38,6 @@
 
 .bottom {
   width: 100%;
-  position: absolute;
-  top: 70%;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -54,14 +52,12 @@
 }
 
 .bottomSignUpBtn {
-  width: 92px;
+  width: 70px;
   height: 40px;
-  border: 1px solid #fc6767;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 20px;
-  margin-left: 20px;
+  margin-left: 10px;
   cursor: pointer;
 }
 
@@ -73,6 +69,34 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.query {
+  width: 100%;
+  position: absolute;
+  top: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.33;
+  color: #3e3e5f;
+}
+
+.number {
+  width: 100%;
+  position: absolute;
+  top: 83%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 300;
+  line-height: 1.33;
+  color: #4a90e2;
 }
 
 .welcome,
@@ -211,18 +235,21 @@
 }
 
 .loader {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  position: fixed; /* Stay in place */
-  z-index: 3; /* Sit on top */
-  left: 0;
+  position: fixed;
   top: 0;
-  width: 500px;
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 22;
   background-color: rgba(0, 0, 0, 0.1); /* Black w/ opacity */
+}
+
+.loader img {
+  left: 48%;
+  position: fixed;
+  top: 44%;
+  z-index: 22;
+  user-select: none;
 }
 
 @media only screen and (max-width: 1024px) {
