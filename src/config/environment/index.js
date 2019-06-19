@@ -31,7 +31,7 @@ const all = {
   port: process.env.PORT || 3000,
 
   //Host Name for Accounts service
-  hostNameForAccounts : process.env.HOST_NAME_FOR_ACCOUNTS || 'accounts.dev.lms.egnify.io',
+  hostNameForAccounts : process.env.HOST_NAME_FOR_ACCOUNTS || 'accounts.dev.rankguru.com',
 
   // API Gateway
   api: {
@@ -39,10 +39,10 @@ const all = {
     clientUrl: process.env.API_CLIENT_URL || '',
 
     // apiEgnifyIoUrl to be used in the client-side code
-    apiEgnifyIoUrl: process.env.API_EGNIFY_IO_URL || 'https://accounts.dev.lms.egnify.io',
+    apiEgnifyIoUrl: process.env.API_EGNIFY_IO_URL || 'https://accounts.dev.rankguru.com',
 
     // hostNameForDev to be used login details where hostname is attached
-    hostNameForDev: 'luke.dev.lms.egnify.io',
+    hostNameForDev: 'luke.dev.rankguru.com',
 
     // curxParserUrl to be used in the client-side code
     curxParserUrl: process.env.CRUX_PARSER_URL || 'https://crux-parser-v1.egnify.com',
