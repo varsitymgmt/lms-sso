@@ -907,7 +907,7 @@ class SignIn extends React.Component {
       <div className={s.query}>
         For sign in/sign up queries, please contact us on
       </div>
-      <div className={s.number}>1800-866-800</div>
+      <div className={s.number}>040-71045045</div>
     </div>
   );
 
