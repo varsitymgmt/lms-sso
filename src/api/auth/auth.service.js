@@ -293,23 +293,21 @@ export async function verifyUsername(req, res) {
           authorized: true,
           firstTimeLogin: false,
         });
-      }
-      if (userObj && !userObj.password) {
+      } else if (userObj && !userObj.password) {
         return res.send({
-          message: 'User is not signed up',
+          message: 'Please signup to access Rankguru eVidya',
           authorized: true,
           firstTimeLogin: true,
         });
-      }
-      if (!userObj && allStudentObj) {
+      } else if (allStudentObj) {
         return res.send({
-          message: 'User is not registered for digital content',
+          message: "You're not subscribed to Rankguru eVidya",
           authorized: false,
           firstTimeLogin: false,
         });
       }
       return res.status(401).send({
-        message: 'Invalid User',
+        message: "You're not authorized to access Rankguru eVidya",
         authorized: false,
         firstTimeLogin: false,
       });
