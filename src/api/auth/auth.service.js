@@ -168,7 +168,7 @@ export async function signAccessControlToken(id, access) {
     },
     config.secrets.session,
     {
-      expiresIn: 60 * 60 * 24,
+      expiresIn: 60 * 60 * 24 * 365,
     },
   );
   if (config.encriptedToken) {
