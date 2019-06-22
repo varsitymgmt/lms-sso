@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
-import { config } from '../../../config/environment';
+// import { config } from '../../../config/environment';
 
 /*
 Error Code list:
@@ -32,15 +32,15 @@ function localAuthenticate(req, User, login, password, done) {
         });
       }
 
-      if (
-        user.hostname !== req.body.hostname &&
-        config.hostNameForAccounts !== req.body.hostname
-      ) {
-        return done(null, false, {
-          message: 'This email/username is not registered.',
-          code: 'AU01',
-        });
-      }
+      // if (
+      //   user.hostname !== req.body.hostname &&
+      //   config.hostNameForAccounts !== req.body.hostname
+      // ) {
+      //   return done(null, false, {
+      //     message: 'This email/username is not registered.',
+      //     code: 'AU01',
+      //   });
+      // }
 
       return user.authenticate(password, (authError, authenticated) => {
         if (authError) {
