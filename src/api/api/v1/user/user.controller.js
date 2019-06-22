@@ -9,7 +9,6 @@ import { getRandomHash } from '../../../utils/index'
 import _ from 'lodash';
 
 const bcrypt = require('bcrypt');
-const celery = require('celery-client');
 const fetch = require('node-fetch');
 
 const emailCtrl = require('../emailTransporter/emailTransporter.controller');
@@ -171,51 +170,6 @@ function handleError(res, statusCode) {
   return function(err) {
     return res.status(statusCode).send(err);
   };
-}
-/**
- * @param {name of the task to register } taskName
- * @param {arguments for that celery task } args
- */
-async function registerCeleryTask(args) {
-  return new Promise(resolve => {
-    try {
-      const taskName = config.celeryTask.createUserTask;
-      const broker = new celery.RedisHandler(config.celery.CELERY_BROKER_URL);
-      const backend = new celery.RedisHandler(
-        config.celery.CELERY_RESULT_BACKEND,
-      );
-      const celeryClient = new celery.Client(broker, backend);
-      const kwargs = {};
-      const taskOptions = {
-        eta: Date.now(),
-        retries: 3,
-        queue: config.celery.QUEUE_NS,
-      };
-      celeryClient.putTask(
-        `app.${taskName}`,
-        args,
-        kwargs,
-        taskOptions,
-        (err, taskId) => {
-          if (err) {
-            console.error(err);
-            return resolve({ err: 'Unable to create students.' });
-          }
-          console.info('User Creation Task >', taskId);
-          return resolve({ msg: 'User ceation started' });
-        },
-        (err, celeryResult) => {
-          if (err) {
-            console.error(err);
-          }
-          console.info('Result >', celeryResult);
-        },
-      );
-    } catch (err) {
-      console.error(err);
-      return resolve({ err: 'something went wrong' });
-    }
-  });
 }
 
 // function to send emails for reset links
@@ -394,39 +348,6 @@ export async function createAdmin(req, res) {
   return res
     .status(400)
     .send({ err: `Super Admin already exist for ${req.body.instituteId}` });
-}
-
-/**
- * @description middleware by which admin can create multiple users and assign role
-*               (off tasked to celery)
- * @author  Gaurav Chauhan
- * @augments  req.body
- *    @param  email(Array)
- *    @param  roleId
- *    @param  hierarchy
- * @returns
- *     user creation has been started.
-*/
-export async function registerUsers(args, context) {
-  const isValid = await validateUsersData(args, context.user);
-  if (isValid.err) {
-    return { status: 'FAILED', message: isValid.err };
-  }
-  const roleId = isValid;
-  const { emails, hierarchy, rawHierarchy } = args;
-  const doesUserExist = await checkUserinDb(emails, context);
-  if (doesUserExist.err)
-    return { status: 'FAILED', message: doesUserExist.err };
-  const {token} = context.user;
-  const celeryArgs = [emails, roleId, hierarchy, rawHierarchy, context.user,token];
-  let returnData = {};
-  return registerCeleryTask(celeryArgs).then(status => {
-    if (status.err) {
-      returnData = { status: 'FAILED', message: status.err };
-    }
-    returnData = { status: 'SUCCESS', message: status.msg };
-    return returnData;
-  });
 }
 
 /**
@@ -968,5 +889,3 @@ export async function resetpassword(req, res) {
 
   return res.status(403).send(' hashToken, newPassword required');
 }
-
-

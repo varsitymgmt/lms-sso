@@ -16,11 +16,7 @@ import {
   deleteUserRoles,
 } from '../../../api/v1/userRoles/userRoles.controller';
 
-import {
-  registerUsers,
-  removeUser,
-  updateUsers,
-} from '../../../api/v1/user/user.controller';
+import { removeUser, updateUsers } from '../../../api/v1/user/user.controller';
 
 import { InputHierarchyType } from './roleManagement.type';
 
@@ -141,27 +137,6 @@ export const DeleteUserRole = {
   },
 };
 
-export const RegisterNewUser = {
-  args: {
-    emails: {
-      type: new NonNull(new List(StringType)),
-      description: "Email's of the user to be created",
-    },
-    roleName: {
-      type: new NonNull(new List(StringType)),
-      description: 'role to be assigned to these users ',
-    },
-    hierarchy: {
-      type: new NonNull(new List(InputHierarchyType)),
-      description: 'Hierarcy for which these roles are applicable',
-    },
-  },
-  type: CommonResultType,
-  async resolve(obj, args, context) {
-    return registerUsers(args, context);
-  },
-};
-
 export const RemoveUser = {
   args: {
     email: {
@@ -200,7 +175,6 @@ export default {
   CreateUserRole,
   UpdateUserRole,
   DeleteUserRole,
-  RegisterNewUser,
   UpdateUser,
   RemoveUser,
 };

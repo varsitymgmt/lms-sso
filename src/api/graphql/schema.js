@@ -18,7 +18,6 @@ import {
   CreateUserRole,
   UpdateUserRole,
   DeleteUserRole,
-  RegisterNewUser,
   RemoveUser,
   UpdateUser,
 } from './SSO/roleManagement/roleManagement.mutation';
@@ -37,7 +36,6 @@ const schema = new Schema({
       CreateUserRole,
       UpdateUserRole,
       DeleteUserRole,
-      RegisterNewUser,
       UpdateUser,
       RemoveUser,
     },

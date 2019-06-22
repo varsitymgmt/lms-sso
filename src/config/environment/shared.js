@@ -20,7 +20,4 @@ exports = module.exports = {
     REPORTS:{value:'REPORTS'},
     ANALYSIS:{value:'ANALYSIS'}
   },
-  celeryTask:{
-    createUserTask:'create_user_by_admin'
-  },
 };

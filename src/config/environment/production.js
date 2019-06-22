@@ -26,13 +26,6 @@ module.exports = {
   encriptedToken: true,
   encriptedTokenKey: 'a-very-secretive-secret',
   apolloEngineKey: process.env.APOLLO_ENGINE_KEY || 'XXXX',
-  celery: {
-    CELERY_BROKER_URL:
-      process.env.CELERY_BROKER_URL || 'redis://localhost:6379/0',
-    CELERY_RESULT_BACKEND:
-      process.env.CELERY_RESULT_BACKEND || 'redis://localhost:6379/0',
-    QUEUE_NS: process.env.QUEUE_NS || 'sso-dev-mq',
-  },
   // COMMON HOST USED TO SET COOKIE
   commonHost: process.env.COMMON_HOST,
 };
