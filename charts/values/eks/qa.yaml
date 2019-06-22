@@ -10,7 +10,7 @@ image:
 
 projectEnv:
   nodeEnv: "production"
-  mongodbUri: "mongodb://lms:alphabetagamma@192.168.73.42:27017/tenantregistry-lms-qa"
+  mongodbUri: "mongodb://lms:alphabetagamma@192.168.81.51:27017/tenantregistry-lms-qa"
   svcSettings: "http://settings-qa-lms.qa.svc.cluster.local"
   svcTest: "http://test-management-qa-lms.qa.svc.cluster.local"
   jwtSecret: "KAJDK656kllksklfmFGDFGS765ujh765T6GHAJDSjjjkjiursrda"
