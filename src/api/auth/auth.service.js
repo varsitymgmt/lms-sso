@@ -283,7 +283,11 @@ export async function verifyUsername(req, res) {
   email = email.toLowerCase().trim();
   const studentId = email.toUpperCase().trim();
   return Promise.all([
-    User.findOne({ email, hostname, active: true }),
+    User.findOne({
+      studentId: { $in: [email, studentId] },
+      hostname,
+      active: true,
+    }),
     AllStudents.findOne({ studentId }),
   ])
     .then(([userObj, allStudentObj]) => {
