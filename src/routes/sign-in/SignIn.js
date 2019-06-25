@@ -761,6 +761,7 @@ class SignIn extends React.Component {
           type="text"
           name="sign"
           id="admissionId"
+          placeholder="SCSXXXXXX"
           autoFocus //eslint-disable-line
           onKeyDown={e => {
             const { formData, formFieldsError } = this.state;

@@ -167,9 +167,7 @@ app.get('*', async (req, res, next) => {
     }
     data.scripts.push(assets.client.js);
     data.app = {
-      apiUrl: config.api.clientUrl,
       apiEgnifyIoUrl: config.api.apiEgnifyIoUrl,
-      curxParserUrl: config.api.curxParserUrl,
       hostNameForDev: config.api.hostNameForDev,
       googleTrackingId: config.analytics.googleTrackingId,
       commonHost: config.commonHost,
