@@ -43,8 +43,6 @@ const context = {
   // url of the accounts api gateway.
   API_EGNIFY_IO_URL: window.App.apiEgnifyIoUrl,
   auth,
-  // url of the  crux api gateway.
-  API_CRUX_URL: window.App.curxParserUrl,
   // hostname for dev environment
   hostNameForDev: window.App.hostNameForDev,
   // googleTrackingId for google analytics

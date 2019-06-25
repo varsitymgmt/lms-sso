@@ -83,31 +83,31 @@ release:
 
     # - /^f-.*$/
 
-deploy-dev:
-  stage: deploy
-  image: arbaz7/gcloud-kubectl-helm:latest
-  services:
-    - docker:dind
-  before_script:
-    - mkdir -p /etc/deploy
-    - echo ${kube_config} > kube_config
-    - base64 -d kube_config > ${KUBECONFIG}
-    - echo ${gcloud_auth} > gcloud_auth.base64
-    - base64 -d gcloud_auth.base64 > gcloud_auth.json
-    # - kubectl config use-context gke_egnify-product_us-central1-a_hydra-federation
-    - helm init --client-only
-    - helm repo update
-    - gcloud auth activate-service-account --key-file=gcloud_auth.json
-    - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
-  script:
-    - export NAMESPACE=dev;
-    - export RELEASE_NAME=sso-${NAMESPACE}-lms
-    - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
-    - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
-  environment:
-    name: dev
-  only:
-    - development
+# deploy-dev:
+#   stage: deploy
+#   image: arbaz7/gcloud-kubectl-helm:latest
+#   services:
+#     - docker:dind
+#   before_script:
+#     - mkdir -p /etc/deploy
+#     - echo ${kube_config} > kube_config
+#     - base64 -d kube_config > ${KUBECONFIG}
+#     - echo ${gcloud_auth} > gcloud_auth.base64
+#     - base64 -d gcloud_auth.base64 > gcloud_auth.json
+#     # - kubectl config use-context gke_egnify-product_us-central1-a_hydra-federation
+#     - helm init --client-only
+#     - helm repo update
+#     - gcloud auth activate-service-account --key-file=gcloud_auth.json
+#     - gcloud container clusters get-credentials hydra-federation-dev --zone asia-south1-a --project egnify-product
+#   script:
+#     - export NAMESPACE=dev;
+#     - export RELEASE_NAME=sso-${NAMESPACE}-lms
+#     - export DEPLOYS=$(helm ls | grep $RELEASE_NAME | wc -l)
+#     - if [ ${DEPLOYS}  -eq 0 ]; then helm install --name=${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; else helm upgrade ${RELEASE_NAME} charts --set image.tag=${CI_BUILD_REF} -f charts/values/${NAMESPACE}.yaml --namespace=${NAMESPACE}; fi
+#   environment:
+#     name: dev
+#   only:
+#     - development
 
 # deploy-qa:
 #   stage: deploy
