@@ -5,6 +5,7 @@ import compose from 'composable-middleware';
 import { config } from '../../config/environment';
 
 import User from '../api/v1/user/user.model';
+import AllStudents from '../api/v1/allStudents/allStudents.model';
 
 const utf8 = require('utf8');
 
@@ -168,7 +169,7 @@ export async function signAccessControlToken(id, access) {
     },
     config.secrets.session,
     {
-      expiresIn: 60 * 60 * 24,
+      expiresIn: 60 * 60 * 24 * 365,
     },
   );
   if (config.encriptedToken) {
@@ -280,24 +281,37 @@ export async function verifyUsername(req, res) {
     });
   }
   email = email.toLowerCase().trim();
-  return User.findOne({ email, hostname, active: true })
-    .then(userObj => {
+  const studentId = email.toUpperCase().trim();
+  return Promise.all([
+    User.findOne({
+      studentId: { $in: [email, studentId] },
+      hostname,
+      active: true,
+    }),
+    AllStudents.findOne({ studentId }),
+  ])
+    .then(([userObj, allStudentObj]) => {
       if (userObj && userObj.password) {
         return res.send({
-          message: 'Success',
+          message: 'Login Successful',
           authorized: true,
           firstTimeLogin: false,
         });
-      }
-      if (userObj && !userObj.password) {
+      } else if (userObj && !userObj.password) {
         return res.send({
-          message: 'Success',
+          message: 'Please signup to access Rankguru eVidya',
           authorized: true,
           firstTimeLogin: true,
         });
+      } else if (allStudentObj) {
+        return res.send({
+          message: "You're not subscribed to Rankguru eVidya",
+          authorized: false,
+          firstTimeLogin: false,
+        });
       }
       return res.status(401).send({
-        message: 'User not registered',
+        message: "You're not authorized to access Rankguru eVidya",
         authorized: false,
         firstTimeLogin: false,
       });
