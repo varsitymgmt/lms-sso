@@ -82,7 +82,7 @@ const all = {
   //   pass: process.env.MAILJET_API_SECRETKEY || 'email-api-secretKey',
   // },
   studentRole: 'Egni_u001_student',
-  smsApiUrl: 'https://srichaitanyaschool.in/varna_api/sendotpsms_api.php?token=chaitanya',
+  smsApiUrl: process.env.SMS_API_URL || 'https://124.124.124.60/varna_api/sendotpsms_api.php?token=chaitanya',
 };
 
 // Export the config object based on the NODE_ENV
