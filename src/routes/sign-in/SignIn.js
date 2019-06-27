@@ -11,22 +11,13 @@ import {
 } from 'utils/HelperMethods';
 import s from './SignIn.scss';
 
-// const steps = {
-//   SignIn: { label: this.displayMainPage() },
-//   SignUp: { label: this.displayOtpVerification() },
-//   Otp: {},
-//   SetPassword: {},
-// };
 const inputString = ['*', '*', '*', '*'];
 const confirmPasswordString = ['*', '*', '*', '*'];
 class SignIn extends React.Component {
   static contextTypes = {
-    // GRAPHQL_API_URL: PropTypes.string.isRequired,
     API_URL: PropTypes.string.isRequired,
     API_EGNIFY_IO_URL: PropTypes.string.isRequired,
-    // hostName for dev environment
     hostNameForDev: PropTypes.string.isRequired,
-    // common host
     commonHost: PropTypes.string.isRequired,
   };
 
@@ -44,13 +35,8 @@ class SignIn extends React.Component {
       admissionId: '',
       otp: '',
       hashToken: '',
-      showEmptyIdError: false,
-      showIvalidIdError: false,
-      showUnregisteredUserError: false,
-      showAlreadyRegisteredUserError: false,
       showInvalidPasswordError: false,
       showOtpSendError: false,
-      showInvalidOtpError: false,
       showCombinationError: false,
       otpSent: false,
       mobileNumber: null,
@@ -214,13 +200,12 @@ class SignIn extends React.Component {
               JSON.stringify(inputString) ===
               JSON.stringify(confirmPasswordString)
             ) {
-              this.setState(
-                {
-                  showCombinationError: false,
-                },
-                () => this.setPassword(),
+              this.setState({ showCombinationError: false }, () =>
+                this.setPassword(),
               );
-            } else this.setState({ showCombinationError: true });
+            } else {
+              this.setState({ showCombinationError: true });
+            }
           }
         }}
         onChange={e => {
@@ -285,9 +270,9 @@ class SignIn extends React.Component {
     let validOtp = true;
     if (otp.length !== 4) {
       validOtp = false;
-      this.setState({
-        formFieldsError: { password: 'Invalid OTP' },
-      });
+      const { formFieldsError } = this.state;
+      formFieldsError.password = 'Invalid OTP';
+      this.setState({ formFieldsError });
     }
     return validOtp;
   };
@@ -311,23 +296,20 @@ class SignIn extends React.Component {
             this.setState({
               page: 'SetPassword',
               hashToken: data.hashToken,
-              showInvalidOtpError: false,
             });
           } else if (data && !data.success) {
-            this.setState({
-              formFieldsError: data.message,
-              showInvalidOtpError: true,
-            });
+            const { formFieldsError } = this.state;
+            formFieldsError.otp = data.message;
+            this.setState({ formFieldsError });
           }
           // this.handleVerifyUserResponse(response);
         })
         .catch(err => {
           // this.setState({ showLoader: false });
           if (err.response && err.response.data) {
-            this.setState({
-              formFieldsError: err.response.data.message,
-              showInvalidOtpError: false,
-            });
+            const { formFieldsError } = this.state;
+            formFieldsError.otp = err.response.data.message;
+            this.setState({ formFieldsError });
           }
           console.error('handleVerifyUser', err.response);
         });
@@ -355,9 +337,7 @@ class SignIn extends React.Component {
         }
       })
       .catch(err => {
-        this.setState({
-          showOtpSendError: true,
-        });
+        this.setState({ showOtpSendError: true });
         console.error('verifyUser', err.response);
       });
   };
@@ -405,9 +385,7 @@ class SignIn extends React.Component {
           </div>
         ) : null}
         {this.displayPasswordHolder()}
-        <div className={s.errorOtp}>
-          {this.state.showInvalidOtpError ? this.state.formFieldsError : null}
-        </div>
+        {this.displayFormFieldError('otp')}
         <div
           className={s.resend}
           onClick={() => () => {
@@ -503,7 +481,7 @@ class SignIn extends React.Component {
         toggleLoader(false);
         if (err.response && err.response.data) {
           const data = err.response.data;
-          const formFieldsError = this.state.formFieldsError;
+          const { formFieldsError } = this.state;
           if (data.code === 'AU02') {
             formFieldsError.password = data.message;
           }
@@ -519,10 +497,15 @@ class SignIn extends React.Component {
       This function returns the errors if sign in fails
     @author Shounak, Divya
   */
-  displayFormFieldError = () => {
-    const div = <div>{this.state.formFieldsError.password}</div>;
-    return div;
-  };
+  displayFormFieldError = field => (
+    <div className={s.error}>
+      <div>
+        {this.state.formFieldsError[field]
+          ? this.state.formFieldsError[field]
+          : ''}
+      </div>
+    </div>
+  );
 
   /**
     @description
@@ -666,11 +649,7 @@ class SignIn extends React.Component {
         <div>
           <div className={s.enterPwdSignInPage}>Enter your password</div>
           {this.displayPasswordHolder()}
-          <div className={s.error}>
-            {this.state.showInvalidPasswordError
-              ? this.displayFormFieldError()
-              : null}
-          </div>
+          {this.displayFormFieldError('password')}
           <div className={s.lowerBox}>
             <div
               className={s.btn}
@@ -689,16 +668,7 @@ class SignIn extends React.Component {
           <div
             className={s.forgotPassword}
             onClick={() => {
-              this.setState(
-                {
-                  page: 'Otp',
-                  showEmptyIdError: false,
-                  showIvalidIdError: false,
-                  showUnregisteredUserError: false,
-                  showAlreadyRegisteredUserError: false,
-                },
-                () => this.receiveOtp(),
-              );
+              this.setState({ page: 'Otp' }, () => this.receiveOtp());
             }}
             role="presentation"
           >
@@ -715,67 +685,45 @@ class SignIn extends React.Component {
     @author Shounak, Divya
   */
   validateSignInID = () => {
+    if (!this.state.formData.email) {
+      const { formFieldsError } = this.state;
+      formFieldsError.email = 'Admission ID cannot be empty';
+      this.setState({ formFieldsError });
+      return;
+    }
     axios
       .post(
         `${this.context.API_EGNIFY_IO_URL}/auth/verifyUser`,
         this.state.formData,
       )
       .then(response => {
-        if (this.state.admissionId.length !== 0) {
-          if (this.state.page === 'SignIn' && response.data.firstTimeLogin)
-            this.setState({
-              showEmptyIdError: false,
-              showIvalidIdError: false,
-              showUnregisteredUserError: true,
-              showAlreadyRegisteredUserError: false,
-            });
-          else if (
-            this.state.page === 'SignUp' &&
-            !response.data.firstTimeLogin
-          ) {
-            this.setState({
-              showEmptyIdError: false,
-              showIvalidIdError: false,
-              showUnregisteredUserError: false,
-              showAlreadyRegisteredUserError: true,
-            });
-          } else if (this.state.page === 'SignIn') {
-            this.setState({
-              page: 'EnterPassword',
-              showEmptyIdError: false,
-              showIvalidIdError: false,
-              showUnregisteredUserError: false,
-              showAlreadyRegisteredUserError: false,
-            });
+        const { formFieldsError, page } = this.state;
+        if (response.data && response.data.authorized) {
+          if (page === 'SignIn' && response.data.firstTimeLogin) {
+            formFieldsError.email = response.data.message;
+          } else if (page === 'SignUp' && !response.data.firstTimeLogin) {
+            formFieldsError.email =
+              'Admission ID is already registered, please Sign In.';
+          } else if (page === 'SignIn') {
+            this.setState({ page: 'EnterPassword' });
           } else {
-            this.setState(
-              {
-                page: 'Otp',
-                showEmptyIdError: false,
-                showIvalidIdError: false,
-                showUnregisteredUserError: false,
-                showAlreadyRegisteredUserError: false,
-              },
-              () => this.receiveOtp(),
-            );
+            this.setState({ page: 'Otp' }, () => this.receiveOtp());
           }
+        } else if (response.data && !response.data.authorized) {
+          formFieldsError.email = response.data.message;
+        } else {
+          formFieldsError.email = 'Something went wrong, please try again';
         }
+        this.setState({ formFieldsError });
       })
       .catch(err => {
-        if (this.state.admissionId.length !== 0) {
-          this.setState({
-            showEmptyIdError: false,
-            showIvalidIdError: true,
-            showUnregisteredUserError: false,
-            showAlreadyRegisteredUserError: false,
-          });
-        } else
-          this.setState({
-            showEmptyIdError: true,
-            showIvalidIdError: false,
-            showUnregisteredUserError: false,
-            showAlreadyRegisteredUserError: false,
-          });
+        const { formFieldsError } = this.state;
+        if (err.response && err.response.data) {
+          formFieldsError.email = err.response.data.message;
+        } else {
+          formFieldsError.email = 'Something went wrong, please try again';
+        }
+        this.setState({ formFieldsError });
         console.error(err);
       });
   };
@@ -800,7 +748,7 @@ class SignIn extends React.Component {
       }
     }
     return (
-      <div>
+      <div className="row" style={{ width: '100%' }}>
         <div>
           <div className={s.welcome}>
             {this.state.page === 'SignIn' ? 'Sign In' : 'Sign Up'}
@@ -813,31 +761,28 @@ class SignIn extends React.Component {
           type="text"
           name="sign"
           id="admissionId"
+          placeholder="SCSXXXXXX"
           autoFocus //eslint-disable-line
           onKeyDown={e => {
+            const { formData, formFieldsError } = this.state;
+            formData.email = document.getElementById('admissionId').value;
+            if (formData.email) {
+              formFieldsError.email = null;
+            }
             if (e.keyCode === 13) {
-              const formData = this.state.formData;
-              formData.email = document.getElementById('admissionId').value;
               this.setState(
                 {
                   formData,
-                  admissionId: document.getElementById('admissionId').value,
+                  formFieldsError,
+                  admissionId: formData.email,
                 },
                 () => this.validateSignInID(),
               );
             }
+            this.setState({ formFieldsError });
           }}
         />
-        <div className={s.error}>
-          {this.state.showEmptyIdError ? 'Admission Id cannot be empty.' : null}
-          {this.state.showIvalidIdError ? 'User is not registered' : null}
-          {this.state.showUnregisteredUserError
-            ? 'Admission Id is unregistered.'
-            : null}
-          {this.state.showAlreadyRegisteredUserError
-            ? 'Admission Id is already registered.'
-            : null}
-        </div>
+        {this.displayFormFieldError('email')}
         <div className={s.lowerBox}>
           <div
             className={s.btn}
@@ -867,47 +812,54 @@ class SignIn extends React.Component {
     @author Shounak, Divya
   */
   displayLogInPage = () => (
-    <div className={s.mainContainer}>
-      <div className={s.logoContainer}>
-        <img src="/images/rankguru-evidya-logo.png" alt="" className={s.logo} />
-      </div>
-      {this.state.page === 'SignIn' || this.state.page === 'SignUp'
-        ? this.displaySignInPage()
-        : null}
-      {this.state.page === 'EnterPassword'
-        ? this.displayEnterPasswordPage()
-        : null}
-      {this.state.page === 'Otp' ? this.displayOtpVerification() : null}
-      {this.state.page === 'SetPassword' ? this.displaySetPasswordPage() : null}
-      <div className={s.bottom}>
-        <div className={s.bottomText}>
-          {this.state.mainPage === 'SignIn'
-            ? 'Don’t have an account?'
-            : 'Already have an account?'}
+    <div className={`${s.mainContainer} row`}>
+      <div className={s.signInBody}>
+        <div className={s.logoContainer}>
+          <img
+            src="/images/rankguru-evidya-logo.png"
+            alt=""
+            className={s.logo}
+          />
         </div>
-        <div
-          className={s.bottomSignUpBtn}
-          role="presentation"
-          onClick={() => {
-            this.setState({
-              page: this.state.mainPage === 'SignUp' ? 'SignIn' : 'SignUp',
-              mainPage: this.state.mainPage === 'SignUp' ? 'SignIn' : 'SignUp',
-              showEmptyIdError: false,
-              showIvalidIdError: false,
-              showUnregisteredUserError: false,
-              showAlreadyRegisteredUserError: false,
-            });
-          }}
-        >
-          <div className={s.signUpBtnText}>
-            {this.state.mainPage === 'SignUp' ? 'SIGN IN' : 'SIGN UP'}
+        {this.state.page === 'SignIn' || this.state.page === 'SignUp'
+          ? this.displaySignInPage()
+          : null}
+        {this.state.page === 'EnterPassword'
+          ? this.displayEnterPasswordPage()
+          : null}
+        {this.state.page === 'Otp' ? this.displayOtpVerification() : null}
+        {this.state.page === 'SetPassword'
+          ? this.displaySetPasswordPage()
+          : null}
+        <div className={s.bottom}>
+          <div className={s.bottomText}>
+            {this.state.mainPage === 'SignIn'
+              ? 'Are you logging in for first time?'
+              : 'Already a registered user?'}
+          </div>
+          <div
+            className={s.bottomSignUpBtn}
+            role="presentation"
+            onClick={() => {
+              this.setState({
+                page: this.state.mainPage === 'SignUp' ? 'SignIn' : 'SignUp',
+                mainPage:
+                  this.state.mainPage === 'SignUp' ? 'SignIn' : 'SignUp',
+              });
+            }}
+          >
+            <div className={s.signUpBtnText}>
+              {this.state.mainPage === 'SignUp' ? 'SIGN IN' : 'SIGN UP'}
+            </div>
           </div>
         </div>
       </div>
-      <div className={s.query}>
-        For sign in/sign up queries, please contact us on
+      <div className={`row ${s.customerInfo}`}>
+        <div className={s.query}>
+          For sign in/sign up queries, please contact us on
+        </div>
+        <div className={s.number}>040-71045045</div>
       </div>
-      <div className={s.number}>040-71045045</div>
     </div>
   );
 
