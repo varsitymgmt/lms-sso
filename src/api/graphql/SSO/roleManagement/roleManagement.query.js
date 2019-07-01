@@ -7,7 +7,12 @@ import {
 } from 'graphql';
 import GraphQLJSON from 'graphql-type-json';
 
-import { readRoles } from '../../../api/v1/userRoles/userRoles.controller';
+import { RolesListOutputType } from './roleManagement.type';
+
+import {
+  readRoles,
+  getRolesList,
+} from '../../../api/v1/userRoles/userRoles.controller';
 import { getUserList } from '../../../api/v1/user/user.controller';
 
 const ReadWriteDataType = new ObjectType({
@@ -71,7 +76,17 @@ export const UserList = {
     return getUserList(args, context);
   },
 };
+
+export const RolesList = {
+  args: {},
+  type: new List(RolesListOutputType),
+  async resolve(obj, args, context) {
+    return getRolesList(args, context);
+  },
+};
+
 export default {
   ReadUserRole,
   UserList,
+  RolesList,
 };

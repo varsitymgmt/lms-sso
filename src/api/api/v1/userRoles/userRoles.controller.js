@@ -290,3 +290,27 @@ export function deleteUserRoles(args, context) {
       return { status: 'FAILED', message: 'Something went wrong,try again' };
     });
 }
+
+/**
+ * @author Shreyas
+ * @description Function to list out all the roles in the system
+ * @returns Array of -> JSON -> contains roleName, writeAccess array and readAccess array
+ */
+
+export async function getRolesList(args, context) {
+  const query = {
+    instituteId: context.instituteId,
+    active: true,
+  };
+  return userRoles.find(query).then(result => {
+    const finalResult = [];
+    for (let i = 0; i < result.length; i += 1) {
+      const obj = {};
+      obj.roleName = result[i].roleName;
+      obj.writeAccess = result[i].writeAccess.map(x => x.name);
+      obj.readAccess = result[i].readAccess.map(x => x.name);
+      finalResult.push(obj);
+    }
+    return finalResult;
+  });
+}

@@ -5,12 +5,13 @@
 */
 
 import {
-  // GraphQLObjectType as ObjectType,
+  GraphQLObjectType as ObjectType,
   GraphQLString as StringType,
   GraphQLInputObjectType as InputObjectType,
   // GraphQLNonNull as NonNull,
   GraphQLInt as IntType,
   GraphQLBoolean as BooleanType,
+  GraphQLList as List,
 } from 'graphql';
 
 import GraphQLJSON from 'graphql-type-json';
@@ -58,8 +59,18 @@ export const InputHierarchyType = new InputObjectType({
   },
 });
 
+export const RolesListOutputType = new ObjectType({
+  name: 'RolesListOutputType',
+  fields: {
+    roleName: { type: StringType },
+    writeAccess: { type: new List(StringType) },
+    readAccess: { type: new List(StringType) },
+  },
+});
+
 export default {
   // UserRoleInputType,
   // UserRoleType,
   InputHierarchyType,
+  RolesListOutputType,
 };

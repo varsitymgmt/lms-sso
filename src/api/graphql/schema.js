@@ -13,6 +13,7 @@ import {
 import {
   ReadUserRole,
   UserList,
+  RolesList,
 } from './SSO/roleManagement/roleManagement.query';
 import {
   CreateUserRole,
@@ -29,6 +30,7 @@ const schema = new Schema({
     fields: {
       ReadUserRole,
       UserList,
+      RolesList,
     },
   }),
   mutation: new ObjectType({
