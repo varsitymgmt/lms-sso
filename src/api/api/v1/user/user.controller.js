@@ -834,7 +834,11 @@ export async function chaitanyaAPI(payload) {
   const admission_no = payload.email;
   const url = `${config.smsApiUrl}&admission_no=${admission_no}&otp=${payload.otp}`
   return fetch(url)
-  .then(res => res.json())
+  .then(res => {
+    const resp = res.json();
+    console.info(resp);
+    return resp;
+  })
   .catch(err => {
     console.log(err);
     return res.status(400).send('SMS service failure');
