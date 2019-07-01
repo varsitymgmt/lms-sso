@@ -18,7 +18,7 @@ import { auth } from './auth';
 /* eslint-disable global-require */
 
 Raven.config(
-  'https://f43a6a0fede14fe48bcddd1303e991d2@sentry.io/1225473',
+  'https://6cfc03ceb1fc4998aae5e2c9dbf60efc@sentry.io/1491470',
 ).install();
 
 // Global (context) variables that can be easily accessed from any React component
@@ -155,8 +155,9 @@ async function onLocationChange(location, action) {
     toggleLoader(false, 'client');
     if (__DEV__) {
       throw error;
+    } else {
+      Raven.captureException(error);
     }
-    Raven.captureException(error);
     // Do a full page reload if error occurs during client-side navigation
     if (action && currentLocation.key === location.key) {
       window.location.reload();
