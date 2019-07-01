@@ -843,11 +843,12 @@ export async function sendOTP(req, res) {
   if (!email) {
     return res.status(403).send('Please send email');
   }
-  email = email.toLowerCase();
+  const email_lower = email.toLowerCase();
+  const email_upper = email.toUpperCase();  
   const saltRounds = 10;
 
   // Find if the given User email exists in the database.
-  const userDetails = await User.findOne({email, active: true }, {email: 1, contactNumber: 1});
+  const userDetails = await User.findOne({email: { $in: [ email_lower, email_upper ]}, active: true }, {email: 1, contactNumber: 1});
   // If No users have been found with give email.
   if (!userDetails) {
     return res.status(404).send({
@@ -900,10 +901,11 @@ export async function verifyOTP(req, res) {
   if (!otp) {
     return res.status(403).send('Please send otp');
   }
-  email = email.toLowerCase();
+  const email_lower = email.toLowerCase();
+  const email_upper = email.toUpperCase();  
   otp = ""+otp;
   // Find if the given User email exists in the database.
-  const userDetails = await User.findOne({email, active: true }, {email: 1, forgotPassSecureHash: 1,  forgotPassSecureHashExp: 1
+  const userDetails = await User.findOne({email: { $in: [ email_lower, email_upper ]}, active: true }, {email: 1, forgotPassSecureHash: 1,  forgotPassSecureHashExp: 1
   });
   // If No users have been found with give email.
   if (!userDetails) {
