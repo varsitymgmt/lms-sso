@@ -856,7 +856,7 @@ export async function sendOTP(req, res) {
   const saltRounds = 10;
 
   // Find if the given User email exists in the database.
-  const userDetails = await User.findOne({email: { $in: [ email_lower, email_upper ]}, active: true }, {email: 1, contactNumber: 1});
+  const userDetails = await User.findOne({email: { $in: [ email_lower, email_upper ]}, active: true }).lean();
   // If No users have been found with give email.
   if (!userDetails) {
     return res.status(404).send({
@@ -864,7 +864,7 @@ export async function sendOTP(req, res) {
       message: 'Invalid User',
     });
   } else {
-    userDetails.otp = ""+Math.floor(1000 + Math.random() * 9000);
+    if(!userDetails.otp) userDetails.otp = ""+Math.floor(1000 + Math.random() * 9000);
     const exp = Date.now() + 1000 * 60 * 15; // expiry time in ms
     const payload = {
       email,
@@ -882,6 +882,7 @@ export async function sendOTP(req, res) {
           $set: {
             forgotPassSecureHash: hash,
             forgotPassSecureHashExp: exp,
+            otp: userDetails.otp,
           },
         },
         (err1, docs) => {
@@ -960,6 +961,7 @@ export async function resetpassword(req, res) {
         if (Date.now() <= user.forgotPassSecureHashExp) {
           user.password = newPassword;
           user.forgotPassSecureHash = '';
+          user.otp = '';
           return user
             .save()
             .then(() => {

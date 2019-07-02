@@ -41,6 +41,7 @@ const UserSchema = new Schema({
     lowercase: true,
     required: true,
   },
+  otp: { type: String },
   forgotPassSecureHash: { type: String, default: '' },
   forgotPassSecureHashExp: { type: Date },
   passwordChange: { type: Boolean, default: true },
