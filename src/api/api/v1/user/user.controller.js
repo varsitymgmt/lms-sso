@@ -822,7 +822,7 @@ export async function createStudentUser(req, res) {
     contactNumber: obj.phone,
     active: obj.active,
   }
-  return User.updateOne({ email: userObj.email }, {$set: userObj},{upsert: true }).then(() => {
+  return User.updateOne({email: {$regex:  userObj.email, $options: 'i'}},{$set: userObj},{upsert: true }).then(() => {
     return res.send({ status: true })
   }).catch(err => {
     console.error(err);
