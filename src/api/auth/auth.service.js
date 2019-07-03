@@ -93,10 +93,10 @@ export function isAuthenticated(
               res.statusMessage = 'User need to change his password';
               return res.status(401).end();
             }
-            if (req.user.hostname !== user.hostname) {
-              res.statusMessage = 'hostname does not Match';
-              return res.status(401).end();
-            }
+            // if (req.user.hostname !== user.hostname) {
+            //   res.statusMessage = 'hostname does not Match';
+            //   return res.status(401).end();
+            // }
             if (user.loginHash !== req.user.loginHash) {
               res.statusMessage = 'User need to Login again';
               return res.status(401).end();

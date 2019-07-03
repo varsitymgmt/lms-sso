@@ -35,12 +35,7 @@ const UserSchema = new Schema({
     description: 'Institute Id of the given Institute',
     required: true,
   },
-  hostname: {
-    type: String,
-    description: 'Registered hostname',
-    lowercase: true,
-    required: true,
-  },
+  hostname: { type: [String], default: null },
   otp: { type: String },
   forgotPassSecureHash: { type: String, default: '' },
   forgotPassSecureHashExp: { type: Date },

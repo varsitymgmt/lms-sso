@@ -817,7 +817,7 @@ export async function createStudentUser(req, res) {
     hostname: user.hostname,
     defaultHostname: user.hostname,
     role: config.studentRole,
-    email: obj.studentId.toLowerCase(),
+    email: obj.studentId,
     passwordChange: true,
     contactNumber: obj.phone,
     active: obj.active,
