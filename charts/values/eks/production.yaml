@@ -1,0 +1,62 @@
+# Default values for helm-charts.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  repository: registry.gitlab.com/lyra-egnify/lms-sso/master
+  tag: latest
+  pullPolicy: Always
+  pullSecrets: gitlab-registry-pull-secret
+
+projectEnv:
+  nodeEnv: "production"
+  mongodbUri: "mongodb://lms:alphabetagamma@35.154.37.69:27017/tenantregistry-lms-prod"
+  svcSettings: "http://settings-production-lms.production.svc.cluster.local"
+  svcTest: "http://test-management-production-lms.production.svc.cluster.local"
+  jwtSecret: "KAJDK656kllksklfmFGDFGS765ujh765T6GHAJDSjjjkjiursrda"
+  mailjetApiKey: "a1fb4988b5a359099061d2cb8aebc80d"
+  mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
+  mailjetApiSecretkey: "2fc962b7e3aae82acee17b355fb9de2d"
+  apiEgnifyIoUrl: "https://accounts.rankguru.com"
+  curxParserUrl: "https://crux-parser-v1.egnify.com"
+  celeryBrokerUrl: "redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
+  celeryResultBackend: "redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
+  hostNameForAccounts: "accounts.rankguru.com"
+  commonHost: ".rankguru.com"
+  QUEUE_NS: 'lms-production-mq'
+  emailService: "gmail"
+  emailHost: "smtp.gmail.com"
+  emailUser: "support@egnify.com"
+  emailPass: "$dew$008"
+
+service:
+  name: sso-lms-production
+  tier: backend
+  type: ClusterIP
+  externalPort: 80
+  internalPort: 3000
+ingress:
+  enabled: true
+  # Used to create an Ingress record.
+  hosts:
+    - accounts.rankguru.com
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "40M"
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.org/keepalive: "100"
+  tls:
+    - secretName: lms-sso-tls-production
+      hosts:
+        - accounts.rankguru.com
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+   cpu: 512m
+   memory: 1024Mi
+  requests:
+   cpu: 512m
+   memory: 1024Mi

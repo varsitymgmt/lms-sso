@@ -817,7 +817,7 @@ export async function createStudentUser(req, res) {
     hostname: user.hostname,
     defaultHostname: user.hostname,
     role: config.studentRole,
-    email: obj.studentId.toLowerCase(),
+    email: obj.studentId,
     passwordChange: true,
     contactNumber: obj.phone,
     active: obj.active,
@@ -831,10 +831,18 @@ export async function createStudentUser(req, res) {
 }
 
 export async function chaitanyaAPI(payload) {
-  const admission_no = payload.email.toUpperCase();
+  const admission_no = payload.email;
   const url = `${config.smsApiUrl}&admission_no=${admission_no}&otp=${payload.otp}`
   return fetch(url)
-  .then(res => res.json())
+  .then(res => {
+    const resp = res.json();
+    console.info(resp);
+    return resp;
+  })
+  .catch(err => {
+    console.log(err);
+    return res.status(400).send('SMS service failure');
+  })
   // return payload;
 }
 
@@ -843,11 +851,12 @@ export async function sendOTP(req, res) {
   if (!email) {
     return res.status(403).send('Please send email');
   }
-  email = email.toLowerCase();
+  const email_lower = email.toLowerCase();
+  const email_upper = email.toUpperCase();  
   const saltRounds = 10;
 
   // Find if the given User email exists in the database.
-  const userDetails = await User.findOne({email, active: true }, {email: 1, contactNumber: 1});
+  const userDetails = await User.findOne({email: { $in: [ email_lower, email_upper ]}, active: true }).lean();
   // If No users have been found with give email.
   if (!userDetails) {
     return res.status(404).send({
@@ -855,7 +864,7 @@ export async function sendOTP(req, res) {
       message: 'Invalid User',
     });
   } else {
-    userDetails.otp = ""+Math.floor(1000 + Math.random() * 9000);
+    if(!userDetails.otp) userDetails.otp = ""+Math.floor(1000 + Math.random() * 9000);
     const exp = Date.now() + 1000 * 60 * 15; // expiry time in ms
     const payload = {
       email,
@@ -873,6 +882,7 @@ export async function sendOTP(req, res) {
           $set: {
             forgotPassSecureHash: hash,
             forgotPassSecureHashExp: exp,
+            otp: userDetails.otp,
           },
         },
         (err1, docs) => {
@@ -900,10 +910,11 @@ export async function verifyOTP(req, res) {
   if (!otp) {
     return res.status(403).send('Please send otp');
   }
-  email = email.toLowerCase();
+  const email_lower = email.toLowerCase();
+  const email_upper = email.toUpperCase();  
   otp = ""+otp;
   // Find if the given User email exists in the database.
-  const userDetails = await User.findOne({email, active: true }, {email: 1, forgotPassSecureHash: 1,  forgotPassSecureHashExp: 1
+  const userDetails = await User.findOne({email: { $in: [ email_lower, email_upper ]}, active: true }, {email: 1, forgotPassSecureHash: 1,  forgotPassSecureHashExp: 1
   });
   // If No users have been found with give email.
   if (!userDetails) {
@@ -950,6 +961,7 @@ export async function resetpassword(req, res) {
         if (Date.now() <= user.forgotPassSecureHashExp) {
           user.password = newPassword;
           user.forgotPassSecureHash = '';
+          user.otp = '';
           return user
             .save()
             .then(() => {

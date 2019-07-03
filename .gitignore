@@ -35,3 +35,10 @@ newrelic_agent.log
 .DS_Store
 files
 gstDocs/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+.ebextensions/*
