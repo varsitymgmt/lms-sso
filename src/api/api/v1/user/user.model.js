@@ -17,7 +17,6 @@ const UserSchema = new Schema({
   name: String,
   email: {
     type: String,
-    lowercase: true,
     required: true,
   },
   role: {
@@ -36,12 +35,8 @@ const UserSchema = new Schema({
     description: 'Institute Id of the given Institute',
     required: true,
   },
-  hostname: {
-    type: String,
-    description: 'Registered hostname',
-    lowercase: true,
-    required: true,
-  },
+  hostname: { type: [String], default: null },
+  otp: { type: String },
   forgotPassSecureHash: { type: String, default: '' },
   forgotPassSecureHashExp: { type: Date },
   passwordChange: { type: Boolean, default: true },
@@ -136,46 +131,46 @@ UserSchema.path('role').validate(async function roleValidation(role) {
   return isValid;
 }, 'Invalid Role name provided');
 
-// Validate email is not taken
-UserSchema.path('email').validate(function (value) {
-  const hostname = this.hostname
-  return this.constructor
-    .findOne({ email: value, active: true, hostname })
-    .exec()
-    .then(user => {
-      if (user) {
-        if (this.id === user.id) {
-          return true;
-        }
-        return false;
-      }
-      return true;
-    })
-    .catch(err => {
-      throw err;
-    });
-}, 'The specified email address is already in use.');
+// // Validate email is not taken
+// UserSchema.path('email').validate(function (value) {
+//   const hostname = this.hostname
+//   return this.constructor
+//     .findOne({ email: value, active: true, hostname })
+//     .exec()
+//     .then(user => {
+//       if (user) {
+//         if (this.id === user.id) {
+//           return true;
+//         }
+//         return false;
+//       }
+//       return true;
+//     })
+//     .catch(err => {
+//       throw err;
+//     });
+// }, 'The specified email address is already in use.');
 
 
-// Validate userName is not taken
-UserSchema.path('username').validate(function (value) {
-  const hostname = this.hostname
-  return this.constructor
-    .findOne({ username: value, active: true, hostname })
-    .exec()
-    .then(user => {
-      if (user) {
-        if (this.id === user.id) {
-          return true;
-        }
-        return false;
-      }
-      return true;
-    })
-    .catch(err => {
-      throw err;
-    });
-}, 'The specified username is already in use.');
+// // Validate userName is not taken
+// UserSchema.path('username').validate(function (value) {
+//   const hostname = this.hostname
+//   return this.constructor
+//     .findOne({ username: value, active: true, hostname })
+//     .exec()
+//     .then(user => {
+//       if (user) {
+//         if (this.id === user.id) {
+//           return true;
+//         }
+//         return false;
+//       }
+//       return true;
+//     })
+//     .catch(err => {
+//       throw err;
+//     });
+// }, 'The specified username is already in use.');
 
 const validatePresenceOf = function (value) {
   return value && value.length;

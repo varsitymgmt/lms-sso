@@ -12,4 +12,6 @@ RUN yarn install --production --no-progress
 # Copy application files
 COPY ./build .
 
+EXPOSE 8080
+
 CMD [ "node", "server.js" ]

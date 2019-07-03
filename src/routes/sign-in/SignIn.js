@@ -388,10 +388,10 @@ class SignIn extends React.Component {
         {this.displayFormFieldError('otp')}
         <div
           className={s.resend}
-          onClick={() => () => {
+          onClick={() => {
             const formData = this.state.formData;
             formData.email = this.state.admissionId;
-            this.setState({ formData }, () => this.handleSignIn());
+            this.setState({ formData }, this.receiveOtp);
           }}
           role="presentation"
         >
