@@ -333,7 +333,17 @@ class SignIn extends React.Component {
           this.setState({
             otpSent: true,
             mobileNumber: response.data.mobileno,
+            secondsLeftToResendOTP: 60,
           });
+          const resendOTPInterval = setInterval(() => {
+            const { secondsLeftToResendOTP } = this.state;
+            if (secondsLeftToResendOTP === 1) {
+              clearInterval(resendOTPInterval);
+            }
+            this.setState({
+              secondsLeftToResendOTP: secondsLeftToResendOTP - 1,
+            });
+          }, 1000);
         }
       })
       .catch(err => {
@@ -387,15 +397,29 @@ class SignIn extends React.Component {
         {this.displayPasswordHolder()}
         {this.displayFormFieldError('otp')}
         <div
-          className={s.resend}
+          className={`${s.resend} ${
+            this.state.secondsLeftToResendOTP > 0 ? s.disableResend : ''
+          }`}
           onClick={() => {
-            const formData = this.state.formData;
-            formData.email = this.state.admissionId;
-            this.setState({ formData }, this.receiveOtp);
+            if (this.state.secondsLeftToResendOTP <= 0) {
+              const formData = this.state.formData;
+              formData.email = this.state.admissionId;
+              this.setState({ formData }, this.receiveOtp);
+            }
           }}
           role="presentation"
         >
-          Resend OTP
+          <div style={{ textDecoration: 'underline' }}>Resend OTP</div>
+          {this.state.secondsLeftToResendOTP > 0 ? (
+            <div className={s.resendText}>
+              (Resend in{' '}
+              <span>
+                {this.state.secondsLeftToResendOTP < 10 ? 0 : ''}
+                {this.state.secondsLeftToResendOTP}
+              </span>
+              s)
+            </div>
+          ) : null}
         </div>
         <div
           className={s.btn}
@@ -599,9 +623,7 @@ class SignIn extends React.Component {
             }
             if (this.state.page === 'Otp') {
               this.setState(
-                {
-                  otp: inputString.toString().replace(/,/g, ''),
-                },
+                { otp: inputString.toString().replace(/,/g, '') },
                 () => this.handleVerifyOTP(),
               );
             }
@@ -697,17 +719,12 @@ class SignIn extends React.Component {
         this.state.formData,
       )
       .then(response => {
-        const { formFieldsError, page } = this.state;
+        const { formFieldsError } = this.state;
         if (response.data && response.data.authorized) {
-          if (page === 'SignIn' && response.data.firstTimeLogin) {
-            formFieldsError.email = response.data.message;
-          } else if (page === 'SignUp' && !response.data.firstTimeLogin) {
-            formFieldsError.email =
-              'Admission ID is already registered, please Sign In.';
-          } else if (page === 'SignIn') {
-            this.setState({ page: 'EnterPassword' });
-          } else {
+          if (response.data.firstTimeLogin) {
             this.setState({ page: 'Otp' }, () => this.receiveOtp());
+          } else if (!response.data.firstTimeLogin) {
+            this.setState({ page: 'EnterPassword' });
           }
         } else if (response.data && !response.data.authorized) {
           formFieldsError.email = response.data.message;
@@ -831,33 +848,9 @@ class SignIn extends React.Component {
         {this.state.page === 'SetPassword'
           ? this.displaySetPasswordPage()
           : null}
-        <div className={s.bottom}>
-          <div className={s.bottomText}>
-            {this.state.mainPage === 'SignIn'
-              ? 'Are you logging in for first time?'
-              : 'Already a registered user?'}
-          </div>
-          <div
-            className={s.bottomSignUpBtn}
-            role="presentation"
-            onClick={() => {
-              this.setState({
-                page: this.state.mainPage === 'SignUp' ? 'SignIn' : 'SignUp',
-                mainPage:
-                  this.state.mainPage === 'SignUp' ? 'SignIn' : 'SignUp',
-              });
-            }}
-          >
-            <div className={s.signUpBtnText}>
-              {this.state.mainPage === 'SignUp' ? 'SIGN IN' : 'SIGN UP'}
-            </div>
-          </div>
-        </div>
       </div>
       <div className={`row ${s.customerInfo}`}>
-        <div className={s.query}>
-          For sign in/sign up queries, please contact us on
-        </div>
+        <div className={s.query}>For any queries, please contact us on</div>
         <div className={s.number}>040-71045045</div>
       </div>
     </div>

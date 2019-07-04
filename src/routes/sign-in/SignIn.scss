@@ -39,43 +39,6 @@
   height: 80px;
 }
 
-.bottom {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 8px;
-}
-
-.bottomText {
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 1.5;
-  color: #3e3e5f;
-}
-
-.bottomSignUpBtn {
-  width: 70px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: 10px;
-  cursor: pointer;
-}
-
-.signUpBtnText {
-  background-image: linear-gradient(70deg, #ec008c, #fc6767);
-  font-size: 16px;
-  font-weight: 600;
-  border-bottom: 1px solid #ec008c;
-  text-decoration: underline;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
 .signInBody {
   width: 100%;
   height: calc(100% - 3.5rem);
@@ -219,10 +182,20 @@
   font-weight: normal;
   line-height: 1.43;
   color: #4a90e2;
-  text-decoration: underline;
-  margin: 24px 0 0;
+  margin: 12px 0;
   margin-left: 50%;
   cursor: pointer;
+  text-align: right;
+  min-height: 40px;
+}
+
+.disableResend {
+  cursor: not-allowed;
+  opacity: 0.6;
+
+  .resendText {
+    width: 120px;
+  }
 }
 
 .textInputOtpContainer {
