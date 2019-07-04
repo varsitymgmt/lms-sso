@@ -960,8 +960,8 @@ export async function resetpassword(req, res) {
         if(!user) return res.status(403).end('invalid hashToken')
         if (Date.now() <= user.forgotPassSecureHashExp) {
           user.password = newPassword;
-          user.forgotPassSecureHash = '';
-          user.otp = '';
+          delete user.forgotPassSecureHash;
+          delete user.otp;
           return user
             .save()
             .then(() => {
