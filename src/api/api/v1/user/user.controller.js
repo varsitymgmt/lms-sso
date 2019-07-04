@@ -876,7 +876,7 @@ export async function sendOTP(req, res) {
     bcrypt.hash(toHash, saltRounds, (err, hash) => {
       User.update(
         {
-          email: email,
+          email: { $in: [ email_lower, email_upper ]},
         },
         {
           $set: {
