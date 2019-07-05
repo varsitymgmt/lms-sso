@@ -870,13 +870,13 @@ export async function sendOTP(req, res) {
       email,
       otp: userDetails.otp,
     };
-    const toHash = email + userDetails.otp;
+    const toHash = email_lower + userDetails.otp;
     // If a valid user exists with the given email.
     // Generate a secure hash for a user to store in our db.
     bcrypt.hash(toHash, saltRounds, (err, hash) => {
       User.update(
         {
-          email: email,
+          email: { $in: [ email_lower, email_upper ]},
         },
         {
           $set: {
@@ -925,7 +925,7 @@ export async function verifyOTP(req, res) {
       message: "Invalid User"
     });
   } else {
-    const toHash = email + otp;
+    const toHash = email_lower + otp;
     bcrypt.compare(toHash, userDetails.forgotPassSecureHash).then(match => {
       if(match) {
         return res.status(200).send({
@@ -960,8 +960,8 @@ export async function resetpassword(req, res) {
         if(!user) return res.status(403).end('invalid hashToken')
         if (Date.now() <= user.forgotPassSecureHashExp) {
           user.password = newPassword;
-          user.forgotPassSecureHash = '';
-          user.otp = '';
+          delete user.forgotPassSecureHash;
+          delete user.otp;
           return user
             .save()
             .then(() => {
