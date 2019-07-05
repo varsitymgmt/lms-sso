@@ -851,6 +851,7 @@ export async function sendOTP(req, res) {
   if (!email) {
     return res.status(403).send('Please send email');
   }
+  email = email.trim();
   const email_lower = email.toLowerCase();
   const email_upper = email.toUpperCase();  
   const saltRounds = 10;
@@ -910,6 +911,7 @@ export async function verifyOTP(req, res) {
   if (!otp) {
     return res.status(403).send('Please send otp');
   }
+  email = email.trim();
   const email_lower = email.toLowerCase();
   const email_upper = email.toUpperCase();  
   otp = ""+otp;
