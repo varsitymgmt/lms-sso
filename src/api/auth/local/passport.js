@@ -10,15 +10,11 @@ AU02 - Password mismatch
 function localAuthenticate(req, User, login, password, done) {
   const hostnameForQuery = req.body.hostname ? req.body.hostname : '';
   // can login through both username and emailId
+  login = login.trim();
+  const email_lower = login.toLowerCase(); //eslint-disable-line
+  const email_upper = login.toUpperCase(); //eslint-disable-line
   User.findOne({
-    $or: [
-      {
-        email: login.toLowerCase(),
-      },
-      {
-        username: login.toUpperCase(),
-      },
-    ],
+    email: { $in: [email_lower, email_upper] }, //eslint-disable-line
     active: true,
     hostname: hostnameForQuery,
   })
