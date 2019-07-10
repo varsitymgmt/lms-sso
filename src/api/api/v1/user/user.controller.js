@@ -851,6 +851,7 @@ export async function sendOTP(req, res) {
   if (!email) {
     return res.status(403).send('Please send email');
   }
+  email = email.trim();
   const email_lower = email.toLowerCase();
   const email_upper = email.toUpperCase();  
   const saltRounds = 10;
@@ -864,19 +865,19 @@ export async function sendOTP(req, res) {
       message: 'Invalid User',
     });
   } else {
-    if(!userDetails.otp) userDetails.otp = ""+Math.floor(1000 + Math.random() * 9000);
+    if(!userDetails.otp || Date.now() > userDetails.forgotPassSecureHashExp ) userDetails.otp = ""+Math.floor(1000 + Math.random() * 9000);
     const exp = Date.now() + 1000 * 60 * 15; // expiry time in ms
     const payload = {
       email,
       otp: userDetails.otp,
     };
-    const toHash = email + userDetails.otp;
+    const toHash = email_lower + userDetails.otp;
     // If a valid user exists with the given email.
     // Generate a secure hash for a user to store in our db.
     bcrypt.hash(toHash, saltRounds, (err, hash) => {
       User.update(
         {
-          email: email,
+          email: { $in: [ email_lower, email_upper ]},
         },
         {
           $set: {
@@ -910,6 +911,7 @@ export async function verifyOTP(req, res) {
   if (!otp) {
     return res.status(403).send('Please send otp');
   }
+  email = email.trim();
   const email_lower = email.toLowerCase();
   const email_upper = email.toUpperCase();  
   otp = ""+otp;
@@ -925,8 +927,16 @@ export async function verifyOTP(req, res) {
       message: "Invalid User"
     });
   } else {
-    const toHash = email + otp;
+    const toHash = email_lower + otp;
     bcrypt.compare(toHash, userDetails.forgotPassSecureHash).then(match => {
+      if (Date.now() > userDetails.forgotPassSecureHashExp) {
+        return res.status(200).send({
+          success: false,
+          hashToken: null,
+          userFound: true,
+          message: "Session expired"
+        });
+      }  
       if(match) {
         return res.status(200).send({
           success: true,
@@ -952,16 +962,18 @@ export async function resetpassword(req, res) {
     if (newPassword.length !== 4 || !/[0-9]{4}/.test(newPassword)) {
       return res.status(403).send('Password must be 4 digits only');
     }
-    return User.findOne({
+    return User.findOneAndUpdate({
       forgotPassSecureHash: hashToken,
       active: true
-    })
+    },
+    { $set: { forgotPassSecureHash : '', otp: '' } }
+    )
       .then(user => {
         if(!user) return res.status(403).end('invalid hashToken')
         if (Date.now() <= user.forgotPassSecureHashExp) {
           user.password = newPassword;
-          user.forgotPassSecureHash = '';
-          user.otp = '';
+          delete user.forgotPassSecureHash;
+          delete user.otp;
           return user
             .save()
             .then(() => {
@@ -970,7 +982,7 @@ export async function resetpassword(req, res) {
             .catch(validationError(res));
         }
 
-        return res.status(403).send('Link Expired');
+        return res.status(403).send('Session expired');
       })
       .catch((err) => {
         console.log(err)

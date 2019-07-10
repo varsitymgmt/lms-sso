@@ -311,7 +311,7 @@ export async function verifyUsername(req, res) {
         });
       }
       return res.status(401).send({
-        message: "You're not authorized to access Rankguru eVidya",
+        message: "You're not a valid Rankguru eVidya user",
         authorized: false,
         firstTimeLogin: false,
       });
