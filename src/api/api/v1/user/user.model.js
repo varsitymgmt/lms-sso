@@ -24,6 +24,7 @@ const UserSchema = new Schema({
     default: [],
     required: true,
   },
+  studentId: { type: String },
   password: {
     type: String,
     // required: true,
