@@ -809,7 +809,7 @@ export async function createStudentUser(req, res) {
   const obj = req.body && req.body.studentData ? req.body.studentData : {}
   const { user } = req;
   const userObj = {
-    studenId: obj.studentId,
+    studentId: obj.studentId,
     username: obj.studentId,
     hierarchy: obj.hierarchy,
     rawHierarchy: obj.hierarchy,
