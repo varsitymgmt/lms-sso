@@ -20,11 +20,17 @@ class SignOut extends React.Component {
     deleteCookie({ key: 'accessControlToken', domain });
     deleteCookie({ key: 'email', domain });
     deleteCookie({ key: 'hostID', domain });
+    let signInPath = '/signin';
+    if (window.location.pathname === '/admin-signout') {
+      signInPath = '/admin-signin';
+    }
     if (host) {
       host = new URL(host);
-      window.location.href = `/signin?host=${encodeURIComponent(host.href)}`;
+      window.location.href = `${signInPath}?host=${encodeURIComponent(
+        host.href,
+      )}`;
     } else {
-      window.location.href = '/signin';
+      window.location.href = signInPath;
     }
     toggleLoader(false);
   };
