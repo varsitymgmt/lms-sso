@@ -122,6 +122,7 @@ async function onLocationChange(location, action) {
         '/signin',
         '/admin-signin',
         '/signout',
+        '/admin-signout',
         '/resetPassword',
         '/forgotPassword',
       ].includes(location.pathname)
