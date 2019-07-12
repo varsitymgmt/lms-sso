@@ -70,7 +70,10 @@ class SignIn extends React.Component {
       formData: {
         email: document.getElementById('admissionId').value,
         rememberMe: false,
-        hostname: __DEV__ ? this.context.hostNameForDev : host.hostname,
+        hostname:
+          !host.hostname || __DEV__
+            ? this.context.hostNameForDev
+            : host.hostname.replace('www.', ''),
       },
       host,
     });

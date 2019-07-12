@@ -23,6 +23,10 @@ const routes = {
       load: () => import(/* webpackChunkName: 'SignOut' */ './sign-out'),
     },
     {
+      path: '/admin-signout',
+      load: () => import(/* webpackChunkName: 'SignOut' */ './sign-out'),
+    },
+    {
       path: '/resetPassword',
       authenticate: false,
       load: () =>
