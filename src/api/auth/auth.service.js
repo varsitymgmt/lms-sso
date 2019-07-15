@@ -284,11 +284,11 @@ export async function verifyUsername(req, res) {
   const studentId = email.toUpperCase().trim();
   return Promise.all([
     User.findOne({
-      studentId: { $in: [email, studentId] },
+      email: { $in: [email, studentId] },
       hostname,
       active: true,
     }),
-    AllStudents.findOne({ studentId }),
+    AllStudents.findOne({ studentId: { $in: [email, studentId] } }),
   ])
     .then(([userObj, allStudentObj]) => {
       if (userObj && userObj.password) {
