@@ -809,7 +809,7 @@ export async function createStudentUser(req, res) {
   const obj = req.body && req.body.studentData ? req.body.studentData : {}
   const { user } = req;
   const userObj = {
-    studenId: obj.studentId,
+    studentId: obj.studentId,
     username: obj.studentId,
     hierarchy: obj.hierarchy,
     rawHierarchy: obj.hierarchy,
@@ -884,6 +884,7 @@ export async function sendOTP(req, res) {
             forgotPassSecureHash: hash,
             forgotPassSecureHashExp: exp,
             otp: userDetails.otp,
+            'activityLogs.lastOtpRequest': new Date(),
           },
         },
         (err1, docs) => {
@@ -938,12 +939,14 @@ export async function verifyOTP(req, res) {
         });
       }  
       if(match) {
-        return res.status(200).send({
-          success: true,
-          userFound: true,
-          hashToken: userDetails.forgotPassSecureHash,
-          message: "OTP matched"
-        });
+        return User.updateOne({_id: userDetails['_id']},{$set: { 'activityLogs.lastOtpValidated': new Date()}}).then(() => {
+          return res.status(200).send({
+            success: true,
+            userFound: true,
+            hashToken: userDetails.forgotPassSecureHash,
+            message: "OTP matched"
+          });
+        })
       } else {
         return res.status(200).send({
           success: false,
@@ -970,6 +973,13 @@ export async function resetpassword(req, res) {
     )
       .then(user => {
         if(!user) return res.status(403).end('invalid hashToken')
+        const patch = {}
+        const date = new Date();
+        if(!user.password) {
+          patch['activityLogs.signup'] = date;
+        }
+        patch['activityLogs.lastVisit'] = date;
+        patch['activityLogs.lastLogin'] = date;
         if (Date.now() <= user.forgotPassSecureHashExp) {
           user.password = newPassword;
           delete user.forgotPassSecureHash;
@@ -977,7 +987,9 @@ export async function resetpassword(req, res) {
           return user
             .save()
             .then(() => {
-              res.status(200).end('Password changed successfully!');
+              return User.updateOne({_id: user['_id']},{$set: patch}).then(() => {
+                return res.status(200).end('Password changed successfully!');
+              })
             })
             .catch(validationError(res));
         }
@@ -993,4 +1005,40 @@ export async function resetpassword(req, res) {
   return res.status(403).send(' hashToken, newPassword required');
 }
 
+export async function updateActivityLogs(req, res) {
+  const {
+    os,
+    browser,
+    medium,
+    device,
+    deviceOsVersion,
+  } = req.body;
+  if(!os && !browser && !medium && !device && !deviceOsVersion) {
+    return res.status(403).send('Insufficient data. (os,browser,medium,device,deviceOsVersion)');
+  }
+  const patch = {
+    'activityLogs.os': os || '-',
+    'activityLogs.browser': browser || '-',
+    'activityLogs.medium': medium || '-',
+    'activityLogs.device': device || '-',
+    'activityLogs.deviceOsVersion': deviceOsVersion || '-',
+  };
+  if (req.user && req.user['_id']) {
+    return User.updateOne({_id: req.user['_id']},{$set: patch}).then(() => {
+      return res.status(200).end('Logs updated successfully');
+    }).catch(err => {
+      console.error(err);
+      return res.status(403).send('Somthing went wrong');
+    })
+  }
+  return res.status(403).send('Somthing went wrong');
+}
+
+export async function getActivityLogs(req, res) {
+  let doc = {};
+  if(req.user && req.user.activityLogs) {
+    doc = req.user.activityLogs;
+  }
+  return res.send(doc);
+}
 

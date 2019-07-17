@@ -82,7 +82,9 @@ export function isAuthenticated(
           _id: req.user._id,  // eslint-disable-line
           active: true,
         };
-        User.findOne(findUserQuery)
+        User.findOneAndUpdate(findUserQuery, {
+          $set: { 'activityLogs.lastVisit': new Date() },
+        })
           .exec()
           .then(user => {
             if (!user) {
@@ -284,7 +286,7 @@ export async function verifyUsername(req, res) {
   const studentId = email.toUpperCase().trim();
   return Promise.all([
     User.findOne({
-      studentId: { $in: [email, studentId] },
+      email: { $in: [email, studentId] },
       hostname,
       active: true,
     }),
