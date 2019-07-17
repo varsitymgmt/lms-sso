@@ -1005,4 +1005,40 @@ export async function resetpassword(req, res) {
   return res.status(403).send(' hashToken, newPassword required');
 }
 
+export async function updateActivityLogs(req, res) {
+  const {
+    os,
+    browser,
+    medium,
+    device,
+    deviceOsVersion,
+  } = req.body;
+  if(!os && !browser && !medium && !device && !deviceOsVersion) {
+    return res.status(403).send('Insufficient data. (os,browser,medium,device,deviceOsVersion)');
+  }
+  const patch = {
+    'activityLogs.os': os || '-',
+    'activityLogs.browser': browser || '-',
+    'activityLogs.medium': medium || '-',
+    'activityLogs.device': device || '-',
+    'activityLogs.deviceOsVersion': deviceOsVersion || '-',
+  };
+  if (req.user && req.user['_id']) {
+    return User.updateOne({_id: req.user['_id']},{$set: patch}).then(() => {
+      return res.status(200).end('Logs updated successfully');
+    }).catch(err => {
+      console.error(err);
+      return res.status(403).send('Somthing went wrong');
+    })
+  }
+  return res.status(403).send('Somthing went wrong');
+}
+
+export async function getActivityLogs(req, res) {
+  let doc = {};
+  if(req.user && req.user.activityLogs) {
+    doc = req.user.activityLogs;
+  }
+  return res.send(doc);
+}
 
