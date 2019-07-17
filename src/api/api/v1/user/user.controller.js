@@ -884,6 +884,7 @@ export async function sendOTP(req, res) {
             forgotPassSecureHash: hash,
             forgotPassSecureHashExp: exp,
             otp: userDetails.otp,
+            'activityLogs.lastOtpRequest': new Date(),
           },
         },
         (err1, docs) => {
@@ -938,12 +939,14 @@ export async function verifyOTP(req, res) {
         });
       }  
       if(match) {
-        return res.status(200).send({
-          success: true,
-          userFound: true,
-          hashToken: userDetails.forgotPassSecureHash,
-          message: "OTP matched"
-        });
+        return User.updateOne({_id: userDetails['_id']},{$set: { 'activityLogs.lastOtpValidated': new Date()}}).then(() => {
+          return res.status(200).send({
+            success: true,
+            userFound: true,
+            hashToken: userDetails.forgotPassSecureHash,
+            message: "OTP matched"
+          });
+        })
       } else {
         return res.status(200).send({
           success: false,
@@ -970,6 +973,13 @@ export async function resetpassword(req, res) {
     )
       .then(user => {
         if(!user) return res.status(403).end('invalid hashToken')
+        const patch = {}
+        const date = new Date();
+        if(!user.password) {
+          patch['activityLogs.signup'] = date;
+        }
+        patch['activityLogs.lastVisit'] = date;
+        patch['activityLogs.lastLogin'] = date;
         if (Date.now() <= user.forgotPassSecureHashExp) {
           user.password = newPassword;
           delete user.forgotPassSecureHash;
@@ -977,7 +987,9 @@ export async function resetpassword(req, res) {
           return user
             .save()
             .then(() => {
-              res.status(200).end('Password changed successfully!');
+              return User.updateOne({_id: user['_id']},{$set: patch}).then(() => {
+                return res.status(200).end('Password changed successfully!');
+              })
             })
             .catch(validationError(res));
         }
