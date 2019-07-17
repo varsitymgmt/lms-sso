@@ -773,9 +773,9 @@ class SignIn extends React.Component {
           <div className={s.welcome}>
             {this.state.page === 'SignIn' ? 'Sign In' : 'Sign Up'}
           </div>
-          <div className={s.signInText}>Enter your Admission ID</div>
+          <div className={s.signInText}>Enter your Admission No.</div>
         </div>
-        <div className={s.admissionId}>Admission ID</div>
+        <div className={s.admissionId}>Admission No.</div>
         <input
           className={s.textInput}
           type="text"
