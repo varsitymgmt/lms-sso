@@ -38,6 +38,7 @@ class App extends React.PureComponent {
 
   constructor(props) {
     super(props);
+    this.state = {};
     ReactGA.initialize(config.analytics.googleTrackingId, {
       debug: false,
     });
