@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactGA from 'react-ga';
 import PropTypes from 'prop-types';
+import AccessDenied from 'components/access-denied';
 import { config } from '../config/environment';
 // const actions = 0;
 
@@ -46,7 +47,25 @@ class App extends React.PureComponent {
     return this.props.context;
   }
 
+  componentDidMount() {
+    this.checkBrowserVarient();
+  }
+
+  checkBrowserVarient = () => {
+    const isChrome =
+      /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+    this.setState({ isChrome });
+  };
+
   render() {
+    if (!this.state.isChrome) {
+      return (
+        <AccessDenied
+          warning="Sorry!"
+          message={`Rankguru can only be accessed through Google Chrome browser only`}
+        />
+      );
+    }
     // NOTE: If you need to add or modify header, footer etc. of the app,
     // please do that inside the Layout component.
     return React.Children.only(this.props.children);
