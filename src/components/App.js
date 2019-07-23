@@ -63,7 +63,7 @@ class App extends React.PureComponent {
       return (
         <AccessDenied
           warning="Sorry!"
-          message={`Rankguru can only be accessed through Google Chrome browser only`}
+          message={`Rankguru can only be accessed through Google Chrome browser`}
         />
       );
     }
