@@ -13,6 +13,7 @@ variables:
   CONTAINER_IMAGE: ${CI_REGISTRY_IMAGE}/${CI_BUILD_REF_NAME}:${CI_BUILD_REF}
   CONTAINER_IMAGE_LATEST: ${CI_REGISTRY_IMAGE}/${CI_BUILD_REF_NAME}:latest
   CONTAINER_IMAGE_UNTAGGED: ${CI_REGISTRY_IMAGE}/${CI_BUILD_REF_NAME}
+  DOCKER_DRIVER: overlay2
 
   KUBECONFIG: /etc/deploy/config
   # STAGING_NAMESPACE: app-stage
@@ -63,10 +64,12 @@ release:
   image: docker:latest
   services:
     - docker:dind
+  variables:
+    DOCKER_DRIVER: "overlay2"
+    DOCKER_HOST: "tcp://localhost:2375"
   before_script:
     - docker info
   script:
-    - export DOCKER_HOST="tcp://localhost:2375"
     - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
     - docker build -t ${CONTAINER_IMAGE} .
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_LATEST}
