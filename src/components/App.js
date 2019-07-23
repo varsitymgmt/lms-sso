@@ -2,7 +2,9 @@ import React from 'react';
 import ReactGA from 'react-ga';
 import PropTypes from 'prop-types';
 import AccessDenied from 'components/access-denied';
+import { detect } from 'utils/browserDetect';
 import { config } from '../config/environment';
+
 // const actions = 0;
 
 const ContextType = {
@@ -53,9 +55,10 @@ class App extends React.PureComponent {
   }
 
   checkBrowserVarient = () => {
-    const isChrome =
-      /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-    this.setState({ isChrome });
+    const browserInfo = detect();
+    if (browserInfo && browserInfo.name.toLowerCase() === 'chrome') {
+      this.setState({ isChrome: true });
+    }
   };
 
   render() {
