@@ -82,7 +82,9 @@ export function isAuthenticated(
           _id: req.user._id,  // eslint-disable-line
           active: true,
         };
-        User.findOne(findUserQuery)
+        User.findOneAndUpdate(findUserQuery, {
+          $set: { 'activityLogs.lastVisit': new Date() },
+        })
           .exec()
           .then(user => {
             if (!user) {
