@@ -65,7 +65,10 @@ const UserSchema = new Schema({
   },
   contactNumber: {
     type: String,
-  }
+  },
+  activityLogs: {}, 
+},{
+  timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
 });
 
 /**
