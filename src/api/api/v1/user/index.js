@@ -59,4 +59,15 @@ router.post(
 router.post('/sendOTP', controller.sendOTP);
 router.post('/verifyOTP', controller.verifyOTP);
 
+router.post(
+  '/updateActivityLogs',
+  auth.isAuthenticated(),
+  controller.updateActivityLogs,
+);
+
+router.post(
+  '/getActivityLogs',
+  auth.isAuthenticated(),
+  controller.getActivityLogs,
+);
 export default router;
