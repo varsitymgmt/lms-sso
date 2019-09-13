@@ -7,24 +7,14 @@ stages:
   - release
   - review
   - deploy
-  # - pre-production
 
 variables:
   CONTAINER_IMAGE: ${CI_REGISTRY_IMAGE}/${CI_BUILD_REF_NAME}:${CI_BUILD_REF}
   CONTAINER_IMAGE_LATEST: ${CI_REGISTRY_IMAGE}/${CI_BUILD_REF_NAME}:latest
   CONTAINER_IMAGE_UNTAGGED: ${CI_REGISTRY_IMAGE}/${CI_BUILD_REF_NAME}
   DOCKER_DRIVER: overlay2
-
-  KUBECONFIG: /etc/deploy/config
-  # STAGING_NAMESPACE: app-stage
-  # PRODUCTION_NAMESPACE: app-prod
-  #
-  # APP_PATH: /go/src/gitlab.example.com/librerio/libr_files
-  # POSTGRES_USER: gorma
-  # POSTGRES_DB: test-${CI_BUILD_REF}
-  # POSTGRES_PASSWORD: gorma
-
-# before_script:
+  REGION: ap-south-1
+  REPOSITORY_URL: 874146190074.dkr.ecr.ap-south-1.amazonaws.com/lms-sso
 
 cache:
   paths:
@@ -69,19 +59,27 @@ release:
     DOCKER_HOST: "tcp://localhost:2375"
   before_script:
     - docker info
+    - apk add --no-cache curl jq python py-pip
+    - pip install awscli
+    - IMAGE_TAG="$CI_COMMIT_SHORT_SHA"
   script:
     - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
+    - echo "Building image..."
     - docker build -t ${CONTAINER_IMAGE} .
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_LATEST}
     - docker push ${CONTAINER_IMAGE}
     - docker push ${CONTAINER_IMAGE_LATEST}
+    - $(aws ecr get-login --no-include-email --region "${REGION}")
+    - echo "Tagging image for ECR..."
+    - docker tag ${CONTAINER_IMAGE_LATEST} ${REPOSITORY_URL}:${IMAGE_TAG}
+    - echo "Pushing image to ECR..."
+    - docker push ${REPOSITORY_URL}:latest
+    - docker push ${REPOSITORY_URL}:${IMAGE_TAG}
   only:
     - development
     - qa
     - master
-    - lt
 
-    # - /^f-.*$/
 
 # deploy-dev:
 #   stage: deploy
