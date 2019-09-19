@@ -1,4 +1,4 @@
-# @author: rahul
+# @author: Vikram Somavaram
 image: node:6.12.0
 
 stages:
@@ -72,8 +72,9 @@ release:
     - $(aws ecr get-login --no-include-email --region "${REGION}")
     - echo "Tagging image for ECR..."
     - docker tag ${CONTAINER_IMAGE_LATEST} ${REPOSITORY_URL}:${IMAGE_TAG}
+    - docker tag ${CONTAINER_IMAGE_LATEST} ${REPOSITORY_URL}:latest
     - echo "Pushing image to ECR..."
-    - docker push ${REPOSITORY_URL}
+    - docker push ${REPOSITORY_URL}:latest
     - docker push ${REPOSITORY_URL}:${IMAGE_TAG}
   only:
     - development
