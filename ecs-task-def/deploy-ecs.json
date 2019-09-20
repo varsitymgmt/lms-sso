@@ -1,97 +1,139 @@
 {
+    "ipcMode": null,
+    "executionRoleArn": null,
     "containerDefinitions": [
-       
-       {
-           "name": "lms-sso",
-           "image": "874146190074.dkr.ecr.ap-south-1.amazonaws.com/lms-sso:latest",
-           "essential": true,
-           "memory": null,
-           "memoryReservation": null,
-           "portMappings": [
-             {
-               "containerPort": 6000,
-               "protocol": "tcp"
-             }
-           ],
-           "environment":[
-             {
-               "name":"PORT",
-               "value":"6000"
-             },
-             {
-               "name":"NODE_ENV",
-               "value":"development"
-             },
-             {
-               "name":"MONGODB_URI",
-               "value":"mongodb://lms:alphabetagamma@13.234.242.201:27017/tenantregistry-lms-dev"
-             },
-             {
-               "name":"JWT_SECRET",
-               "value":"KAJDK656kllksklfmFGDFGS765ujh765T6GHAJDSjjjkjiursrda"
-             },
-             {
-               "name":"MAILJET_API_KEY",
-               "value":"a1fb4988b5a359099061d2cb8aebc80d"
-             },
-             {
-               "name":"MAILJET_API_SECRETKEY",
-               "value":"2fc962b7e3aae82acee17b355fb9de2d"
-             },
-             {
-               "name":"API_EGNIFY_IO_URL",
-               "value":"https://accounts.dev.rankguru.com"
-             },
-             {
-               "name":"CRUX_PARSER_URL",
-               "value":"https://crux-parser-v1.egnify.com"
-             },
-             {
-               "name":"CELERY_BROKER_URL",
-               "value":"redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
-             },
-             {
-               "name":"CELERY_RESULT_BACKEND",
-               "value":"redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
-             },
-             {
-               "name":"HOST_NAME_FOR_ACCOUNTS",
-               "value":"accounts.dev.rankguru.com"
-             },
-             {
-               "name":"COMMON_HOST",
-               "value":".rankguru.com"
-             },
-             {
-               "name":"QUEUE_NS",
-               "value":"lms-dev-mq"
-             },
-             {
-               "name":"EMAIL_SERVICE",
-               "value":"gmail"
-             },
-             {
-               "name":"EMAIL_HOST",
-               "value":"smtp.gmail.com"
-             },
-             {
-               "name":"EMAIL_USER",
-               "value":"support@egnify.com"
-             },
-             {
-               "name":"EMAIL_PASS",
-               "value":"$dew$008"
-             }
-           ],
-           "logConfiguration": {
-             "logDriver": "awslogs",
-             "options": {
-                 "awslogs-group": "/ecs/lms-sso/dev",
-                 "awslogs-region": "ap-south-1",
-                 "awslogs-stream-prefix": "ecs-lms-sso"
-             }
-           }
-         }
+        {
+            "dnsSearchDomains": null,
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "secretOptions": null,
+                "options": {
+                    "awslogs-group": "/ecs/lms-sso/dev",
+                    "awslogs-region": "ap-south-1",
+                    "awslogs-stream-prefix": "ecs-lms-sso"
+                }
+            },
+            "entryPoint": null,
+            "portMappings": [
+                {
+                    "hostPort": 0,
+                    "protocol": "tcp",
+                    "containerPort": 6000
+                }
+            ],
+            "command": null,
+            "linuxParameters": null,
+            "cpu": 0,
+            "environment": [
+                {
+                    "name": "HOST_NAME_FOR_ACCOUNTS",
+                    "value": "accounts.dev.rankguru.com"
+                },
+                {
+                    "name": "EMAIL_SERVICE",
+                    "value": "gmail"
+                },
+                {
+                    "name": "MAILJET_API_KEY",
+                    "value": "a1fb4988b5a359099061d2cb8aebc80d"
+                },
+                {
+                    "name": "PORT",
+                    "value": "6000"
+                },
+                {
+                    "name": "CELERY_BROKER_URL",
+                    "value": "redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
+                },
+                {
+                    "name": "CELERY_RESULT_BACKEND",
+                    "value": "redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
+                },
+                {
+                    "name": "EMAIL_USER",
+                    "value": "support@egnify.com"
+                },
+                {
+                    "name": "EMAIL_HOST",
+                    "value": "smtp.gmail.com"
+                },
+                {
+                    "name": "COMMON_HOST",
+                    "value": ".rankguru.com"
+                },
+                {
+                    "name": "QUEUE_NS",
+                    "value": "lms-dev-mq"
+                },
+                {
+                    "name": "EMAIL_PASS",
+                    "value": "$dew$008"
+                },
+                {
+                    "name": "API_EGNIFY_IO_URL",
+                    "value": "https://accounts.dev.rankguru.com"
+                },
+                {
+                    "name": "CRUX_PARSER_URL",
+                    "value": "https://crux-parser-v1.egnify.com"
+                },
+                {
+                    "name": "MAILJET_API_SECRETKEY",
+                    "value": "2fc962b7e3aae82acee17b355fb9de2d"
+                },
+                {
+                    "name": "JWT_SECRET",
+                    "value": "KAJDK656kllksklfmFGDFGS765ujh765T6GHAJDSjjjkjiursrda"
+                },
+                {
+                    "name": "NODE_ENV",
+                    "value": "development"
+                },
+                {
+                    "name": "MONGODB_URI",
+                    "value": "mongodb://lms:alphabetagamma@13.234.242.201:27017/tenantregistry-lms-dev"
+                }
+            ],
+            "resourceRequirements": null,
+            "ulimits": null,
+            "dnsServers": null,
+            "mountPoints": [],
+            "workingDirectory": null,
+            "secrets": null,
+            "dockerSecurityOptions": null,
+            "memory": null,
+            "memoryReservation": null,
+            "volumesFrom": [],
+            "stopTimeout": null,
+            "image": "874146190074.dkr.ecr.ap-south-1.amazonaws.com/lms-sso:latest",
+            "startTimeout": null,
+            "dependsOn": null,
+            "disableNetworking": null,
+            "interactive": null,
+            "healthCheck": null,
+            "essential": true,
+            "links": null,
+            "hostname": null,
+            "extraHosts": null,
+            "pseudoTerminal": null,
+            "user": null,
+            "readonlyRootFilesystem": null,
+            "dockerLabels": null,
+            "systemControls": null,
+            "privileged": null,
+            "name": "lms-sso"
+        }
     ],
-    "family": "lms-sso-dev-tdf"
+    "memory": "750",
+    "taskRoleArn": null,
+    "family": "lms-sso-dev-tdf",
+    "pidMode": null,
+    "requiresCompatibilities": [],
+    "networkMode": "bridge",
+    "cpu": "375",
+    "inferenceAccelerators": null,
+    "proxyConfiguration": null,
+    "volumes": [],
+    "placementConstraints": [],
+    "tags": []
 }
