@@ -81,6 +81,26 @@ release:
     - qa
     - master
 
+deploy-dev:
+  stage: deploy
+  image: docker:latest
+  services:
+    - docker:18.09.7-dind
+  before_script:
+    # Install python requirements
+    - apk update
+    - apk upgrade
+    - apk add util-linux pciutils usbutils coreutils binutils findutils grep
+    - apk add python python-dev py-pip
+     # Install awscli
+    - pip install awscli
+  script:
+    - cd ecs-task-def
+     # Update task and service
+    - aws ecs register-task-definition --region ${REGION} --cli-input-json file://deploy-ecs.json >> temp.json
+    - REV=`grep  '"revision"' temp.json | awk '{print $2}'`
+    - echo $REV
+    - aws ecs update-service --cluster Rankguru-Dev --service lms-sso-dev-service --task-definition lms-sso-dev-tdf:${REV} --region ${REGION}  
 
 # deploy-dev:
 #   stage: deploy

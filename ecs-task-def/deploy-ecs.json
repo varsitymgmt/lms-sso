@@ -1,0 +1,94 @@
+{
+    "containerDefinitions": [
+       
+       {
+           "name": "lms-sso",
+           "image": "874146190074.dkr.ecr.ap-south-1.amazonaws.com/lms-sso:latest",
+           "essential": true,
+           "portMappings": [
+             {
+               "containerPort": 6000,
+               "protocol": "tcp"
+             }
+           ],
+           "environment":[
+             {
+               "name":"PORT",
+               "value":"6000"
+             },
+             {
+               "name":"NODE_ENV",
+               "value":"development"
+             },
+             {
+               "name":"MONGODB_URI",
+               "value":"mongodb://lms:alphabetagamma@13.234.242.201:27017/tenantregistry-lms-dev"
+             },
+             {
+               "name":"JWT_SECRET",
+               "value":"KAJDK656kllksklfmFGDFGS765ujh765T6GHAJDSjjjkjiursrda"
+             },
+             {
+               "name":"MAILJET_API_KEY",
+               "value":"a1fb4988b5a359099061d2cb8aebc80d"
+             },
+             {
+               "name":"MAILJET_API_SECRETKEY",
+               "value":"2fc962b7e3aae82acee17b355fb9de2d"
+             },
+             {
+               "name":"API_EGNIFY_IO_URL",
+               "value":"https://accounts.dev.rankguru.com"
+             },
+             {
+               "name":"CRUX_PARSER_URL",
+               "value":"https://crux-parser-v1.egnify.com"
+             },
+             {
+               "name":"CELERY_BROKER_URL",
+               "value":"redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
+             },
+             {
+               "name":"CELERY_RESULT_BACKEND",
+               "value":"redis://:vvqfBAUfPI@redis-master.dev.svc.cluster.local:6379/0"
+             },
+             {
+               "name":"HOST_NAME_FOR_ACCOUNTS",
+               "value":"accounts.dev.rankguru.com"
+             },
+             {
+               "name":"COMMON_HOST",
+               "value":".rankguru.com"
+             },
+             {
+               "name":"QUEUE_NS",
+               "value":"lms-dev-mq"
+             },
+             {
+               "name":"EMAIL_SERVICE",
+               "value":"gmail"
+             },
+             {
+               "name":"EMAIL_HOST",
+               "value":"smtp.gmail.com"
+             },
+             {
+               "name":"EMAIL_USER",
+               "value":"support@egnify.com"
+             },
+             {
+               "name":"EMAIL_PASS",
+               "value":"$dew$008"
+             }
+           ],
+           "logConfiguration": {
+             "logDriver": "awslogs",
+             "options": {
+                 "awslogs-group": "/ecs/lms-sso/dev",
+                 "awslogs-region": "ap-south-1",
+                 "awslogs-stream-prefix": "ecs-lms-sso"
+             }
+           }
+         }
+    ]
+}
