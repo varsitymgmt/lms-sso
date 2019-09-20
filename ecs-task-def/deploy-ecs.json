@@ -5,8 +5,8 @@
            "name": "lms-sso",
            "image": "874146190074.dkr.ecr.ap-south-1.amazonaws.com/lms-sso:latest",
            "essential": true,
-           "memory": "null",
-           "memoryReservation": "null",
+           "memory": 0,
+           "memoryReservation": 0,
            "portMappings": [
              {
                "containerPort": 6000,
