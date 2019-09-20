@@ -101,7 +101,9 @@ deploy-dev:
     - REV=`grep  '"revision"' temp.json | awk '{print $2}'`
     - echo $REV
     - aws ecs update-service --cluster Rankguru-Dev --service lms-sso-dev-service --task-definition lms-sso-dev-tdf:${REV} --region ${REGION}  
-
+  only:
+    - development
+    
 # deploy-dev:
 #   stage: deploy
 #   image: arbaz7/gcloud-kubectl-helm:latest
