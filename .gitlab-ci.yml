@@ -2,7 +2,7 @@
 image: node:6.12.0
 
 stages:
-  #- lint
+  - lint
   - build
   - release
   - review
@@ -21,17 +21,17 @@ cache:
     - node_modules/
     - build/
 
-# lint:
-#   stage: lint
-#   script:
-#     - npm install -g yarn
-#     - yarn install
-#     - yarn run lint
-#   only:
-#     - master
-#     - development
-#     - qa
-#     - lt
+lint:
+  stage: lint
+  script:
+    - npm install -g yarn
+    - yarn install
+    - yarn run lint
+  only:
+    - master
+    - development
+    - qa
+    - lt
 
 build:
   stage: build
