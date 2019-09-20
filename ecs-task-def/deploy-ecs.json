@@ -90,5 +90,6 @@
              }
            }
          }
-    ]
+    ],
+    "family": "lms-sso-dev-tdf"
 }
