@@ -6,6 +6,7 @@
            "image": "874146190074.dkr.ecr.ap-south-1.amazonaws.com/lms-sso:latest",
            "essential": true,
            "memory": 750,
+           "cpu": 375,
            "portMappings": [
              {
                "containerPort": 6000,
