@@ -1053,6 +1053,5 @@ export async function getActiveStudents(req, res) {
   }
   const data = await  User.distinct('studentId',query);
   return res.status('200').json(data)
-
 }
 
