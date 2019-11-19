@@ -1042,3 +1042,17 @@ export async function getActivityLogs(req, res) {
   return res.send(doc);
 }
 
+export async function getActiveStudents(req, res) {
+  const args = req.body;
+  if(!args || !args.studentIdList || !args.studentIdList.length )
+  return res.status('400').end('studentIdList required')
+  const query = {
+    active: true,
+    studentId: { $in: args.studentIdList },
+    password: { $nin: ["", null] }
+  }
+  const data = await  User.distinct('studentId',query);
+  return res.status('200').json(data)
+
+}
+

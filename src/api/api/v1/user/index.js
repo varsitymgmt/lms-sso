@@ -70,4 +70,10 @@ router.post(
   auth.isAuthenticated(),
   controller.getActivityLogs,
 );
+
+router.post(
+  '/getActiveStudents',
+  auth.isAuthenticated(),
+  controller.getActiveStudents,
+);
 export default router;
