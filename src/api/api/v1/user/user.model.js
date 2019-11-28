@@ -50,7 +50,7 @@ const UserSchema = new Schema({
   imageUrl: { type: String },
   active: { type: Boolean, default: true },
   hierarchy: {
-    type: [JSON],
+    type: Array,
     default: [],
     required: true,
   },
@@ -66,6 +66,11 @@ const UserSchema = new Schema({
   contactNumber: {
     type: String,
   },
+  orientations:{
+    type:Array,
+    default:[],
+  }
+  ,
   activityLogs: {}, 
 },{
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },

@@ -107,7 +107,6 @@ export function isAuthenticated(
               return next();
             }
             const userData = JSON.parse(JSON.stringify(user));
-            delete userData.hierarchy;
             const { accesscontroltoken } = req.headers;
             return verifyJWTToken(accesscontroltoken, req.user._id.toString()) // eslint-disable-line
               .then(({ access }) => {
@@ -120,6 +119,20 @@ export function isAuthenticated(
                   authorization,
                   accesscontroltoken,
                 };
+
+                // delete unnecessary field
+                delete userData.hostname;
+                delete userData.forgotPassSecureHash;
+                delete userData.passwordChange;
+                delete userData.active;
+                delete userData.defaultHostname;
+                delete userData.email;
+                delete userData.contactNumber;
+                delete userData.password;
+                delete userData.salt;
+                delete userData.sactivityLogsalt;
+                delete userData.updated_at;
+
                 req.user = userData;
                 return next();
               })
