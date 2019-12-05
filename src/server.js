@@ -78,12 +78,9 @@ app.use(express.static(path.resolve(__dirname, 'public')));
 app.use(cors());
 app.use(morgan('combined'));
 app.use(cookieParser());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  }),
-);
-app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({ extended: true, limit: '32mb' }));
+app.use(bodyParser.json({ limit: '32mb' }));
 
 require('./api/api/v1').default(app);
 

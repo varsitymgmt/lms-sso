@@ -70,4 +70,10 @@ router.post(
   auth.isAuthenticated(),
   controller.getActivityLogs,
 );
+
+router.post(
+  '/create/usersList',
+  auth.isAuthenticated(),
+  controller.createUsersList,
+);
 export default router;
