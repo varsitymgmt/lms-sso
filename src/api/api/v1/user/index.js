@@ -75,6 +75,8 @@ router.post(
   '/getActiveStudents',
   auth.isAuthenticated(),
   controller.getActiveStudents,
+);
+router.post(
   '/create/usersList',
   auth.isAuthenticated(),
   controller.createUsersList,
