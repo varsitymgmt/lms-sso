@@ -46,6 +46,7 @@ const userAgentRules = [
   ['miui', /MiuiBrowser\/([0-9\.]+)$/],
   ['beaker', /BeakerBrowser\/([0-9\.]+)/],
   ['edge-chromium', /Edg\/([0-9\.]+)/],
+  ['maxthon', /Maxthon\/([0-9\.]+)/],
   [
     'chromium-webview',
     /(?!Chrom.*OPR)wv\).*Chrom(?:e|ium)\/([0-9\.]+)(:?\s|$)/,

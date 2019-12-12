@@ -22,6 +22,7 @@ const UserRoleSchema = new Schema(
       description: 'Institute Id of the given Institute',
       required: true,
     },
+    userTypes: [],
     readAccess: [SystemRoleSchema],
     writeAccess: [SystemRoleSchema],
     active: { type: Boolean, default: true },
