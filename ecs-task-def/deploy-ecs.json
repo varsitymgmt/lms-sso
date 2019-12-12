@@ -23,7 +23,7 @@
         },
         {
           "name": "MONGODB_URI",
-          "value": "mongodb://lms:WQPVnRNtXY7CqKGUYR2qg23RPItVXf5mGs9twASm@uat.db.rankguru.com:27017/tenantregistry-lms-dev"
+          "value": "mongodb://lms:WQPVnRNtXY7CqKGUYR2qg23RPItVXf5mGs9twASm@uat.db.rankguru.com:27017/tenantregistry-lms-uat"
         },
         {
           "name": "JWT_SECRET",
