@@ -75,5 +75,8 @@ router.post(
   '/getActiveStudents',
   auth.isAuthenticated(),
   controller.getActiveStudents,
+  '/create/usersList',
+  auth.isAuthenticated(),
+  controller.createUsersList,
 );
 export default router;

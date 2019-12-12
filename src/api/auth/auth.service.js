@@ -107,7 +107,6 @@ export function isAuthenticated(
               return next();
             }
             const userData = JSON.parse(JSON.stringify(user));
-            delete userData.hierarchy;
             const { accesscontroltoken } = req.headers;
             return verifyJWTToken(accesscontroltoken, req.user._id.toString()) // eslint-disable-line
               .then(({ access }) => {

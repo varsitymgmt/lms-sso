@@ -31,7 +31,7 @@ lint:
     - master
     - development
     - qa
-    - lt
+    - uat
 
 build:
   stage: build
@@ -47,7 +47,7 @@ build:
     - development
     - qa
     - master
-    - lt
+    - uat
     
 release:
   stage: release
@@ -82,6 +82,38 @@ release:
     - master
 
 deploy-dev:
+
+release-uat:
+  stage: release
+  image: docker:latest
+  services:
+    - docker:18.09.7-dind
+  variables:
+    DOCKER_DRIVER: "overlay2"
+    DOCKER_HOST: "tcp://localhost:2375"
+  before_script:
+    - docker info
+    - apk add --no-cache curl jq python py-pip
+    - pip install awscli
+    - IMAGE_TAG="$CI_COMMIT_SHORT_SHA"
+  script:
+    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
+    - echo "Building image..."
+    - docker build -t ${CONTAINER_IMAGE} .
+    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_LATEST}
+    - docker push ${CONTAINER_IMAGE}
+    - docker push ${CONTAINER_IMAGE_LATEST}
+    - $(aws ecr get-login --no-include-email --region "${REGION}")
+    - echo "Tagging image for ECR..."
+    - docker tag ${CONTAINER_IMAGE_LATEST} ${REPOSITORY_URL}:${IMAGE_TAG}
+    - docker tag ${CONTAINER_IMAGE_LATEST} ${REPOSITORY_URL}:uat
+    - echo "Pushing image to ECR..."
+    - docker push ${REPOSITORY_URL}:uat
+    - docker push ${REPOSITORY_URL}:${IMAGE_TAG}
+  only:
+    - uat
+
+deploy-dev:
   stage: deploy
   image: docker:latest
   services:
@@ -103,6 +135,35 @@ deploy-dev:
     - aws ecs update-service --cluster Rankguru-Dev --service lms-sso-dev-service --task-definition lms-sso-dev-tdf:${REV} --region ${REGION}  
   only:
     - development
+
+deploy-uat:
+  stage: deploy
+  image: docker:latest
+  services:
+    - docker:18.09.7-dind
+  before_script:
+    # Install python requirements
+    - apk update
+    - apk upgrade
+    - apk add util-linux pciutils usbutils coreutils binutils findutils grep
+    - apk add python python-dev py-pip
+     # Install awscli
+    - pip install awscli
+  script:
+    - cd ecs-task-def
+     # Update task and service
+    - aws ecs register-task-definition --region ${REGION} --cli-input-json file://deploy-ecs.json >> temp.json
+    - REV=`grep  '"revision"' temp.json | awk '{print $2}'`
+    - echo $REV
+    - aws ecs update-service --cluster Rankguru-Dev --service lms-sso-dev-service --task-definition lms-sso-dev-tdf:${REV} --region ${REGION}  
+  only:
+    - development
+    - aws ecs register-task-definition --region ${REGION} --cli-input-json file://deploy-ecs-uat.json >> temp.json
+    - REV=`grep  '"revision"' temp.json | awk '{print $2}'`
+    - echo $REV
+    - aws ecs update-service --cluster Rankguru-UAT --service lms-sso-UAT-service --task-definition lms-sso-UAT-tdf:${REV} --region ${REGION}  
+  only:
+    - uat
     
 # deploy-dev:
 #   stage: deploy
