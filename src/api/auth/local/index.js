@@ -67,6 +67,17 @@ function setAsync(key, value, ttl) {
     });
   });
 }
+
+function delAsync(key) {
+  return new Promise((resolve, reject) => {
+    redisClient.del(key, (err, reply) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(reply);
+    });
+  });
+}
 /* -------------------------------API ROUTES------------------------------------*/
 
 router.post('/', (req, res, next) => {
@@ -147,6 +158,16 @@ router.post('/refreshtoken', isAuthenticated(false, true), async (req, res) => {
     accessControlToken,
     firstTimePasswordChanged: user.passwordChange,
   });
+});
+
+router.post('/logout', isAuthenticated(), async (req, res) => {
+  try {
+    await delAsync(req.user._id) //eslint-disable-line
+    return res.status(200).end();
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send('internal server error');
+  }
 });
 
 export default router;
