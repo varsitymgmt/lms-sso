@@ -11,6 +11,7 @@ import _ from 'lodash';
 const bcrypt = require('bcrypt');
 const celery = require('celery-client');
 const fetch = require('node-fetch');
+const crypto = require('crypto');
 
 const emailCtrl = require('../emailTransporter/emailTransporter.controller');
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
@@ -807,6 +808,12 @@ export async function resetStudentPassword(req,res){
 
 export async function createStudentUser(req, res) {
   const obj = req.body && req.body.studentData ? req.body.studentData : {}
+  obj.userType = 'STUDENT';
+  const userRolesObj = await getUserRolesObj(['STUDENT']);
+  if(!userRolesObj[obj.userType]) {
+    return res.send({ status: false })
+  }
+  else obj.role = userRolesObj[obj.userType];
   const { user } = req;
   const userObj = {
     studentId: obj.studentId,
@@ -816,10 +823,12 @@ export async function createStudentUser(req, res) {
     instituteId: user.instituteId,
     hostname: user.hostname,
     defaultHostname: user.hostname,
-    role: config.studentRole,
+    role: userRolesObj[obj.userType],
     email: obj.studentId,
     passwordChange: true,
     contactNumber: obj.phone,
+    userType: obj.userType,
+    orientations: [ obj.orientation ],
     active: obj.active,
   }
   return User.updateOne({ email: { $regex: userObj.email, $options: 'i'} }, {$set: userObj},{upsert: true }).then(() => {
@@ -1041,4 +1050,64 @@ export async function getActivityLogs(req, res) {
   }
   return res.send(doc);
 }
+
+function getSaltAndPasswordHash(password) {
+  const byteSize = 16;
+  const salt = crypto.randomBytes(byteSize).toString('base64');
+  const defaultIterations = 10000;
+  const defaultKeyLength = 64;
+  const saltBuffer = new Buffer(salt, 'base64');
+  const hash = crypto.pbkdf2Sync(password, saltBuffer, defaultIterations, defaultKeyLength, 'sha1').toString('base64');
+  return { salt, hash };
+}
+
+async function getUserRolesObj(userTypes){
+  return userRoles.aggregate([
+    {$match: { userTypes: {$in: userTypes }}},
+    {$unwind: '$userTypes'},
+    {$group: { _id: '$userTypes', roles: {$push: '$roleName'}}}
+  ]).then((data) => {
+    const obj = {};
+    data.forEach(x => {
+      obj[x._id] = x.roles;
+    })
+    return obj;
+  })
+}
+export async function createUsersList(req, res) {
+  const data = req.body && req.body.usersData ? req.body.usersData : [];
+  const userRolesObj = await getUserRolesObj(['TEACHER', 'PRINCIPAL']);
+  const bulk = await User.collection.initializeUnorderedBulkOp();
+  const { user } = req;
+  let status = true;
+
+  data.forEach((obj,index) => {
+    if(obj.password){
+      const { salt, hash } = getSaltAndPasswordHash(obj.password);
+      obj.password = hash;
+      obj.salt = salt;
+    }
+    obj.username = obj.email;
+    obj.rawHierarchy = [];
+    obj.instituteId = user.instituteId;
+    obj.hostname = user.hostname;
+    obj.defaultHostname = user.hostname;
+    obj.passwordChange = true;
+    obj.active = true;
+    if(!userRolesObj[obj.userType]) status = false;
+    else obj.role = userRolesObj[obj.userType];
+    bulk.find({email: obj.email}).upsert().update({$set: obj});
+    console.info(`${index+1}/${data.length}`)
+  })
+  if(!status) {
+    return res.send({ status })
+  }
+  return bulk.execute().then((doc) => {
+    console.info(doc)
+    return res.send({ status: true })
+  }).catch(err => {
+    console.error(err);
+    return res.send({ status: false });
+  })
+}  
 
