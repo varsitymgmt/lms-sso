@@ -128,12 +128,12 @@ UserSchema.path('role').validate(async function roleValidation(role) {
     instituteId: this.instituteId,
   };
   const isValid = true;
-  for (let i = 0; i < role.length; i += 1) {
-    const isValidRole = await validateRoleId(role[i], context); // eslint-disable-line// eslint-disable-line
-    if (isValidRole.err) {
-      return false;
-    }
-  }
+  // for (let i = 0; i < role.length; i += 1) {
+  //   const isValidRole = await validateRoleId(role[i], context); // eslint-disable-line// eslint-disable-line
+  //   if (isValidRole.err) {
+  //     return false;
+  //   }
+  // }
   return isValid;
 }, 'Invalid Role name provided');
 
