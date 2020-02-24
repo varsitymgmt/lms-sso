@@ -47,6 +47,7 @@ const UserSchema = new Schema({
     required: true,
     uppercase: true
   },
+  dummy: { type: Boolean, default: false },
   imageUrl: { type: String },
   active: { type: Boolean, default: true },
   hierarchy: {
