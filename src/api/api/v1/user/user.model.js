@@ -56,6 +56,7 @@ const UserSchema = new Schema({
     required: true,
   },
   orientations: { type: [JSON], default: [] },
+  userType: { type: String },
   rawHierarchy: {
     type: JSON,
     default: [],

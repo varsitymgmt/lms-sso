@@ -808,6 +808,12 @@ export async function resetStudentPassword(req,res){
 
 export async function createStudentUser(req, res) {
   const obj = req.body && req.body.studentData ? req.body.studentData : {}
+  obj.userType = 'STUDENT';
+  const userRolesObj = await getUserRolesObj(['STUDENT']);
+  if(!userRolesObj[obj.userType]) {
+    return res.send({ status: false })
+  }
+  else obj.role = userRolesObj[obj.userType];
   const { user } = req;
   const userObj = {
     studentId: obj.studentId,
@@ -817,10 +823,12 @@ export async function createStudentUser(req, res) {
     instituteId: user.instituteId,
     hostname: user.hostname,
     defaultHostname: user.hostname,
-    role: config.studentRole,
+    role: userRolesObj[obj.userType],
     email: obj.studentId,
     passwordChange: true,
     contactNumber: obj.phone,
+    userType: obj.userType,
+    orientations: [ obj.orientation ],
     active: obj.active,
   }
   return User.updateOne({ email: { $regex: userObj.email, $options: 'i'} }, {$set: userObj},{upsert: true }).then(() => {
@@ -1065,9 +1073,9 @@ function getSaltAndPasswordHash(password) {
   return { salt, hash };
 }
 
-async function getUserRolesObj(){
+async function getUserRolesObj(userTypes){
   return userRoles.aggregate([
-    {$match: { userTypes: {$in: ['TEACHER', 'PRINCIPAL']}}},
+    {$match: { userTypes: {$in: userTypes }}},
     {$unwind: '$userTypes'},
     {$group: { _id: '$userTypes', roles: {$push: '$roleName'}}}
   ]).then((data) => {
@@ -1080,7 +1088,7 @@ async function getUserRolesObj(){
 }
 export async function createUsersList(req, res) {
   const data = req.body && req.body.usersData ? req.body.usersData : [];
-  const userRolesObj = await getUserRolesObj();
+  const userRolesObj = await getUserRolesObj(['TEACHER', 'PRINCIPAL']);
   const bulk = await User.collection.initializeUnorderedBulkOp();
   const { user } = req;
   let status = true;
@@ -1091,7 +1099,7 @@ export async function createUsersList(req, res) {
       obj.password = hash;
       obj.salt = salt;
     }
-    obj.username = obj.email,
+    obj.username = obj.email;
     obj.rawHierarchy = [];
     obj.instituteId = user.instituteId;
     obj.hostname = user.hostname;
