@@ -2,9 +2,9 @@
   "containerDefinitions": [
     {
       "name": "lms-sso",
-      "image": "874146190074.dkr.ecr.ap-south-1.amazonaws.com/lms-sso:uat",
+      "image": "874146190074.dkr.ecr.ap-south-1.amazonaws.com/lms-sso:latest",
       "essential": true,
-      "memory": 1520,
+      "memory": 750,
       "cpu": 375,
       "portMappings": [
         {
@@ -19,11 +19,11 @@
         },
         {
           "name": "NODE_ENV",
-          "value": "uat"
+          "value": "development"
         },
         {
           "name": "MONGODB_URI",
-          "value": "mongodb://lms:WQPVnRNtXY7CqKGUYR2qg23RPItVXf5mGs9twASm@uat.db.rankguru.com:27017/tenantregistry-lms-uat"
+          "value": "mongodb://lms:QlrzUq4mG4GzypJuiXc54JtKRm40ac7e3UWozWhN@dev.db.rankguru.com:27017/tenantregistry-lms-dev"
         },
         {
           "name": "JWT_SECRET",
@@ -39,7 +39,7 @@
         },
         {
           "name": "API_EGNIFY_IO_URL",
-          "value": "https://accounts.uat.rankguru.com"
+          "value": "https://accounts.dev.rankguru.com"
         },
         {
           "name": "CRUX_PARSER_URL",
@@ -55,7 +55,7 @@
         },
         {
           "name": "HOST_NAME_FOR_ACCOUNTS",
-          "value": "accounts.uat.rankguru.com"
+          "value": "accounts.dev.rankguru.com"
         },
         {
           "name": "COMMON_HOST",
@@ -63,7 +63,7 @@
         },
         {
           "name": "QUEUE_NS",
-          "value": "lms-uat-mq"
+          "value": "lms-dev-mq"
         },
         {
           "name": "EMAIL_SERVICE",
@@ -85,12 +85,12 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/lms-sso/uat",
+          "awslogs-group": "/ecs/lms-sso/dev",
           "awslogs-region": "ap-south-1",
           "awslogs-stream-prefix": "ecs-lms-sso"
         }
       }
     }
   ],
-  "family": "lms-sso-UAT-tdf"
+  "family": "lms-sso-dev-tdf"
 }
