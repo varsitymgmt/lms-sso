@@ -824,14 +824,14 @@ export async function createStudentUser(req, res) {
     hostname: user.hostname,
     defaultHostname: user.hostname,
     role: userRolesObj[obj.userType],
-    email: obj.studentId,
+    email: obj.studentId.toLowerCase(),
     passwordChange: true,
     contactNumber: obj.phone,
     userType: obj.userType,
     orientations: [ obj.orientation ],
     active: obj.active,
   }
-  return User.updateOne({ email: { $regex: userObj.email, $options: 'i'} }, {$set: userObj},{upsert: true }).then(() => {
+  return User.updateOne({ email: userObj.email }, {$set: userObj},{upsert: true }).then(() => {
     return res.send({ status: true })
   }).catch(err => {
     console.error(err);
@@ -1077,16 +1077,20 @@ async function getUserRolesObj(userTypes){
 export async function createUsersList(req, res) {
   const data = req.body && req.body.usersData ? req.body.usersData : [];
   const userRolesObj = await getUserRolesObj(['TEACHER', 'PRINCIPAL']);
-  const bulk = await User.collection.initializeUnorderedBulkOp();
+  let bulk = await User.collection.initializeUnorderedBulkOp();
   const { user } = req;
   let status = true;
-
-  data.forEach((obj,index) => {
+  let idc = 0;
+  for(let i=0; i<data.length; i+=1){
+  // data.forEach((obj,index) => {
+    const obj = data[i];
+    const index = i;
     if(obj.password){
       const { salt, hash } = getSaltAndPasswordHash(obj.password);
       obj.password = hash;
       obj.salt = salt;
     }
+    obj.email = obj.email.toLowerCase();
     obj.username = obj.email;
     obj.rawHierarchy = [];
     obj.instituteId = user.instituteId;
@@ -1098,16 +1102,29 @@ export async function createUsersList(req, res) {
     else obj.role = userRolesObj[obj.userType];
     bulk.find({email: obj.email}).upsert().update({$set: obj});
     console.info(`${index+1}/${data.length}`)
-  })
-  if(!status) {
-    return res.send({ status })
+    idc+=1;
+    if(idc%500 === 0) {
+      idc = 0;
+      await bulk.execute().then((doc) => {
+          console.info(doc)
+        }).catch(err => {
+          console.error(err);
+          status = false;
+        })
+      bulk = await User.collection.initializeUnorderedBulkOp();
+    }
   }
-  return bulk.execute().then((doc) => {
-    console.info(doc)
-    return res.send({ status: true })
-  }).catch(err => {
-    console.error(err);
-    return res.send({ status: false });
-  })
+  if(!status) {
+    
+  }
+  if(idc){
+    await bulk.execute().then((doc) => {
+      console.info(doc)
+    }).catch(err => {
+      console.error(err);
+      status = false;
+    })
+  }
+  return res.send({ status })
 }  
 
