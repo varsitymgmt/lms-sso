@@ -36,8 +36,6 @@ import { config } from './config/environment';
 import schema from './api/graphql/schema';
 import { isAuthenticated, isAdmin } from './api/auth/auth.service';
 
-const device = require('express-device');
-
 const app = express();
 
 // enable compression
@@ -83,7 +81,6 @@ app.use(cookieParser());
 
 app.use(bodyParser.urlencoded({ extended: true, limit: '32mb' }));
 app.use(bodyParser.json({ limit: '32mb' }));
-app.use(device.capture());
 
 require('./api/api/v1').default(app);
 
