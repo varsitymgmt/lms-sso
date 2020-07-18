@@ -80,6 +80,10 @@
         {
           "name": "EMAIL_PASS",
           "value": "$dew$008"
+        },
+        {
+          "name": "REDIS_AUTH_DB",
+          "value": "REDIS_AUTH_DB"
         }
       ],
       "logConfiguration": {
