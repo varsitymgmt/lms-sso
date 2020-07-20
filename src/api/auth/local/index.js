@@ -96,15 +96,11 @@ router.post('/', (req, res, next) => {
       const userId = user._id.toString(); // eslint-disable-line
 
       if (!forceLogin) {
-        let loginInfo = await getAsync(userId);
+        const loginInfo = await getAsync(userId);
         if (loginInfo) {
-          loginInfo = JSON.parse(loginInfo);
           return res.status(409).send({
             message:
               "You're already logged in to RankGuru with another device/client. Please log out to access through this device.",
-            deviceType: loginInfo.device_type,
-            deviceName: loginInfo.device_name,
-            ipInfo: loginInfo.ip_info,
           });
         }
       }
