@@ -68,6 +68,7 @@ export function isAuthenticated(
           );
           req.headers.authorization = bytes.toString(CryptoJS.enc.Utf8);
         }
+        req.headers.encryptedToken = authorization;
         req.authorization = authorization;
         req.headers.authorization = `Bearer ${req.headers.authorization}`;
         validateJwt(req, res, next);
@@ -80,15 +81,13 @@ export function isAuthenticated(
           return res.status(401).end();
         }
 
-        let redisData = await getAsync(req.user._id); // eslint-disable-line
+        let redisToken = await getAsync(req.user._id); // eslint-disable-line
 
-        if (!redisData) {
+        if (!redisToken) {
           return res.status(401).end();
         }
 
-        redisData = JSON.parse(redisData);
-
-        if (redisData.token !== req.headers.authorization) {
+        if (redisToken !== req.headers.encryptedToken) {
           return res.status(401).end();
         }
 
