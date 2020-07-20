@@ -59,7 +59,7 @@ release:
     DOCKER_HOST: "tcp://localhost:2375"
   before_script:
     - docker info
-    - apk add --no-cache curl jq python py-pip
+    - apk add --no-cache curl jq py-pip
     - pip install awscli
     - IMAGE_TAG="$CI_COMMIT_SHORT_SHA"
   script:
@@ -91,7 +91,7 @@ release-uat:
     DOCKER_HOST: "tcp://localhost:2375"
   before_script:
     - docker info
-    - apk add --no-cache curl jq python py-pip
+    - apk add --no-cache curl jq py-pip
     - pip install awscli
     - IMAGE_TAG="$CI_COMMIT_SHORT_SHA"
   script:
@@ -121,7 +121,7 @@ deploy-dev:
     - apk update
     - apk upgrade
     - apk add util-linux pciutils usbutils coreutils binutils findutils grep
-    - apk add python python-dev py-pip
+    - apk add py-pip
      # Install awscli
     - pip install awscli
   script:
@@ -144,7 +144,7 @@ deploy-uat:
     - apk update
     - apk upgrade
     - apk add util-linux pciutils usbutils coreutils binutils findutils grep
-    - apk add python python-dev py-pip
+    - apk add py-pip
      # Install awscli
     - pip install awscli
   script:
