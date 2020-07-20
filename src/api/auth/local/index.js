@@ -151,7 +151,6 @@ router.post('/refreshtoken', isAuthenticated(false, true), async (req, res) => {
     res.statusMessage = message;
     return res.status(status).end();
   }
-  await setAsync(userId, token, 86400);
   return res.json({
     token,
     accessControlToken,
