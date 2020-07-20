@@ -88,10 +88,7 @@ export function isAuthenticated(
 
         redisData = JSON.parse(redisData);
 
-        if (
-          redisData.token !== req.headers.authorization ||
-          redisData.accessControlToken !== req.headers.accesscontroltoken
-        ) {
+        if (redisData.token !== req.headers.authorization) {
           return res.status(401).end();
         }
 
