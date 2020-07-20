@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import expressJwt from 'express-jwt';
 import compose from 'composable-middleware';
 import { config } from '../../config/environment';
-
+import { getAsync } from './local';
 import User from '../api/v1/user/user.model';
 import AllStudents from '../api/v1/allStudents/allStudents.model';
 
@@ -73,11 +73,28 @@ export function isAuthenticated(
         validateJwt(req, res, next);
       })
       // Attach user to request
-      .use((req, res, next) => {// eslint-disable-line
+      .use(async(req, res, next) => {// eslint-disable-line
+
         if (!req.user || !req.user._id) {// eslint-disable-line
           res.statusMessage = 'User Data is Null';
           return res.status(401).end();
         }
+
+        let redisData = await getAsync(req.user._id); // eslint-disable-line
+
+        if (!redisData) {
+          return res.status(401).end();
+        }
+
+        redisData = JSON.parse(redisData);
+
+        if (
+          redisData.token !== req.headers.authorization ||
+          redisData.accessControlToken !== req.headers.accesscontroltoken
+        ) {
+          return res.status(401).end();
+        }
+
         const findUserQuery = {
           _id: req.user._id,  // eslint-disable-line
           active: true,

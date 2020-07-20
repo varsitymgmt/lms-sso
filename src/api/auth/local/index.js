@@ -46,7 +46,7 @@ function getAccessControlToken(user) {
     });
 }
 
-function getAsync(userId) {
+export function getAsync(userId) {
   return new Promise((resolve, reject) => {
     redisClient.get(userId, (err, reply) => {
       if (err) {
