@@ -46,7 +46,7 @@ function getAccessControlToken(user) {
     });
 }
 
-function getAsync(userId) {
+export function getAsync(userId) {
   return new Promise((resolve, reject) => {
     redisClient.get(userId, (err, reply) => {
       if (err) {
@@ -130,9 +130,6 @@ router.post('/', (req, res, next) => {
         accessControlToken,
         firstTimePasswordChanged: user.passwordChange,
         redirectionLink: `https://${user.hostname}`,
-        deviceType: req.device.type,
-        deviceName: req.device.name,
-        ipInfo: req.ip,
       };
       await setAsync(userId, JSON.stringify(returnJson), 86400);
       return res.json(returnJson);
