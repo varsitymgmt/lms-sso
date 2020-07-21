@@ -247,6 +247,95 @@
     top: 80%;
   }
 } */
+.modalButtons {
+  width: 117px;
+  height: 32px !important;
+  margin-top: 40px;
+  border-radius: 16px !important;
+  background-image: linear-gradient(83deg, #ec008c 0%, #fc6767) !important;
+  cursor: pointer;
+}
+
+.logoutBtn {
+  height: 32px !important;
+  text-align: center;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.33;
+  letter-spacing: 0.21px;
+  color: #fff;
+}
+
+.headerContent {
+  font-size: 16px;
+  font-weight: 600;
+  color: #3e3e5f;
+}
+
+.modal {
+  position: fixed;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modalContent {
+  background-color: #fff;
+  margin: auto;
+  padding: 24px;
+  width: 328px;
+  height: 283px;
+  border-radius: 2px;
+  position: relative;
+}
+
+.modalText {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #3e3e5f;
+  line-height: 1.5;
+}
+
+.changePassword {
+  font-size: 12px;
+  margin-top: 12px;
+  line-height: 1.67;
+  color: #3e3e5f;
+}
+
+.alreadyUse {
+  font-size: 12px;
+  line-height: 1.67;
+  color: #3e3e5f;
+}
+
+.change {
+  text-transform: none !important;
+  cursor: pointer;
+}
+
+.close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #fff;
+  position: absolute;
+  top: 145px;
+  right: 38%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
 
 @media only screen and (min-width: 1440px) {
   .signInBody {
@@ -269,6 +358,10 @@
       margin-top: 10px;
     }
   }
+
+  .close {
+    top: 29%;
+  }
 }
 
 @media only screen and (min-width: 1600px) {
@@ -278,5 +371,10 @@
 
   .welcomeContainer {
     width: calc(100% - 600px);
+  }
+
+  .close {
+    top: 32%;
+    right: 41%;
   }
 }
