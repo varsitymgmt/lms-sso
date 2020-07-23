@@ -366,18 +366,18 @@ class SignIn extends React.Component {
     const { formData } = this.state;
     const div = (
       <div id="modal" className={`${s.modal}`}>
-        <div
-          role="presentation"
-          className={s.close}
-          onClick={() => {
-            this.setState({
-              showForceLogin: false,
-            });
-          }}
-        >
-          <img src="/images/icons/close.svg" alt="" />
-        </div>
         <div className={`${s.modalContent}`}>
+          <div
+            role="presentation"
+            className={s.close}
+            onClick={() => {
+              this.setState({
+                showForceLogin: false,
+              });
+            }}
+          >
+            <img src="/images/icons/close.svg" alt="" />
+          </div>
           <div className={s.headerContent}>Admission ID already in use</div>
           <div id="content" className={s.modalText}>
             <p className={s.alreadyUse}>

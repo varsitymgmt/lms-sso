@@ -329,8 +329,8 @@
   border-radius: 50%;
   background-color: #fff;
   position: absolute;
-  top: 145px;
-  right: 38%;
+  top: -50px;
+  right: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -358,10 +358,6 @@
       margin-top: 10px;
     }
   }
-
-  .close {
-    top: 29%;
-  }
 }
 
 @media only screen and (min-width: 1600px) {
@@ -371,10 +367,5 @@
 
   .welcomeContainer {
     width: calc(100% - 600px);
-  }
-
-  .close {
-    top: 32%;
-    right: 41%;
   }
 }
