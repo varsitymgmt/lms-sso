@@ -28,7 +28,12 @@ class AdminSignIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      formData: { email: '', password: '', rememberMe: false },
+      formData: {
+        email: '',
+        password: '',
+        rememberMe: false,
+        forceLogin: true,
+      },
       emailImgSrc: '/images/icons/username.svg',
       emailValidationCompleted: false,
       doneSrc: '/images/institute-setup/done.svg',
