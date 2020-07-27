@@ -130,7 +130,7 @@ deploy-dev:
     - aws ecs register-task-definition --region ${REGION} --cli-input-json file://deploy-ecs.json >> temp.json
     - REV=`grep  '"revision"' temp.json | awk '{print $2}'`
     - echo $REV
-    - aws ecs update-service --cluster Rankguru-Dev --service lms-sso-dev-service --task-definition lms-sso-dev-tdf:${REV} --region ${REGION}  
+    - aws ecs update-service --cluster Rankguru-Dev --service lms-sso-dev-service --task-definition lms-sso-dev-tdf --region ${REGION}  
   only:
     - development
 
@@ -153,7 +153,7 @@ deploy-uat:
     - aws ecs register-task-definition --region ${REGION} --cli-input-json file://deploy-ecs-uat.json >> temp.json
     - REV=`grep  '"revision"' temp.json | awk '{print $2}'`
     - echo $REV
-    - aws ecs update-service --cluster Rankguru-UAT --service lms-sso-UAT-service --task-definition lms-sso-UAT-tdf:${REV} --region ${REGION}  
+    - aws ecs update-service --cluster Rankguru-UAT --service lms-sso-UAT-service --task-definition lms-sso-UAT-tdf --region ${REGION}  
   only:
     - uat
     
