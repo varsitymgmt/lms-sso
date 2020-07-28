@@ -28,7 +28,12 @@ class AdminSignIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      formData: { email: '', password: '', rememberMe: false },
+      formData: {
+        email: '',
+        password: '',
+        rememberMe: false,
+        forceLogin: true,
+      },
       emailImgSrc: '/images/icons/username.svg',
       emailValidationCompleted: false,
       doneSrc: '/images/institute-setup/done.svg',
@@ -70,6 +75,7 @@ class AdminSignIn extends React.Component {
         email: document.getElementById('email').value,
         password: document.getElementById('password').value,
         rememberMe: false,
+        forceLogin: true,
         hostname: __DEV__ ? this.context.hostNameForDev : host.hostname,
       },
       host,

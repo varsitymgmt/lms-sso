@@ -33,6 +33,7 @@ module.exports = {
       process.env.CELERY_RESULT_BACKEND || 'redis://localhost:6379/0',
     QUEUE_NS: process.env.QUEUE_NS || 'sso-dev-mq',
   },
+  redis_auth_db: process.env.REDIS_AUTH_DB || 'redis://localhost:6379/1',
   // COMMON HOST USED TO SET COOKIE
   commonHost: process.env.COMMON_HOST,
 };
