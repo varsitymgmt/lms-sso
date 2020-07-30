@@ -378,7 +378,9 @@ class SignIn extends React.Component {
           >
             <img src="/images/icons/close.svg" alt="" />
           </div>
-          <div className={s.headerContent}>Admission ID already in use</div>
+          <div className={s.headerContent}>
+            {'Someone else is using your Account'}
+          </div>
           <div id="content" className={s.modalText}>
             <p className={s.alreadyUse}>
               The Admission ID ({formData.email}) is already logged-in on
@@ -965,7 +967,7 @@ class SignIn extends React.Component {
   render() {
     return (
       <div className="cover-full-container">
-        {this.state.showForceLogin && this.displayForceLogin()}
+        {!this.state.showForceLogin && this.displayForceLogin()}
         <div className={`col no-padding ${s.logInContainer}`}>
           {this.displayLogInPage()}
         </div>
