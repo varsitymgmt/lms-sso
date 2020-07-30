@@ -967,7 +967,7 @@ class SignIn extends React.Component {
   render() {
     return (
       <div className="cover-full-container">
-        {!this.state.showForceLogin && this.displayForceLogin()}
+        {this.state.showForceLogin && this.displayForceLogin()}
         <div className={`col no-padding ${s.logInContainer}`}>
           {this.displayLogInPage()}
         </div>
