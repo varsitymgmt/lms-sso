@@ -80,15 +80,15 @@ export function isAuthenticated(
           res.statusMessage = 'User Data is Null';
           return res.status(401).end();
         }
+        if (!req.user.wlsds) {
+          let redisToken = await getAsync(req.user._id); // eslint-disable-line
+          if (!redisToken) {
+            return res.status(401).end();
+          }
 
-        let redisToken = await getAsync(req.user._id); // eslint-disable-line
-
-        if (!redisToken) {
-          return res.status(401).end();
-        }
-
-        if (redisToken !== req.headers.encryptedToken) {
-          return res.status(401).end();
+          if (redisToken !== req.headers.encryptedToken) {
+            return res.status(401).end();
+          }
         }
 
         const findUserQuery = {

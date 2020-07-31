@@ -127,7 +127,9 @@ router.post('/', (req, res, next) => {
         firstTimePasswordChanged: user.passwordChange,
         redirectionLink: `https://${user.hostname}`,
       };
-      await setAsync(userId, token, 86400);
+      if (!user.wlsds) {
+        await setAsync(userId, token, 86400);
+      }
       return res.json(returnJson);
     } catch (error) {
       console.error(error);
