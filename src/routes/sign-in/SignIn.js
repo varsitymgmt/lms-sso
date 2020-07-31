@@ -378,7 +378,9 @@ class SignIn extends React.Component {
           >
             <img src="/images/icons/close.svg" alt="" />
           </div>
-          <div className={s.headerContent}>Admission ID already in use</div>
+          <div className={s.headerContent}>
+            {'Someone else is using your Account'}
+          </div>
           <div id="content" className={s.modalText}>
             <p className={s.alreadyUse}>
               The Admission ID ({formData.email}) is already logged-in on
