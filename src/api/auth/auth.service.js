@@ -148,7 +148,14 @@ export function isAuthenticated(
 /**
  * Returns a jwt token signed by the app secret
  */
-export async function signToken(id, role, instituteId, hostname, loginHash) {
+export async function signToken(
+  id,
+  role,
+  instituteId,
+  hostname,
+  loginHash,
+  wlsds,
+) {
   let token = await jwt.sign(
     {
       _id: id,
@@ -156,6 +163,7 @@ export async function signToken(id, role, instituteId, hostname, loginHash) {
       instituteId,
       hostname,
       loginHash,
+      wlsds,
     },
     config.secrets.session,
     {
