@@ -80,6 +80,10 @@
         {
           "name": "EMAIL_PASS",
           "value": "$dew$008"
+        },
+        {
+          "name": "REDIS_AUTH_DB",
+          "value": "redis://:rQsVPF2gbiHi@15.206.191.200:6379/1"
         }
       ],
       "logConfiguration": {

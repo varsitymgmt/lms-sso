@@ -33,6 +33,7 @@ class SignIn extends React.Component {
       mainPage: 'SignIn',
       formFieldsError: {},
       admissionId: '',
+      showForceLogin: false,
       otp: '',
       hashToken: '',
       showInvalidPasswordError: false,
@@ -357,6 +358,70 @@ class SignIn extends React.Component {
 
   /**
     @description
+      This function is used to show force login
+    @author Shubham Gupta
+  */
+
+  displayForceLogin = () => {
+    const { formData } = this.state;
+    const div = (
+      <div id="modal" className={`${s.modal}`}>
+        <div className={`${s.modalContent}`}>
+          <div
+            role="presentation"
+            className={s.close}
+            onClick={() => {
+              this.setState({
+                showForceLogin: false,
+              });
+            }}
+          >
+            <img src="/images/icons/close.svg" alt="" />
+          </div>
+          <div className={s.headerContent}>
+            {'Someone else is using your Account'}
+          </div>
+          <div id="content" className={s.modalText}>
+            <p className={s.alreadyUse}>
+              The Admission ID ({formData.email}) is already logged-in on
+              another device.
+            </p>
+            <p className={s.changePassword}>
+              If you’re the owner of the account we suggest you to{' '}
+              <a
+                className={s.change}
+                onClick={() => {
+                  this.setState({ page: 'Otp', showForceLogin: false }, () =>
+                    this.receiveOtp(),
+                  );
+                }}
+                role="presentation"
+              >
+                change password
+              </a>{' '}
+              using your registered mobile number and not to share it with other
+              students.
+            </p>
+          </div>
+          <div className={s.modalButtons}>
+            <div
+              className={s.logoutBtn}
+              onClick={() => {
+                formData.forceLogin = true;
+                this.setState({ formData }, () => this.handleSignIn());
+              }}
+              role="presentation"
+            >
+              FORCE LOGIN
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+    return div;
+  };
+  /**
+    @description
       This function displays otp part of sign in/up page
     @author Shounak, Divya
   */
@@ -501,11 +566,19 @@ class SignIn extends React.Component {
               this.state.formData.email,
             );
           }
-          this.setState({ showInvalidPasswordError: false });
+          this.setState({
+            showInvalidPasswordError: false,
+            showForceLogin: false,
+          });
         }
       })
       .catch(err => {
         toggleLoader(false);
+        if (err.response && err.response.status === 409) {
+          this.setState({
+            showForceLogin: true,
+          });
+        }
         if (err.response && err.response.data) {
           const data = err.response.data;
           const { formFieldsError } = this.state;
@@ -894,6 +967,7 @@ class SignIn extends React.Component {
   render() {
     return (
       <div className="cover-full-container">
+        {this.state.showForceLogin && this.displayForceLogin()}
         <div className={`col no-padding ${s.logInContainer}`}>
           {this.displayLogInPage()}
         </div>
