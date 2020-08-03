@@ -70,7 +70,8 @@ const UserSchema = new Schema({
   contactNumber: {
     type: String,
   },
-  activityLogs: {}, 
+  activityLogs: {},
+  wlsds: {type: Boolean, default: false} //white list single device sign in
 },{
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
 });
