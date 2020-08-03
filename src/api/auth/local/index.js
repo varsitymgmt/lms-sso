@@ -110,6 +110,7 @@ router.post('/', (req, res, next) => {
         user.instituteId,
         user.hostname,
         user.loginHash,
+        user.wlsds,
       );
       const {
         accessControlToken,
@@ -127,7 +128,9 @@ router.post('/', (req, res, next) => {
         firstTimePasswordChanged: user.passwordChange,
         redirectionLink: `https://${user.hostname}`,
       };
-      await setAsync(userId, token, 86400);
+      if (!user.wlsds) {
+        await setAsync(userId, token, 86400);
+      }
       return res.json(returnJson);
     } catch (error) {
       console.error(error);
@@ -138,8 +141,7 @@ router.post('/', (req, res, next) => {
 
 router.post('/refreshtoken', isAuthenticated(false, true), async (req, res) => {
   const { user } = req;
-  const userId = user._id; //eslint-disable-line
-  const token = await signToken(user._id, user.role, user.instituteId, user.hostname,user.loginHash); // eslint-disable-line
+  const token = await signToken(user._id, user.role, user.instituteId, user.hostname,user.loginHash, user.wlsds); // eslint-disable-line
   const { accessControlToken, status, message } = await getAccessControlToken(
     user,
   );

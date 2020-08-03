@@ -80,15 +80,15 @@ export function isAuthenticated(
           res.statusMessage = 'User Data is Null';
           return res.status(401).end();
         }
+        if (!req.user.wlsds) {
+          let redisToken = await getAsync(req.user._id); // eslint-disable-line
+          if (!redisToken) {
+            return res.status(401).end();
+          }
 
-        let redisToken = await getAsync(req.user._id); // eslint-disable-line
-
-        if (!redisToken) {
-          return res.status(401).end();
-        }
-
-        if (redisToken !== req.headers.encryptedToken) {
-          return res.status(401).end();
+          if (redisToken !== req.headers.encryptedToken) {
+            return res.status(401).end();
+          }
         }
 
         const findUserQuery = {
@@ -148,7 +148,14 @@ export function isAuthenticated(
 /**
  * Returns a jwt token signed by the app secret
  */
-export async function signToken(id, role, instituteId, hostname, loginHash) {
+export async function signToken(
+  id,
+  role,
+  instituteId,
+  hostname,
+  loginHash,
+  wlsds,
+) {
   let token = await jwt.sign(
     {
       _id: id,
@@ -156,6 +163,7 @@ export async function signToken(id, role, instituteId, hostname, loginHash) {
       instituteId,
       hostname,
       loginHash,
+      wlsds,
     },
     config.secrets.session,
     {
