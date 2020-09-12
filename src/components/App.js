@@ -56,17 +56,19 @@ class App extends React.PureComponent {
 
   checkBrowserVarient = () => {
     const browserInfo = detect();
-    if (browserInfo && browserInfo.name.toLowerCase() === 'chrome') {
-      this.setState({ isChrome: true });
+    const checkIfBrowserAllowed = browser =>
+      ['chrome', 'safari'].includes(browser);
+    if (browserInfo && checkIfBrowserAllowed(browserInfo.name.toLowerCase())) {
+      this.setState({ isBrowserAllowed: true });
     }
   };
 
   render() {
-    if (!this.state.isChrome) {
+    if (!this.state.isBrowserAllowed) {
       return (
         <AccessDenied
           warning="Sorry!"
-          message={`Rankguru can only be accessed through Google Chrome browser`}
+          message={`Rankguru can only be accessed through Google Chrome & Safari`}
         />
       );
     }
