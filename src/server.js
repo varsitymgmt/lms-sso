@@ -62,6 +62,8 @@ mongoose.connection.on('error', err => {
   process.exit(-1); // eslint-disable-line no-process-exit
 });
 
+// mongoose.set('debug', true)
+
 app.get('/status', (req, res) => res.send('Oh!! Yeah.'));
 
 //
@@ -81,6 +83,22 @@ app.use(cookieParser());
 
 app.use(bodyParser.urlencoded({ extended: true, limit: '32mb' }));
 app.use(bodyParser.json({ limit: '32mb' }));
+
+// app.use(
+//   '/auth/local',
+//   morgan((token, req, res) => morganCtrl.morganMessageLogger(token, req, res)),
+// );
+
+app.use('/consumer', (req, res, next) => {
+  const token = '208b9605-b7f3-4d15-b609-d95eefabb53e';
+  if (!req.body.token || req.body.token !== token)
+    return res.status('401').send();
+  req.user = {
+    instituteId: 'Egni_u001',
+    hostname: ['rankguru.com', 'www.rankguru.com'],
+  };
+  next();
+});
 
 require('./api/api/v1').default(app);
 

@@ -12,11 +12,11 @@ function localAuthenticate(req, User, login, password, done) {
   // can login through both username and emailId
   login = login.trim();
   const email_lower = login.toLowerCase(); //eslint-disable-line
-  const email_upper = login.toUpperCase(); //eslint-disable-line
+  // const email_upper = login.toUpperCase(); //eslint-disable-line
   User.findOne({
-    email: { $in: [email_lower, email_upper] }, //eslint-disable-line
-    active: true,
+    email: email_lower, //eslint-disable-line
     hostname: hostnameForQuery,
+    active: true,
   })
     .exec()
     .then(user => {
