@@ -56,8 +56,7 @@ class App extends React.PureComponent {
 
   checkBrowserVarient = () => {
     const browserInfo = detect();
-    const checkIfBrowserAllowed = browser =>
-      ['chrome'].includes(browser);
+    const checkIfBrowserAllowed = browser => ['chrome'].includes(browser);
     if (browserInfo && checkIfBrowserAllowed(browserInfo.name.toLowerCase())) {
       this.setState({ isBrowserAllowed: true });
     }
